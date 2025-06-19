@@ -4,12 +4,12 @@ function Soma_range(...range){
 
     let range_val_1 = []
     let range_val_2 = []
-    let meio_valor = []
+    let dimensoes = []
 
     for(a=0;a<range.length;a++){
         range_val_1[a] = Number(range[a].replace(Regex, "$1"));
         range_val_2[a] = Number(range[a].replace(Regex, "$2"));
-        meio_valor[a] = (range_val_2[a] + range_val_1[a])/2
+        dimensoes[a] = range_val_2[a] - range_val_1[a]+1
     }
 
     // função para somar os valores dos arreys 
@@ -19,42 +19,19 @@ function Soma_range(...range){
     let min_valor = range_val_1.reduce(Soma)
     let max_valor = range_val_2.reduce(Soma)
 
-    let dimensoes = range_val_1.length
-
     // forma o resultado final
-    let resul = []
+    let resul = {}
     for(a=min_valor;a<max_valor+1;a++){
 
-        resul["val_"+a] = "test"
+        resul[a] = diagonalLength(a-min_valor, dimensoes[0], dimensoes[1])
     }
 
-    console.log(range_val_1)
-    console.log(range_val_2)
-    console.log(meio_valor)
+    //console.log(dimensoes);
 
-    console.log(min_valor)
-    console.log(max_valor)
-
-    console.log(dimensoes)
-
-    console.log(resul)
     return resul
 }
 
-function valor_diagonal_2D(linha=1, coluna=1, diagonal=1){
-
-    console.log(diagonal)
-
-    return 1
-}
-
-function diagonalLength2D(rows, cols, diagonalIndex) {
-    const minSum = 0;
-    const maxSum = rows + cols - 2;
-
-    if (diagonalIndex < minSum || diagonalIndex > maxSum) {
-        return 0;
-    }
+function diagonalLength(diagonalIndex ,rows, cols) {
 
     const startRow = Math.max(0, diagonalIndex - (cols - 1));
     const endRow = Math.min(rows - 1, diagonalIndex);
@@ -106,6 +83,6 @@ function getSumCombinationsForTwoDice(die1, die2) {
 }
 
 
-console.log(getSumCombinationsForTwoDice(20, 4))
-console.log(getDiceSums([20, 4]))
-Soma_range2('1-20','1;4')
+//console.log(getSumCombinationsForTwoDice(20, 4))
+console.log(getDiceSums([20,4,4]))
+console.log(Soma_range('1-20','1-4'))
