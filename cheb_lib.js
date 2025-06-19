@@ -1,37 +1,44 @@
 function Soma_range(...range){
-    // recebe os valores em pares que são separa em duas variaveis
+    // recebe os valores em pares que são separados em duas variaveis
     const Regex = /([0-9]+)[^0-9]([0-9]+)/
 
     let range_val_1 = []
     let range_val_2 = []
     let dimensoes = []
 
-    for(a=0;a<range.length;a++){
+    for(let a=0;a<range.length;a++){
         range_val_1[a] = Number(range[a].replace(Regex, "$1"));
         range_val_2[a] = Number(range[a].replace(Regex, "$2"));
         dimensoes[a] = range_val_2[a] - range_val_1[a]+1
     }
 
-    // função para somar os valores dos arreys 
-    function Soma(total, num) {
-        return total + num;
+    // retorna caso só seja passado um par de valores
+    if(range.length == 1){
+        let resul = {}
+        for(let a=range_val_1[0];a<=range_val_2[0];a++){
+            resul[a] = 1
+        }
+        return resul
     }
-    let min_valor = range_val_1.reduce(Soma)
-    let max_valor = range_val_2.reduce(Soma)
 
-    // forma o resultado final
+    // forma o resultado com duas dimenções
+    let min_valor = range_val_1[0] + range_val_1[1]
+    let max_valor = range_val_2[0] + range_val_2[1]
+
     let resul = {}
-    for(a=min_valor;a<max_valor+1;a++){
-
-        resul[a] = diagonalLength(a-min_valor, dimensoes[0], dimensoes[1])
+    for(let a=min_valor;a<max_valor+1;a++){
+        resul[a] = diagonalLength2D(a-min_valor, dimensoes[0], dimensoes[1])
     }
 
-    //console.log(dimensoes);
+    // faz a soma das outras dimenções se precisar
+    for(let a=2;a<dimensoes.length;a++){
+        resul = soma_escada(resul, range_val_1[a], range_val_2[a])
+    }
 
     return resul
 }
 
-function diagonalLength(diagonalIndex ,rows, cols) {
+function diagonalLength2D(diagonalIndex ,rows, cols) {
 
     const startRow = Math.max(0, diagonalIndex - (cols - 1));
     const endRow = Math.min(rows - 1, diagonalIndex);
@@ -39,6 +46,28 @@ function diagonalLength(diagonalIndex ,rows, cols) {
     return endRow - startRow + 1;
 }
 
+function soma_escada(valores, passo, limite){
+
+    const chaves = Object.keys(valores);
+    const novo_tamanho = chaves.length + limite-1
+    let index = Number(chaves[0])+passo
+
+    //console.log(chaves)
+
+    let resul = {}
+    for(let a=0;a<novo_tamanho;a++){
+        let soma = 0
+
+
+        resul[index] = 0
+        index = index+1
+    }
+
+    console.log(resul)
+
+    return valores
+
+}
 
 
 function getDiceSums(dice) {
@@ -50,6 +79,7 @@ function getDiceSums(dice) {
             for (let i = 1; i <= sides; i++) {
                 let newSum = parseInt(sum) + i;
                 newResults[newSum] = (newResults[newSum] || 0) + results[sum];
+                //console.log("test")
             }
         }
         results = newResults;
@@ -58,31 +88,5 @@ function getDiceSums(dice) {
     return results;
 }
 
-function getSumCombinationsForTwoDice(die1, die2) {
-    const minSum = 2;
-    const maxSum = die1 + die2;
-    const minDie = Math.min(die1, die2);
-    const maxDie = Math.max(die1, die2);
-    
-    const combinations = {};
-
-    for (let sum = minSum; sum <= maxSum; sum++) {
-        let count;
-        if (sum <= minDie + 1) {
-            count = sum - 1;
-        } else if (sum <= maxDie + 1) {
-            count = minDie;
-        } else {
-            count = die1 + die2 - sum + 1;
-        }
-
-        combinations[sum] = count;
-    }
-
-    return combinations;
-}
-
-
-//console.log(getSumCombinationsForTwoDice(20, 4))
 console.log(getDiceSums([20,4,4]))
-console.log(Soma_range('1-20','1-4'))
+console.log(Soma_range('1-20','1-4','1-4'))
