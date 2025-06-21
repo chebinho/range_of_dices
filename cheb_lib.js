@@ -58,14 +58,19 @@ function soma_escada(valores, passo, limite){
     for(let a=0;a<novo_tamanho;a++){
         let soma = 0
 
+        for(let b=0;b<=limite-1;b++){
+            let valor = valores[a-b+passo+1]
 
-        resul[index] = 0
+            if ((valor !== NaN)&&(valor !== undefined)){
+                soma = soma + valor
+            }
+        }
+
+        resul[index] = soma
         index = index+1
     }
 
-    console.log(resul)
-
-    return valores
+    return resul
 
 }
 
@@ -89,4 +94,4 @@ function getDiceSums(dice) {
 }
 
 console.log(getDiceSums([20,4,4]))
-console.log(Soma_range('1-20','1-4','1-4'))
+console.log(Soma_range('1-100','1-100','1-100','1-100','1-100','1-100','1-100'))
