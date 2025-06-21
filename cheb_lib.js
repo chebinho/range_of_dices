@@ -32,6 +32,7 @@ function Soma_range(...range){
 
     // faz a soma das outras dimenções se precisar
     for(let a=2;a<dimensoes.length;a++){
+        //console.log(resul)
         resul = soma_escada(resul, range_val_1[a], range_val_2[a])
     }
 
@@ -40,6 +41,7 @@ function Soma_range(...range){
 
 function diagonalLength2D(diagonalIndex ,rows, cols) {
 
+    // faz o calulo de quantos elementos tem em uma diagonal de uma tabela
     const startRow = Math.max(0, diagonalIndex - (cols - 1));
     const endRow = Math.min(rows - 1, diagonalIndex);
     
@@ -48,20 +50,22 @@ function diagonalLength2D(diagonalIndex ,rows, cols) {
 
 function soma_escada(valores, passo, limite){
 
+    // organiza os dados
     const chaves = Object.keys(valores);
     const novo_tamanho = chaves.length + limite-1
-    let index = Number(chaves[0])+passo
+    const primeiro_val = Number(chaves[0])
+    let index = primeiro_val+passo
 
-    //console.log(chaves)
-
+    // faz a soma dos elementos no formato de uma diagonal
     let resul = {}
     for(let a=0;a<novo_tamanho;a++){
         let soma = 0
 
         for(let b=0;b<=limite-1;b++){
-            let valor = valores[a-b+passo+1]
+            let valor = valores[a-b+primeiro_val]
 
-            if ((valor !== NaN)&&(valor !== undefined)){
+            // iguinora valores indefinidos 
+            if ((!isNaN(valor))&&(valor !== undefined)){
                 soma = soma + valor
             }
         }
@@ -74,24 +78,4 @@ function soma_escada(valores, passo, limite){
 
 }
 
-
-function getDiceSums(dice) {
-    let results = { 0: 1 }; // Começamos com soma 0 com 1 forma
-
-    for (let sides of dice) {
-        let newResults = {};
-        for (let sum in results) {
-            for (let i = 1; i <= sides; i++) {
-                let newSum = parseInt(sum) + i;
-                newResults[newSum] = (newResults[newSum] || 0) + results[sum];
-                //console.log("test")
-            }
-        }
-        results = newResults;
-    }
-
-    return results;
-}
-
-console.log(getDiceSums([20,4,4]))
-console.log(Soma_range('1-100','1-100','1-100','1-100','1-100','1-100','1-100'))
+//console.log(Soma_range('1-10','1-10','1-10','1-10'))
