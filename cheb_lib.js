@@ -78,4 +78,23 @@ function soma_escada(valores, passo, limite){
 
 }
 
-//console.log(Soma_range('1-10','1-10','1-10','1-10'))
+function Soma_maiores_iguais(valores, comparador){
+
+    const chaves = Object.keys(valores);
+    let resul = 0
+
+    for(let a=0;a<chaves.length;a++){
+
+        if(Number(chaves[a]) <= comparador){
+            resul = resul + valores[chaves[a]]
+        }else{
+            return resul
+        }
+    
+    }
+
+    return resul
+}
+
+
+console.log(Soma_maiores_iguais(Soma_range('1-20','1-4'),24))
