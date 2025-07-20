@@ -48,9 +48,9 @@ function Soma_range(...range){
         }
     }
 
-    console.log(range_val_1)
-    console.log(range_val_2)
-    console.log(dimensoes)
+    //console.log(range_val_1)
+    //console.log(range_val_2)
+    //console.log(dimensoes)
 
     // retorna caso só seja passado um par de valores
     if(dimensoes.length == 1){
@@ -118,7 +118,9 @@ function soma_escada(valores, passo, limite){
 
 }
 
-function Soma_maiores_iguais(valores, comparador){
+// faz soma de todos os valores do objeto valores que são menores ou iguais que o comparador
+// o objeto deve ser formado por numero:numero
+function Soma_maiores_iguais(valores, comparador){ 
 
     const chaves = Object.keys(valores);
     let resul = 0
@@ -136,7 +138,7 @@ function Soma_maiores_iguais(valores, comparador){
     return resul
 }
 
-
+console.log(Soma_maiores_iguais(Soma_range('1-20','2d1-4'),3))
 console.log(Soma_range('1-20','1-4','1-4'))
 console.log(Soma_range('20/1','4/1','4/1'))
 console.log(Soma_range('1-20','2d1-4'))
