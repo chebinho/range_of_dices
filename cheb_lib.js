@@ -1,19 +1,54 @@
 function Soma_range(...range){
-    // recebe os valores em pares que são separados em duas variaveis
-    const Regex = /([0-9]+)[^0-9]([0-9]+)/
+
+    // recebe os valores em pares ou trios que são separados em duas variaveis
+    const Regex = /([0-9]+)[^0-9\n]+([0-9]+)([^0-9\n]+([0-9]+))?/
+
+    // $1 = valor um do range ou quantidade de dados que seram jogados
+    // $2 = valor dois ou um dependendo se o $4 existir
+    // $4 = valor dois
 
     let range_val_1 = []
     let range_val_2 = []
     let dimensoes = []
 
+    let extra = 0 //número de espaços extra necessário
+
     for(let a=0;a<range.length;a++){
-        range_val_1[a] = Number(range[a].replace(Regex, "$1"));
-        range_val_2[a] = Number(range[a].replace(Regex, "$2"));
-        dimensoes[a] = range_val_2[a] - range_val_1[a]+1
+
+        let Regex_$4 = Number(range[a].replace(Regex, "$4"));
+        let Regex_$1 = Number(range[a].replace(Regex, "$1"));
+        let Regex_$2 = Number(range[a].replace(Regex, "$2"));
+
+        if(Regex_$4 == 0){
+
+            if(Regex_$1 < Regex_$2){
+                range_val_1[a+extra] = Regex_$1
+                range_val_2[a+extra] = Regex_$2
+            }else{
+                range_val_1[a+extra] = Regex_$2
+                range_val_2[a+extra] = Regex_$1
+            }
+            dimensoes[a+extra] = range_val_2[a+extra] - range_val_1[a+extra]+1
+
+        }else{
+            for(let b=0;b<Regex_$1;b++){
+
+                if(Regex_$2 < Regex_$4){
+                    range_val_1[a+extra] = Regex_$2
+                    range_val_2[a+extra] = Regex_$4
+                }else{
+                    range_val_1[a+extra] = Regex_$4
+                    range_val_2[a+extra] = Regex_$2
+                }
+
+                dimensoes[a+extra] = range_val_2[a+extra] - range_val_1[a+extra]+1
+                extra = extra+1
+            }
+        }
     }
 
     // retorna caso só seja passado um par de valores
-    if(range.length == 1){
+    if(dimensoes.length == 1){
         let resul = {}
         for(let a=range_val_1[0];a<=range_val_2[0];a++){
             resul[a] = 1
@@ -98,3 +133,8 @@ function Soma_maiores_iguais(valores, comparador){
 
 
 console.log(Soma_maiores_iguais(Soma_range('1-20','1-4'),24))
+console.log(Soma_range('1-20','1-4','1-4'))
+console.log(Soma_range('20/1','4/1','4/1'))
+console.log(Soma_range('1-20','2d1-4'))
+
+console.log(Soma_range('100-1','100-1','100-1','1-100','100-1'))
