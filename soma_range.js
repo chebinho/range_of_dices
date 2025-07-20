@@ -138,7 +138,7 @@ function Soma_maiores_iguais(valores, comparador){
     return resul
 }
 
-console.log(Soma_maiores_iguais(Soma_range('1-20','2d1-4'),3))
-console.log(Soma_range('1-20','1-4','1-4'))
-console.log(Soma_range('20/1','4/1','4/1'))
-console.log(Soma_range('1-20','2d1-4'))
+//console.log(Soma_maiores_iguais(Soma_range('1-20','2d1-4'),3))
+//console.log(Soma_range('1-20','1-4','1-4'))
+//console.log(Soma_range('20/1','4/1','4/1'))
+//console.log(Soma_range('1-20','2d1-4'))
