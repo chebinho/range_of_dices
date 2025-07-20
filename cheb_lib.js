@@ -31,21 +31,26 @@ function Soma_range(...range){
             dimensoes[a+extra] = range_val_2[a+extra] - range_val_1[a+extra]+1
 
         }else{
-            for(let b=0;b<Regex_$1;b++){
+            let b
+            for(b=0;b<Regex_$1;b++){
 
                 if(Regex_$2 < Regex_$4){
-                    range_val_1[a+extra] = Regex_$2
-                    range_val_2[a+extra] = Regex_$4
+                    range_val_1[a+extra+b] = Regex_$2
+                    range_val_2[a+extra+b] = Regex_$4
                 }else{
-                    range_val_1[a+extra] = Regex_$4
-                    range_val_2[a+extra] = Regex_$2
+                    range_val_1[a+extra+b] = Regex_$4
+                    range_val_2[a+extra+b] = Regex_$2
                 }
 
-                dimensoes[a+extra] = range_val_2[a+extra] - range_val_1[a+extra]+1
-                extra = extra+1
+                dimensoes[a+extra+b] = range_val_2[a+extra+b] - range_val_1[a+extra+b]+1
             }
+            extra = extra+b-1
         }
     }
+
+    console.log(range_val_1)
+    console.log(range_val_2)
+    console.log(dimensoes)
 
     // retorna caso só seja passado um par de valores
     if(dimensoes.length == 1){
@@ -132,9 +137,6 @@ function Soma_maiores_iguais(valores, comparador){
 }
 
 
-console.log(Soma_maiores_iguais(Soma_range('1-20','1-4'),24))
 console.log(Soma_range('1-20','1-4','1-4'))
 console.log(Soma_range('20/1','4/1','4/1'))
 console.log(Soma_range('1-20','2d1-4'))
-
-console.log(Soma_range('100-1','100-1','100-1','1-100','100-1'))
