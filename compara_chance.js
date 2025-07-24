@@ -6,6 +6,7 @@ function compara_chance(dados_p1=[], bonus_p1=0, dados_p2=[], bonus_p2=0){
         let resul = {
             lados_max:[],
             lados_min:[],
+            dimensoes:[],
             valor_min:bonus,
             valor_max:bonus
         }
@@ -33,6 +34,7 @@ function compara_chance(dados_p1=[], bonus_p1=0, dados_p2=[], bonus_p2=0){
 
                 resul.valor_min += resul.lados_min[a+extra]
                 resul.valor_max += resul.lados_max[a+extra]
+                resul.dimensoes[a+extra] = resul.lados_max[a+extra] - resul.lados_min[a+extra]+1
 
             }else{
                 let b
@@ -48,6 +50,7 @@ function compara_chance(dados_p1=[], bonus_p1=0, dados_p2=[], bonus_p2=0){
 
                     resul.valor_min += resul.lados_min[a+extra+b]
                     resul.valor_max += resul.lados_max[a+extra+b]
+                    resul.dimensoes[a+extra+b] = resul.lados_max[a+extra+b] - resul.lados_min[a+extra+b]+1
                 }
                 extra = extra+b-1
             }
@@ -56,21 +59,59 @@ function compara_chance(dados_p1=[], bonus_p1=0, dados_p2=[], bonus_p2=0){
         return resul
     }
 
-    let valores_p1 = organiza_dados(dados_p1,bonus_p1)
-    let valores_p2 = organiza_dados(dados_p2,bonus_p2)
-
-    console.log(valores_p1)
-    console.log(valores_p2)
-    
-    let result = {
+    // guarda os resultados
+    let resul = {
         empate:0,
         possibilidades_p1:0,
         possibilidades_p2:0
     }
 
-    return result
+    let valores_p1 = organiza_dados(dados_p1,bonus_p1)
+    let valores_p2 = organiza_dados(dados_p2,bonus_p2)
+    
+
+    let empate_min = menor_maior(valores_p1.lados_min, valores_p2.lados_min, false)
+    let empate_max = menor_maior(valores_p1.lados_max, valores_p2.lados_max, true)
+
+
+
+
+
+    console.log(valores_p1)
+    console.log(valores_p2)
+
+    console.log(empate_min)
+    console.log(empate_max)
+
+
+    return resul
+}
+
+function menor_maior(val_1=0,val_2=0,menor=true){
+    if(menor){
+        if(val_1 > val_2){
+            return val_2
+        }else{
+            return val_1
+        }
+    }else{
+        if(val_1 < val_2){
+            return val_2
+        }else{
+            return val_1
+        }
+    }
 }
 
 function Soma_Gauss(val_ini=0,val_final=0){
     return ((val_final-val_ini+1)*(val_ini+val_final)/2)
+}
+
+function diagonalLength2D(diagonalIndex ,rows, cols) {
+
+    // faz o calulo de quantos elementos tem em uma diagonal de uma tabela
+    const startRow = Math.max(0, diagonalIndex - (cols - 1));
+    const endRow = Math.min(rows - 1, diagonalIndex);
+    
+    return endRow - startRow + 1;
 }
