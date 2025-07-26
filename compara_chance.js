@@ -4,6 +4,7 @@ function compara_chance(dados_p1=[], bonus_p1=0, dados_p2=[], bonus_p2=0){
     function organiza_dados(dados=[],bonus=0){
 
         let resul = {
+            bonus:bonus,
             lados_max:[],
             lados_min:[],
             dimensoes:[],
@@ -66,23 +67,24 @@ function compara_chance(dados_p1=[], bonus_p1=0, dados_p2=[], bonus_p2=0){
         possibilidades_p2:0
     }
 
+    // cria uma classe para os dados do dois jogadores
     let valores_p1 = organiza_dados(dados_p1,bonus_p1)
     let valores_p2 = organiza_dados(dados_p2,bonus_p2)
-    
 
     let empate_min = menor_maior(valores_p1.lados_min, valores_p2.lados_min, false)
     let empate_max = menor_maior(valores_p1.lados_max, valores_p2.lados_max, true)
+    let valor_empate = empate_max - empate_min+1
 
+    let test = (valores_p1.dimensoes * valores_p2.dimensoes - valor_empate)/2
 
+    resul.empate += valor_empate
+    resul.possibilidades_p1 += test
+    resul.possibilidades_p2 += test
 
 
 
     console.log(valores_p1)
     console.log(valores_p2)
-
-    console.log(empate_min)
-    console.log(empate_max)
-
 
     return resul
 }
