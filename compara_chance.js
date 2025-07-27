@@ -71,6 +71,71 @@ function compara_chance(dados_p1=[], bonus_p1=0, dados_p2=[], bonus_p2=0){
     let valores_p1 = organiza_dados(dados_p1,bonus_p1)
     let valores_p2 = organiza_dados(dados_p2,bonus_p2)
 
+    function compara_pares(dimensoes_p1, dimensoes_p2, min_p1, min_p2, max_p1, max_p2){
+
+        let menor_dimen = 0
+        let troca = {
+            p1:1,
+            p2:1
+        }
+
+        if(dimensoes_p1<dimensoes_p2){
+            menor_dimen = dimensoes_p1
+            troca.p2 = -1
+        }else{
+            menor_dimen = dimensoes_p2
+            troca.p1 = -1
+        }
+
+        let contagem_p1 = 0
+        let contagem_p2 = 0
+        let empate = 0
+
+        if((min_p1-min_p2)>=dimensoes_p1){
+            contagem_p1 = dimensoes_p1
+        }else{
+            contagem_p1 = (min_p2-min_p1) * troca.p1
+        }
+
+        if((max_p1-max_p2)>=dimensoes_p2){
+            contagem_p2 = dimensoes_p2
+        }else{
+            contagem_p2 = (max_p1-max_p2) * troca.p2
+        }
+
+        //contagem_p1 = menor_dimen * (contagem_p1<0 ? 0 : contagem_p1) 
+        //contagem_p2 = menor_dimen * (contagem_p2<0 ? 0 : contagem_p2)
+
+        console.log(menor_dimen)
+
+        console.log(" - - - - - - - - - - - - ")
+        
+        console.log(dimensoes_p1)
+        console.log(dimensoes_p2)
+
+        console.log(" - - - - - - - - - - - - ")
+
+        console.log(contagem_p1)
+        console.log(contagem_p2)
+
+        let resul = {
+            p1:contagem_p1,
+            p2:contagem_p2,
+            empate:empate
+        }
+
+        return resul
+    }
+
+    compara_pares(
+        valores_p1.dimensoes[0], 
+        valores_p2.dimensoes[0], 
+        valores_p1.lados_min[0], 
+        valores_p2.lados_min[0],
+        valores_p1.lados_max[0],
+        valores_p2.lados_max[0],
+    )
+
     let empate_min = menor_maior(valores_p1.lados_min, valores_p2.lados_min, false)
     let empate_max = menor_maior(valores_p1.lados_max, valores_p2.lados_max, true)
     let valor_empate = empate_max - empate_min+1
