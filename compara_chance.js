@@ -13,7 +13,7 @@ function compara_chance(dados_p1=[], bonus_p1=0, dados_p2=[], bonus_p2=0){
         }
 
         // recebe os valores em pares ou trios que são separados em duas variaveis
-        const Regex = /([0-9]+)[^0-9\n]+([0-9]+)([^0-9\n]+([0-9]+))?/
+        const Regex = /(-?[0-9]+)[^0-9\n-]+(-?[0-9]+)([^0-9\n-]+(-?[0-9]+))?/
 
         let extra = 0
 
@@ -74,17 +74,11 @@ function compara_chance(dados_p1=[], bonus_p1=0, dados_p2=[], bonus_p2=0){
     function compara_pares(dimensoes_p1, dimensoes_p2, min_p1, min_p2, max_p1, max_p2){
 
         let menor_dimen = 0
-        let troca = {
-            p1:1,
-            p2:1
-        }
 
         if(dimensoes_p1<dimensoes_p2){
             menor_dimen = dimensoes_p1
-            troca.p2 = -1
         }else{
             menor_dimen = dimensoes_p2
-            troca.p1 = -1
         }
 
         let contagem_p1 = 0
@@ -94,17 +88,20 @@ function compara_chance(dados_p1=[], bonus_p1=0, dados_p2=[], bonus_p2=0){
         if((min_p1-min_p2)>=dimensoes_p1){
             contagem_p1 = dimensoes_p1
         }else{
-            contagem_p1 = (min_p2-min_p1) * troca.p1
+            contagem_p1 = (min_p2-min_p1)
         }
 
         if((max_p1-max_p2)>=dimensoes_p2){
             contagem_p2 = dimensoes_p2
         }else{
-            contagem_p2 = (max_p1-max_p2) * troca.p2
+            contagem_p2 = (max_p1-max_p2)
         }
 
-        //contagem_p1 = menor_dimen * (contagem_p1<0 ? 0 : contagem_p1) 
-        //contagem_p2 = menor_dimen * (contagem_p2<0 ? 0 : contagem_p2)
+        //contagem_p1 = menor_dimen * (contagem_p1<0 ? 1 : contagem_p1) 
+        //contagem_p2 = menor_dimen * (contagem_p2<0 ? 1 : contagem_p2)
+
+        
+        console.log(" - - - - - - - - - - - - ")
 
         console.log(menor_dimen)
 
@@ -170,8 +167,8 @@ function menor_maior(val_1=0,val_2=0,menor=true){
     }
 }
 
-function Soma_Gauss(val_ini=0,val_final=0){
-    return ((val_final-val_ini+1)*(val_ini+val_final)/2)
+function Soma_Gauss(valor=0){
+    return (valor*(valor+1)/2)
 }
 
 function diagonalLength2D(diagonalIndex ,rows, cols) {
