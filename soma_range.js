@@ -1,6 +1,6 @@
 function Soma_Range(...range){
     // recebe os valores em pares ou trios que são separados em duas variaveis
-    const Regex = /([0-9]+)[^0-9\n]+([0-9]+)([^0-9\n]+([0-9]+))?/
+    const Regex = /(-?[0-9]+)[^0-9\n-]+(-?[0-9]+)([^0-9\n-]+(-?[0-9]+))?/
 
     // $1 = valor um do range ou quantidade de dados que seram jogados
     // $2 = valor dois ou um dependendo se o $4 existir
@@ -68,20 +68,23 @@ function Soma_Range(...range){
 }
 
 // faz a soma de elementos em um formato de escada 
-function soma_escada(valores, passo, limite){
+// valores = objeto com as possibilidades de cada valor
+// passo = valor minimo do range
+// limite = valor maximo do range
+function soma_escada(valores, range_min, range_max){
 
     // organiza os dados
     const chaves = Object.keys(valores);
-    const novo_tamanho = chaves.length + limite-1
+    const novo_tamanho = chaves.length + range_max-1
     const primeiro_val = Number(chaves[0])
-    let index = primeiro_val+passo
+    let index = primeiro_val+range_min
 
     // faz a soma dos elementos no formato de uma diagonal
     let resul = {}
     for(let a=0;a<novo_tamanho;a++){
         let soma = 0
 
-        for(let b=0;b<=limite-1;b++){
+        for(let b=0;b<=range_max-1;b++){
             let valor = valores[a-b+primeiro_val]
 
             // iguinora valores indefinidos 
@@ -95,7 +98,6 @@ function soma_escada(valores, passo, limite){
     }
 
     return resul
-
 }
 
 // faz soma de todos os valores do objeto valores que são menores ou iguais que o comparador
@@ -124,20 +126,20 @@ function Soma_maiores_iguais(valores, comparador){
 //console.log(Soma_range('1-20','2d1-4'))
 
 
-function calulo_escada(valores, passo, limite, sinal_positivo=true){
+function calulo_escada(valores, range_min, range_max, sentido=true){
 
     // organiza os dados
     const chaves = Object.keys(valores);
-    const novo_tamanho = chaves.length + limite-1
+    const novo_tamanho = chaves.length + range_max-1
     const primeiro_val = Number(chaves[0])
-    let index = primeiro_val+passo
+    let index = primeiro_val+range_min
 
     // faz a soma dos elementos no formato de uma diagonal
     let resul = {}
     for(let a=0;a<novo_tamanho;a++){
         let soma = 0
 
-        for(let b=0;b<=limite-1;b++){
+        for(let b=0;b<=range_max-1;b++){
             let valor = valores[a-b+primeiro_val]
 
             // iguinora valores indefinidos 
