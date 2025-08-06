@@ -47,20 +47,16 @@ function Soma_Range(...range){
         }
     }
 
-    //console.log(range_val_1)
-    //console.log(range_val_2)
-    //console.log(dimensoes)
-
-    // retorna caso só seja passado um par de valores
-    let resul = {}
+    // cria o primeiro range de possibilidades 
+    let resul = []
     for(let a=range_val_1[0];a<=range_val_2[0];a++){
-        resul[a] = 1
+        resul.push([a, 1]);
     }
     
-    // faz a soma das outras dimenções se precisar
+    // acresenta as outras dimenções para o range se precisar
     for(let a=1;a<dimensoes.length;a++){
         //console.log(resul)
-        resul = soma_escada(resul, range_val_1[a], range_val_2[a])
+        resul = calulo_escada2(resul, range_val_1[a], range_val_2[a])
     }
 
     return resul
@@ -140,11 +136,10 @@ function calulo_escada(valores, range_min, range_max){
     let primeiro_val = Number(chaves[0])
     let index = primeiro_val+range_min
 
-    console.log(chaves)
-    console.log(novo_tamanho)
-    console.log(primeiro_val)
-    console.log(index)
-
+    //console.log(chaves)
+    //console.log(novo_tamanho)
+    //console.log(primeiro_val)
+    //console.log(index)
 
     // faz a soma dos elementos no formato de uma diagonal
     let resul = {}
@@ -167,69 +162,75 @@ function calulo_escada(valores, range_min, range_max){
     return resul
 }
 
-function Combina_Ranges(obj_1 = {},obj_2 = {}){
+function calulo_escada2(valores, range_min, range_max) {
+    if(range_min>range_max){
+        let a = range_min
+        range_min = range_max
+        range_max = a
+    }
 
+    // separa os dados prinipais
+    const range_val_2 = range_max-range_min+1
+    const novo_tamanho = valores.length + range_val_2-1
+    let primeiro_val = valores[0][0]
+    let index = primeiro_val+range_min
+
+    // faz a soma dos elementos no formato de uma diagonal
+    let resul = []
+
+    for(let a=0;a<novo_tamanho;a++){
+        let soma = 0
+
+        const val_limite_1 = (resul.length+1)>=range_val_2? range_val_2 : resul.length+1
+        const val_limite_2 = (valores.length-resul.length)> 0 ? 0 : resul.length-valores.length+1
+        const limite = val_limite_1 - val_limite_2 
+
+        console.log(limite)
+
+        for(let b=0;b<limite;b++){
+            soma += valores[b][1]
+            //console.log(soma)
+        }
+        //console.log("===================================================")
+
+        resul.push([index,soma])
+        index = index+1
+    }
+    console.log("===================================================")
+
+    return resul
 }
 
+let test = [
+    [1, 1],
+    [2, 1],
+    [3, 1],
+    [4, 1],
+    [5, 1],
+    [6, 1],
+    [7, 1],
+    [8, 1],
+    [9, 1],
+    [10, 1],
+    [11, 1],
+    [12, 1],
+    [13, 1],
+    [14, 1],
+    [15, 1],
+    [16, 1],
+    [17, 1],
+    [18, 1],
+    [19, 1],
+    [20, 1]
+];
 
-
-let test = {
-    "1": 1,
-    "2": 1,
-    "3": 1,
-    "4": 1,
-    "5": 1,
-    "6": 1,
-    "7": 1,
-    "8": 1,
-    "9": 1,
-    "10": 1,
-    "11": 1,
-    "12": 1,
-    "13": 1,
-    "14": 1,
-    "15": 1,
-    "16": 1,
-    "17": 1,
-    "18": 1,
-    "19": 1,
-    "20": 1
-}
-
-let test2 = {
-    "-9": 1,
-    "-8": 2,
-    "-7": 3,
-    "-6": 4,
-    "-5": 5,
-    "-4": 6,
-    "-3": 7,
-    "-2": 8,
-    "-1": 9,
-    "0": 10,
-    "1": 10,
-    "2": 10,
-    "3": 10,
-    "4": 10,
-    "5": 10,
-    "6": 10,
-    "7": 10,
-    "8": 10,
-    "9": 10,
-    "10": 10,
-    "11": 9,
-    "12": 8,
-    "13": 7,
-    "14": 6,
-    "15": 5,
-    "16": 4,
-    "17": 3,
-    "18": 2,
-    "19": 1
-}
-
-console.log( calulo_escada(test, -1, -10) )
+let test2 = calulo_escada2(test, -1, -10)
 console.log(" - - - - - - - - - - - - - ")
-console.log( calulo_escada(test2 , -1, -10) )
+let test3 = calulo_escada2(test2, -1, -10)
 console.log(" - - - - - - - - - - - - - ")
-console.log( calulo_escada(test, 1, 10) )
+
+console.log(test2)
+console.log(" - - - - - - - - - - - - - ")
+console.log(test3)
+console.log(" - - - - - - - - - - - - - ")
+console.log(calulo_escada2(calulo_escada2(test, 1, 10),1,10))
