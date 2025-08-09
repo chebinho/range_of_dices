@@ -177,26 +177,30 @@ function calulo_escada2(valores, range_min, range_max) {
 
     // faz a soma dos elementos no formato de uma diagonal
     let resul = []
+    let acrescimo = 0
 
     for(let a=0;a<novo_tamanho;a++){
         let soma = 0
 
         const val_limite_1 = (resul.length+1)>=range_val_2? range_val_2 : resul.length+1
         const val_limite_2 = (valores.length-resul.length)> 0 ? 0 : resul.length-valores.length+1
-        const limite = val_limite_1 - val_limite_2 
+        const limite = val_limite_1 - val_limite_2 // o limite é o maximo de somas por valor
+        //console.log(limite)
 
-        console.log(limite)
+        if(a>range_val_2-1){
+            acrescimo += 1
+        }else if(acrescimo>0){
+            acrescimo -= 1
+        }
 
         for(let b=0;b<limite;b++){
-            soma += valores[b][1]
-            //console.log(soma)
+            soma += valores[b+acrescimo][1]
+            //console.log(b+acrescimo)
         }
-        //console.log("===================================================")
 
         resul.push([index,soma])
         index = index+1
     }
-    console.log("===================================================")
 
     return resul
 }
@@ -232,5 +236,3 @@ console.log(" - - - - - - - - - - - - - ")
 console.log(test2)
 console.log(" - - - - - - - - - - - - - ")
 console.log(test3)
-console.log(" - - - - - - - - - - - - - ")
-console.log(calulo_escada2(calulo_escada2(test, 1, 10),1,10))
