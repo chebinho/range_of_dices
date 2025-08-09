@@ -56,11 +56,10 @@ function Soma_Range(...range){
     // acresenta as outras dimenções para o range se precisar
     for(let a=1;a<dimensoes.length;a++){
         //console.log(resul)
-        resul = calulo_escada2(resul, range_val_1[a], range_val_2[a])
+        resul = calulo_escada(resul, range_val_1[a], range_val_2[a])
     }
 
     return resul
-
 }
 
 // faz a soma de elementos em um formato de escada 
@@ -121,48 +120,7 @@ function Soma_maiores_iguais(valores, comparador){
 //console.log(Soma_range('20/1','4/1','4/1'))
 //console.log(Soma_range('1-20','2d1-4'))
 
-function calulo_escada(valores, range_min, range_max){
-
-    if(range_min>range_max){
-        let a = range_min
-        range_min = range_max
-        range_max = a
-    }
-
-    // organiza os dados
-    const range_val_2 = range_max-range_min+1
-    const chaves = Object.keys(valores);
-    const novo_tamanho = chaves.length + range_val_2-1
-    let primeiro_val = Number(chaves[0])
-    let index = primeiro_val+range_min
-
-    //console.log(chaves)
-    //console.log(novo_tamanho)
-    //console.log(primeiro_val)
-    //console.log(index)
-
-    // faz a soma dos elementos no formato de uma diagonal
-    let resul = {}
-    for(let a=0;a<novo_tamanho;a++){
-        let soma = 0
-
-        for(let b=0;b<=range_val_2-1;b++){
-            let valor = valores[a-b+primeiro_val]
-
-            // iguinora valores indefinidos 
-            if ((!isNaN(valor))&&(valor !== undefined)){
-                soma = soma + valor
-            }
-        }
-
-        resul[index] = soma
-        index = index+1
-    }
-
-    return resul
-}
-
-function calulo_escada2(valores, range_min, range_max) {
+function calulo_escada(valores, range_min, range_max) {
     if(range_min>range_max){
         let a = range_min
         range_min = range_max
@@ -204,35 +162,3 @@ function calulo_escada2(valores, range_min, range_max) {
 
     return resul
 }
-
-let test = [
-    [1, 1],
-    [2, 1],
-    [3, 1],
-    [4, 1],
-    [5, 1],
-    [6, 1],
-    [7, 1],
-    [8, 1],
-    [9, 1],
-    [10, 1],
-    [11, 1],
-    [12, 1],
-    [13, 1],
-    [14, 1],
-    [15, 1],
-    [16, 1],
-    [17, 1],
-    [18, 1],
-    [19, 1],
-    [20, 1]
-];
-
-let test2 = calulo_escada2(test, -1, -10)
-console.log(" - - - - - - - - - - - - - ")
-let test3 = calulo_escada2(test2, -1, -10)
-console.log(" - - - - - - - - - - - - - ")
-
-console.log(test2)
-console.log(" - - - - - - - - - - - - - ")
-console.log(test3)
