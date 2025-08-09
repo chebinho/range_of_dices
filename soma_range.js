@@ -62,50 +62,15 @@ function Soma_Range(...range){
     return resul
 }
 
-// faz a soma de elementos em um formato de escada 
-// valores = objeto com as possibilidades de cada valor
-// passo = valor minimo do range
-// limite = valor maximo do range
-function soma_escada(valores, range_min, range_max){
-
-    // organiza os dados
-    const chaves = Object.keys(valores);
-    const novo_tamanho = chaves.length + range_max-1
-    const primeiro_val = Number(chaves[0])
-    let index = primeiro_val+range_min
-
-    // faz a soma dos elementos no formato de uma diagonal
-    let resul = {}
-    for(let a=0;a<novo_tamanho;a++){
-        let soma = 0
-
-        for(let b=0;b<=range_max-1;b++){
-            let valor = valores[a-b+primeiro_val]
-
-            // iguinora valores indefinidos 
-            if ((!isNaN(valor))&&(valor !== undefined)){
-                soma = soma + valor
-            }
-        }
-
-        resul[index] = soma
-        index = index+1
-    }
-
-    return resul
-}
-
 // faz soma de todos os valores do objeto valores que são menores ou iguais que o comparador
 // o objeto deve ser formado por numero:numero
 function Soma_maiores_iguais(valores, comparador){ 
-
-    const chaves = Object.keys(valores);
     let resul = 0
 
-    for(let a=0;a<chaves.length;a++){
+    for(let a=0;a<valores.length;a++){
 
-        if(Number(chaves[a]) <= comparador){
-            resul = resul + valores[chaves[a]]
+        if(valores[a][0] <= comparador){
+            resul = resul + valores[a][1]
         }else{
             return resul
         }
@@ -115,11 +80,10 @@ function Soma_maiores_iguais(valores, comparador){
     return resul
 }
 
-//console.log(Soma_maiores_iguais(Soma_range('1-20','2d1-4'),3))
-//console.log(Soma_range('1-20','1-4','1-4'))
-//console.log(Soma_range('20/1','4/1','4/1'))
-//console.log(Soma_range('1-20','2d1-4'))
-
+// faz a soma de elementos em um formato de escada 
+// valores = objeto com as possibilidades de cada valor
+// passo = valor minimo do range
+// limite = valor maximo do range
 function calulo_escada(valores, range_min, range_max) {
     if(range_min>range_max){
         let a = range_min
@@ -162,3 +126,8 @@ function calulo_escada(valores, range_min, range_max) {
 
     return resul
 }
+
+//console.log(Soma_maiores_iguais(Soma_Range('2d1_20'),2))
+//console.log(calulo_escada('1_20','1_4','1_4'))
+//console.log(calulo_escada('20/1','4/1','4/1'))
+//console.log(calulo_escada('1_20','2d1_4'))
