@@ -1,4 +1,4 @@
-function Soma_Range(...range){
+function Calculo_em_Range(...range){
     // recebe os valores em pares ou trios que são separados em duas variaveis
     const Regex = /(-?[0-9]+)[^0-9\n-]+(-?[0-9]+)([^0-9\n-]+(-?[0-9]+))?/
 
@@ -62,24 +62,6 @@ function Soma_Range(...range){
     return resul
 }
 
-// faz soma de todos os valores do objeto valores que são menores ou iguais que o comparador
-// o objeto deve ser formado por numero:numero
-function Soma_maiores_iguais(valores, comparador){ 
-    let resul = 0
-
-    for(let a=0;a<valores.length;a++){
-
-        if(valores[a][0] <= comparador){
-            resul = resul + valores[a][1]
-        }else{
-            return resul
-        }
-    
-    }
-
-    return resul
-}
-
 // faz a soma de elementos em um formato de escada 
 // valores = objeto com as possibilidades de cada valor
 // passo = valor minimo do range
@@ -127,7 +109,56 @@ function calulo_escada(valores, range_min, range_max) {
     return resul
 }
 
-//console.log(Soma_maiores_iguais(Soma_Range('2d1_20'),2))
+// =======================================================================================
+
+// faz soma de todos os valores do objeto valores que são menores ou iguais que o comparador
+// o objeto deve ser formado por numero:numero
+function Soma_maiores_iguais(valores, comparador){ 
+    let resul = 0
+
+    for(let a=0;a<valores.length;a++){
+
+        if(valores[a][0] <= comparador){
+            resul = resul + valores[a][1]
+        }else{
+            return resul
+        }
+    
+    }
+
+    return resul
+}
+
+// faz as somas dos valores dependendo do sinal atribuido para a posibilidade
+function Soma_Sinais_Iguais(valores=[[]]){
+
+    let resul = {
+        negativos:0,
+        positivos:0,
+        zeros:0,
+        total:0
+    }
+
+    for(let a=0;a<valores.length;a++){
+        if(valores[a][0]<0){
+            resul.negativos += valores[a][1]
+
+        }else if(valores[a][0]==0){
+            resul.zeros += valores[a][1]
+
+        }else{
+            resul.positivos += valores[a][1]
+
+        }
+    }
+
+    resul.total = resul.negativos + resul.zeros + resul.positivos
+
+    return resul
+}
+
+//console.log(Separa_sinal(Calculo_em_Range('1d20_1', '1d4/1', '1d-20/-1')))
+//console.log(Soma_maiores_iguais(Calculo_em_Range('2d1_20'),2))
 //console.log(calulo_escada('1_20','1_4','1_4'))
 //console.log(calulo_escada('20/1','4/1','4/1'))
 //console.log(calulo_escada('1_20','2d1_4'))
