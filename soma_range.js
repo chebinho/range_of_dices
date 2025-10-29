@@ -157,6 +157,41 @@ function Soma_Sinais_Iguais(valores=[[]]){
     return resul
 }
 
+// faz a somados dos valores dos arrey
+function Resul_mais_Resul(resul_1 = [[]], resul_2 = [[]]){
+
+    console.log(resul_1)
+    console.log(resul_2)
+
+    if( (Array.isArray(resul_1) || (Array.isArray(resul_2))) == false ){
+        console.log("erro")
+        return null
+    }
+
+    let resul_soma = [[]]
+
+    // calculo para determinar o tamanho da sequencia
+    let t1 = resul_1.length-1
+    let t2 = resul_2.length-1
+
+    let menor_val = (resul_1[0][0] < resul_2[0][0]) ? resul_1[0][0] : resul_2[0][0]
+    let maior_val = (resul_1[t1][0] > resul_2[t2][0]) ? resul_1[t1][0] : resul_2[t2][0]
+
+    let sequencia = maior_val-menor_val+1
+    
+    for(let a=0; a<sequencia; a++){
+
+        console.log(a)
+
+    }
+
+
+}
+
+Resul_mais_Resul(Calculo_em_Range("1d10_1"),Calculo_em_Range("1d11_2"))
+
+
+
 //console.log(Separa_sinal(Calculo_em_Range('1d20_1', '1d4/1', '1d-20/-1')))
 //console.log(Soma_maiores_iguais(Calculo_em_Range('2d1_20'),2))
 //console.log(calulo_escada('1_20','1_4','1_4'))
