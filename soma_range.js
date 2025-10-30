@@ -109,7 +109,7 @@ function calulo_escada(valores, range_min, range_max) {
     return resul
 }
 
-// =======================================================================================
+// busca dado dos array =======================================================================================
 
 // faz soma de todos os valores do objeto valores que são menores ou iguais que o comparador
 // o objeto deve ser formado por numero:numero
@@ -157,38 +157,84 @@ function Soma_Sinais_Iguais(valores=[[]]){
     return resul
 }
 
-// faz a somados dos valores dos arrey
-function Resul_mais_Resul(resul_1 = [[]], resul_2 = [[]]){
+// edita os dados dos arrays =======================================================================================
 
-    console.log(resul_1)
-    console.log(resul_2)
+// executa um calculo os valores de dois arrays 
+function Resul_X_Resul(resul_1 = [[]], sinal="+",resul_2 = [[]]){
 
+    // valida se os dados recebidos estão corretos, se não retorna um erro
     if( (Array.isArray(resul_1) || (Array.isArray(resul_2))) == false ){
         console.log("erro")
         return null
     }
 
-    let resul_soma = [[]]
-
-    // calculo para determinar o tamanho da sequencia
-    let t1 = resul_1.length-1
-    let t2 = resul_2.length-1
-
-    let menor_val = (resul_1[0][0] < resul_2[0][0]) ? resul_1[0][0] : resul_2[0][0]
-    let maior_val = (resul_1[t1][0] > resul_2[t2][0]) ? resul_1[t1][0] : resul_2[t2][0]
-
-    let sequencia = maior_val-menor_val+1
+    // variavel que armazenara o resultado final
+    let resul_final = [[]]
     
-    for(let a=0; a<sequencia; a++){
+    // verifica se existe a necessidade fazer o calculo para cada celula
+    // se não ouver necesidade os dados são unidos na sequencia do menor para o maior
+    if(resul_1[0][0] > resul_2[resul_2.length-1][0]){
+        resul_final = resul_2.concat(resul_1)
+        return resul_final
+        
+    }else if(resul_2[0][0] > resul_1[resul_1.length-1][0]){
+        resul_final = resul_1.concat(resul_2)
+        return resul_final
+    }else{
 
-        console.log(a)
+        // código que faz o calculo nas partes necessarias
+        let limi1 = resul_1.length-1
+        let limi2 = resul_2.length-1
+        let menor_val = (resul_1[0][0] < resul_2[0][0]) ? resul_1[0][0] : resul_2[0][0]
+        let maior_val = (resul_1[limi1][0] > resul_2[limi2][0]) ? resul_1[limi1][0] : resul_2[limi2][0]
 
+        let index_resul = 0
+        let index_resul_1 = 0
+        let index_resul_2 = 0
+
+        for(let a=menor_val; a<=maior_val; a++){
+
+            let valor = 0
+
+            let test_resul_1 = index_resul_1<(limi1+1) ? (resul_1[index_resul_1][0] == a) : false
+            let test_resul_2 = index_resul_2<(limi2+1) ? (resul_2[index_resul_2][0] == a) : false
+
+            //console.log(index_resul_1+" - "+index_resul_2)
+            //console.log((index_resul_1<(limi1+1)) +" - "+ (index_resul_2<(limi2+1)))
+            //console.log(resul_1[index_resul_1][0] +" - "+ resul_2[index_resul_2][0])
+
+            if(test_resul_1 == true){
+                if(test_resul_2 == true){
+                    valor = eval(resul_1[index_resul_1][1]+sinal+resul_2[index_resul_2][1])
+                    resul_final[index_resul] = [a,valor]
+
+                    index_resul_1 += 1
+                    index_resul_2 += 1
+                    index_resul += 1
+
+                }else{
+                    valor = resul_1[index_resul_1][1]
+                    resul_final[index_resul] = [a,valor]
+
+                    index_resul_1 += 1
+                    index_resul += 1
+                }
+            }else{
+                if(test_resul_2 == true){
+                    valor = resul_2[index_resul_2][1]
+                    resul_final[index_resul] = [a,valor]
+
+                    index_resul_2 += 1
+                    index_resul += 1
+                }
+            }
+            //console.log(a+") "+test_resul_1 +" - "+ test_resul_2)
+        }
+        return resul_final
     }
-
-
 }
 
-Resul_mais_Resul(Calculo_em_Range("1d10_1"),Calculo_em_Range("1d11_2"))
+console.log( Resul_X_Resul(Calculo_em_Range("1d10_1"),"+",Calculo_em_Range("3d5_3")) )
 
 
 
