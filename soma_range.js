@@ -160,10 +160,10 @@ function Soma_Sinais_Iguais(valores=[[]]){
 // edita os dados dos arrays =======================================================================================
 
 // executa um calculo os valores de dois arrays 
-function Resul_X_Resul(resul_1 = [[]], sinal="+",resul_2 = [[]]){
+function Range_X_Range(Range_1 = [[]], sinal="+",Range_2 = [[]]){
 
     // valida se os dados recebidos estão corretos, se não retorna um erro
-    if( (Array.isArray(resul_1) || (Array.isArray(resul_2))) == false ){
+    if( (Array.isArray(Range_1) || (Array.isArray(Range_2))) == false ){
         console.log("erro")
         return null
     }
@@ -173,68 +173,68 @@ function Resul_X_Resul(resul_1 = [[]], sinal="+",resul_2 = [[]]){
     
     // verifica se existe a necessidade fazer o calculo para cada celula
     // se não ouver necesidade os dados são unidos na sequencia do menor para o maior
-    if(resul_1[0][0] > resul_2[resul_2.length-1][0]){
-        resul_final = resul_2.concat(resul_1)
+    if(Range_1[0][0] > Range_2[Range_2.length-1][0]){
+        resul_final = Range_2.concat(Range_1)
         return resul_final
         
-    }else if(resul_2[0][0] > resul_1[resul_1.length-1][0]){
-        resul_final = resul_1.concat(resul_2)
+    }else if(Range_2[0][0] > Range_1[Range_1.length-1][0]){
+        resul_final = Range_1.concat(Range_2)
         return resul_final
     }else{
 
         // código que faz o calculo nas partes necessarias
-        let limi1 = resul_1.length-1
-        let limi2 = resul_2.length-1
-        let menor_val = (resul_1[0][0] < resul_2[0][0]) ? resul_1[0][0] : resul_2[0][0]
-        let maior_val = (resul_1[limi1][0] > resul_2[limi2][0]) ? resul_1[limi1][0] : resul_2[limi2][0]
+        let limi1 = Range_1.length-1
+        let limi2 = Range_2.length-1
+        let menor_val = (Range_1[0][0] < Range_2[0][0]) ? Range_1[0][0] : Range_2[0][0]
+        let maior_val = (Range_1[limi1][0] > Range_2[limi2][0]) ? Range_1[limi1][0] : Range_2[limi2][0]
 
         let index_resul = 0
-        let index_resul_1 = 0
-        let index_resul_2 = 0
+        let index_Range_1 = 0
+        let index_Range_2 = 0
 
         for(let a=menor_val; a<=maior_val; a++){
 
             let valor = 0
 
-            let test_resul_1 = index_resul_1<(limi1+1) ? (resul_1[index_resul_1][0] == a) : false
-            let test_resul_2 = index_resul_2<(limi2+1) ? (resul_2[index_resul_2][0] == a) : false
+            let test_Range_1 = index_Range_1<(limi1+1) ? (Range_1[index_Range_1][0] == a) : false
+            let test_Range_2 = index_Range_2<(limi2+1) ? (Range_2[index_Range_2][0] == a) : false
 
-            //console.log(index_resul_1+" - "+index_resul_2)
-            //console.log((index_resul_1<(limi1+1)) +" - "+ (index_resul_2<(limi2+1)))
-            //console.log(resul_1[index_resul_1][0] +" - "+ resul_2[index_resul_2][0])
+            //console.log(index_Range_1+" - "+index_Range_2)
+            //console.log((index_Range_1<(limi1+1)) +" - "+ (index_Range_2<(limi2+1)))
+            //console.log(Range_1[index_Range_1][0] +" - "+ Range_2[index_Range_2][0])
 
-            if(test_resul_1 == true){
-                if(test_resul_2 == true){
-                    valor = eval(resul_1[index_resul_1][1]+sinal+resul_2[index_resul_2][1])
+            if(test_Range_1 == true){
+                if(test_Range_2 == true){
+                    valor = eval(Range_1[index_Range_1][1]+sinal+Range_2[index_Range_2][1])
                     resul_final[index_resul] = [a,valor]
 
-                    index_resul_1 += 1
-                    index_resul_2 += 1
+                    index_Range_1 += 1
+                    index_Range_2 += 1
                     index_resul += 1
 
                 }else{
-                    valor = resul_1[index_resul_1][1]
+                    valor = Range_1[index_Range_1][1]
                     resul_final[index_resul] = [a,valor]
 
-                    index_resul_1 += 1
+                    index_Range_1 += 1
                     index_resul += 1
                 }
             }else{
-                if(test_resul_2 == true){
-                    valor = resul_2[index_resul_2][1]
+                if(test_Range_2 == true){
+                    valor = Range_2[index_Range_2][1]
                     resul_final[index_resul] = [a,valor]
 
-                    index_resul_2 += 1
+                    index_Range_2 += 1
                     index_resul += 1
                 }
             }
-            //console.log(a+") "+test_resul_1 +" - "+ test_resul_2)
+            //console.log(a+") "+test_Range_1 +" - "+ test_Range_2)
         }
         return resul_final
     }
 }
 
-console.log( Resul_X_Resul(Calculo_em_Range("1d10_1"),"+",Calculo_em_Range("3d5_3")) )
+console.log( Range_X_Range(Calculo_em_Range("1d10_1"),"+",Calculo_em_Range("3d3_1")) )
 
 
 
