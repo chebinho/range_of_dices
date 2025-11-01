@@ -64,11 +64,13 @@ function Calculo_em_Range(...range){
     return resul
 }
 
-// faz a soma de elementos em um formato de escada 
-// valores = objeto com as possibilidades de cada valor
-// passo = valor minimo do range
-// limite = valor maximo do range
+// faz a soma de elementos em um formato de escada,
+// porem essa soma é só de ranges formado pelo valor 1 
 function calulo_escada(valores, range_min, range_max) {
+    // valores = array 2d com range de valores
+    // range_min = menor valor 
+    // range_max = maior valor 
+
     if(range_min>range_max){
         let a = range_min
         range_min = range_max
