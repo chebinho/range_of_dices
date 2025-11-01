@@ -1,3 +1,5 @@
+// faz um array com todas as possibilidades de um range de valores
+// se existir mais de um range fornecido a função faz a soma das possibilidades
 function Calculo_em_Range(...range){
     // recebe os valores em pares ou trios que são separados em duas variaveis
     const Regex = /(-?[0-9]+)[^0-9\n-]+(-?[0-9]+)([^0-9\n-]+(-?[0-9]+))?/
@@ -157,6 +159,26 @@ function Soma_Sinais_Iguais(valores=[[]]){
     return resul
 }
 
+// converte os valores de um range em porcentagens
+function Converte_em_Porcentagem(Range){
+    let resul = [[]]
+
+    // busca o total de possibilidades
+    let soma_possibi = 0 
+    for(let a=0; a<Range.length; a++){
+        soma_possibi = Range[a][1] + soma_possibi
+    }
+
+    // cria a resposta e faz o calcula da porcentagem
+    for(let a=0; a<Range.length; a++){
+        let porcentagem = (Range[a][1]/soma_possibi)*100
+        resul[a] = [Range[a][0], porcentagem]
+    }
+
+    return resul
+}
+
+
 // edita os dados dos arrays =======================================================================================
 
 // executa um calculo os valores de dois arrays 
@@ -234,9 +256,9 @@ function Range_X_Range(Range_1 = [[]], sinal="+",Range_2 = [[]]){
     }
 }
 
-console.log( Range_X_Range(Calculo_em_Range("1d10_1"),"+",Calculo_em_Range("3d3_1")) )
+//console.log(Converte_em_Porcentagem(Calculo_em_Range("10d20_1")))
 
-
+//console.log( Range_X_Range(Calculo_em_Range("1d10_1"),"+",Calculo_em_Range("3d3_1")) )
 
 //console.log(Separa_sinal(Calculo_em_Range('1d20_1', '1d4/1', '1d-20/-1')))
 //console.log(Soma_maiores_iguais(Calculo_em_Range('2d1_20'),2))
