@@ -113,6 +113,32 @@ function calulo_escada(valores, range_min, range_max) {
     return resul
 }
 
+// faz a soma das possibilidades de dois ranges
+function Soma_de_Possibilidades(range_1 = [[]], range_2=[[]]){
+
+    // valida se os dados recebidos estão corretos, se não retorna um erro
+    if( (Array.isArray(range_1) && (Array.isArray(range_2))) == true ){
+        console.log("erro")
+        return null
+    }
+
+    const valor_min = range_1[0][0] + range_2[0][0]
+    const valor_max = range_1[range_1.length-1][0] + range_2[range_2.length-1][0]
+    const novo_tamanho = valor_max - valor_min
+
+    let resul = [[]]
+
+    for(let a=0;a<=novo_tamanho;a++){
+        let soma = 0
+
+
+
+        resul[a] = [valor_min+a, soma]
+    }
+
+    return resul
+}
+
 // busca dado dos array =======================================================================================
 
 // faz soma de todos os valores do objeto valores que são menores ou iguais que o comparador
@@ -187,7 +213,7 @@ function Converte_em_Porcentagem(Range){
 function Range_X_Range(Range_1 = [[]], sinal="+",Range_2 = [[]]){
 
     // valida se os dados recebidos estão corretos, se não retorna um erro
-    if( (Array.isArray(Range_1) || (Array.isArray(Range_2))) == false ){
+    if( (Array.isArray(Range_1) && (Array.isArray(Range_2))) == true ){
         console.log("erro")
         return null
     }
