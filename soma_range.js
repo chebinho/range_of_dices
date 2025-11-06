@@ -116,22 +116,39 @@ function calulo_escada(valores, range_min, range_max) {
 // faz a soma das possibilidades de dois ranges
 function Soma_de_Possibilidades(range_1 = [[]], range_2=[[]]){
 
+    console.log(range_1)
+    console.log(range_2)
+
     // valida se os dados recebidos estão corretos, se não retorna um erro
-    if( (Array.isArray(range_1) && (Array.isArray(range_2))) == true ){
-        console.log("erro")
+    if( (Array.isArray(range_1) && (Array.isArray(range_2))) == false ){
+        console.log("erro: uma variavel não é um array")
         return null
     }
 
-    const valor_min = range_1[0][0] + range_2[0][0]
-    const valor_max = range_1[range_1.length-1][0] + range_2[range_2.length-1][0]
-    const novo_tamanho = valor_max - valor_min
+    const valor_min = range_1[0][0] + range_2[0][0] // menor valor base do resultado
+    const valor_max = range_1[range_1.length-1][0] + range_2[range_2.length-1][0] // maior valor base do resultado
+    const novo_tamanho = valor_max - valor_min // tamanho do array resultado
+
+    console.log(valor_min+" - "+valor_max)
 
     let resul = [[]]
 
+    let limite_min = 0 // limita o valor minimo que o calculo pode ir
     for(let a=0;a<=novo_tamanho;a++){
         let soma = 0
+        let limite_max = 0 // limita o valor maximo que o calculo pode ir
 
+        if(a <= (range_1.length-1)){
+            limite_max = a+1
+        }else{
+            limite_max = range_2.length
+            limite_min += 1
+        }
 
+        console.log("---------")
+        for(let b=limite_min;b<limite_max;b++){
+            console.log(b)
+        }
 
         resul[a] = [valor_min+a, soma]
     }
@@ -213,7 +230,7 @@ function Converte_em_Porcentagem(Range){
 function Range_X_Range(Range_1 = [[]], sinal="+",Range_2 = [[]]){
 
     // valida se os dados recebidos estão corretos, se não retorna um erro
-    if( (Array.isArray(Range_1) && (Array.isArray(Range_2))) == true ){
+    if( (Array.isArray(Range_1) && (Array.isArray(Range_2))) == false ){
         console.log("erro")
         return null
     }
