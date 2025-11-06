@@ -114,46 +114,47 @@ function calulo_escada(valores, range_min, range_max) {
 }
 
 // faz a soma das possibilidades de dois ranges
-function Soma_de_Possibilidades(range_1 = [[]], range_2=[[]]){
-
-    console.log(range_1)
-    console.log(range_2)
+// feito pelo chatgpt mas posteriormente adaptado
+function Soma_de_Possibilidades(range_1 = [[]], range_2=[[]]) {
 
     // valida se os dados recebidos estão corretos, se não retorna um erro
     if( (Array.isArray(range_1) && (Array.isArray(range_2))) == false ){
-        console.log("erro: uma variavel não é um array")
         return null
     }
 
-    const valor_min = range_1[0][0] + range_2[0][0] // menor valor base do resultado
-    const valor_max = range_1[range_1.length-1][0] + range_2[range_2.length-1][0] // maior valor base do resultado
-    const novo_tamanho = valor_max - valor_min // tamanho do array resultado
-
-    console.log(valor_min+" - "+valor_max)
-
+    const n = range_1.length;  // número de linhas
+    const m = range_2.length;  // número de colunas
     let resul = [[]]
 
-    let limite_min = 0 // limita o valor minimo que o calculo pode ir
-    for(let a=0;a<=novo_tamanho;a++){
-        let soma = 0
-        let limite_max = 0 // limita o valor maximo que o calculo pode ir
-
-        if(a <= (range_1.length-1)){
-            limite_max = a+1
-        }else{
-            limite_max = range_2.length
-            limite_min += 1
+    const valor_min = range_1[0][0] + range_2[0][0] // menor valor base do resultado
+    let contador = 0
+    // 1️⃣ Diagonais que começam na primeira coluna (de baixo para cima)
+    for (let startRow = n - 1; startRow >= 0; startRow--) {
+        let soma = 0;
+        let i = startRow, j = 0;
+        while (i < n && j < m) {
+            soma += range_1[i][1] * range_2[j][1];
+            i++;
+            j++;
         }
-
-        console.log("---------")
-        for(let b=limite_min;b<limite_max;b++){
-            console.log(b)
-        }
-
-        resul[a] = [valor_min+a, soma]
+        resul.push([valor_min+contador,soma]);
+        contador+=1
     }
 
-    return resul
+    // 2️⃣ Diagonais que começam na primeira linha (da segunda coluna em diante)
+    for (let startCol = 1; startCol < m; startCol++) {
+        let soma = 0;
+        let i = 0, j = startCol;
+        while (i < n && j < m) {
+            soma += range_1[i][1] * range_2[j][1];
+            i++;
+            j++;
+        }
+        resul.push([valor_min+contador,soma]);
+        contador+=1
+    }
+
+    return resul;
 }
 
 // busca dado dos array =======================================================================================
