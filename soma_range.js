@@ -115,7 +115,7 @@ function calulo_escada(valores, range_min, range_max) {
 
 // faz a soma das possibilidades de dois ranges
 // feito pelo chatgpt mas posteriormente adaptado
-function Soma_de_Possibilidades(range_1 = [[]], range_2=[[]]) {
+function Soma_Ranges(range_1 = [[]], range_2=[[]]) {
 
     // valida se os dados recebidos estão corretos, se não retorna um erro
     if( (Array.isArray(range_1) && (Array.isArray(range_2))) == false ){
@@ -128,7 +128,7 @@ function Soma_de_Possibilidades(range_1 = [[]], range_2=[[]]) {
 
     const valor_min = range_1[0][0] + range_2[0][0] // menor valor base do resultado
     let contador = 0
-    // 1️⃣ Diagonais que começam na primeira coluna (de baixo para cima)
+    // 1 Diagonais que começam na primeira coluna (de baixo para cima)
     for (let startRow = n - 1; startRow >= 0; startRow--) {
         let soma = 0;
         let i = startRow, j = 0;
@@ -137,11 +137,11 @@ function Soma_de_Possibilidades(range_1 = [[]], range_2=[[]]) {
             i++;
             j++;
         }
-        resul.push([valor_min+contador,soma]);
+        resul[contador] = [valor_min+contador,soma]
         contador+=1
     }
 
-    // 2️⃣ Diagonais que começam na primeira linha (da segunda coluna em diante)
+    // 2 Diagonais que começam na primeira linha (da segunda coluna em diante)
     for (let startCol = 1; startCol < m; startCol++) {
         let soma = 0;
         let i = 0, j = startCol;
@@ -150,7 +150,7 @@ function Soma_de_Possibilidades(range_1 = [[]], range_2=[[]]) {
             i++;
             j++;
         }
-        resul.push([valor_min+contador,soma]);
+        resul[contador] = [valor_min+contador,soma]
         contador+=1
     }
 
@@ -159,15 +159,15 @@ function Soma_de_Possibilidades(range_1 = [[]], range_2=[[]]) {
 
 // busca dado dos array =======================================================================================
 
-// faz soma de todos os valores do objeto valores que são menores ou iguais que o comparador
+// faz soma de todos os range do objeto range que são menores ou iguais que o comparador
 // o objeto deve ser formado por numero:numero
-function Soma_maiores_iguais(valores, comparador){ 
+function Soma_maiores_iguais(range, comparador){ 
     let resul = 0
 
-    for(let a=0;a<valores.length;a++){
+    for(let a=0;a<range.length;a++){
 
-        if(valores[a][0] <= comparador){
-            resul = resul + valores[a][1]
+        if(range[a][0] <= comparador){
+            resul = resul + range[a][1]
         }else{
             return resul
         }
@@ -177,8 +177,8 @@ function Soma_maiores_iguais(valores, comparador){
     return resul
 }
 
-// faz as somas dos valores dependendo do sinal atribuido para a posibilidade
-function Soma_Sinais_Iguais(valores=[[]]){
+// faz as somas dos ranges dependendo do sinal atribuido para a posibilidade
+function Soma_Sinais_Iguais(range=[[]]){
 
     let resul = {
         negativos:0,
@@ -187,15 +187,15 @@ function Soma_Sinais_Iguais(valores=[[]]){
         total:0
     }
 
-    for(let a=0;a<valores.length;a++){
-        if(valores[a][0]<0){
-            resul.negativos += valores[a][1]
+    for(let a=0;a<range.length;a++){
+        if(range[a][0]<0){
+            resul.negativos += range[a][1]
 
-        }else if(valores[a][0]==0){
-            resul.zeros += valores[a][1]
+        }else if(range[a][0]==0){
+            resul.zeros += range[a][1]
 
         }else{
-            resul.positivos += valores[a][1]
+            resul.positivos += range[a][1]
 
         }
     }
