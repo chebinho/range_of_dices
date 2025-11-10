@@ -50,64 +50,24 @@ function Calculo_em_Range(...range){
     }
 
     // cria o primeiro range de possibilidades 
-    let resul = []
-    for(let a=range_val_1[0];a<=range_val_2[0];a++){
-        resul.push([a, 1]);
+    let resul = [[]]
+    let c = 0
+    for(let b=range_val_1[0];b<=range_val_2[0];b++){
+        resul[c] = [b,1]
+        c+=1
     }
     
     // acresenta as outras dimenções para o range se precisar
     for(let a=1;a<dimensoes.length;a++){
-        //console.log(resul)
-        resul = calulo_escada(resul, range_val_1[a], range_val_2[a])
-    }
 
-    return resul
-}
-
-// faz a soma de elementos em um formato de escada,
-// porem essa soma é só de ranges formado pelo valor 1 
-function calulo_escada(valores, range_min, range_max) {
-    // valores = array 2d com range de valores
-    // range_min = menor valor 
-    // range_max = maior valor 
-
-    if(range_min>range_max){
-        let a = range_min
-        range_min = range_max
-        range_max = a
-    }
-
-    // separa os dados prinipais
-    const range_val_2 = range_max-range_min+1
-    const novo_tamanho = valores.length + range_val_2-1
-    let primeiro_val = valores[0][0]
-    let index = primeiro_val+range_min
-
-    // faz a soma dos elementos no formato de uma diagonal
-    let resul = []
-    let acrescimo = 0
-
-    for(let a=0;a<novo_tamanho;a++){
-        let soma = 0
-
-        const val_limite_1 = (resul.length+1)>=range_val_2? range_val_2 : resul.length+1
-        const val_limite_2 = (valores.length-resul.length)> 0 ? 0 : resul.length-valores.length+1
-        const limite = val_limite_1 - val_limite_2 // o limite é o maximo de somas por valor
-        //console.log(limite)
-
-        if(a>range_val_2-1){
-            acrescimo += 1
-        }else if(acrescimo>0){
-            acrescimo -= 1
+        let new_range = [[]]
+        let c = 0
+        for(let b=range_val_1[a];b<=range_val_2[a];b++){
+            new_range[c] = [b,1]
+            c+=1
         }
 
-        for(let b=0;b<limite;b++){
-            soma += valores[b+acrescimo][1]
-            //console.log(b+acrescimo)
-        }
-
-        resul.push([index,soma])
-        index = index+1
+        resul = Soma_Ranges(resul, new_range)
     }
 
     return resul
@@ -116,6 +76,9 @@ function calulo_escada(valores, range_min, range_max) {
 // faz a soma das possibilidades de dois ranges
 // feito pelo chatgpt mas posteriormente adaptado
 function Soma_Ranges(range_1 = [[]], range_2=[[]]) {
+
+    //console.log(range_1)
+    //console.log(range_2)
 
     // valida se os dados recebidos estão corretos, se não retorna um erro
     if( (Array.isArray(range_1) && (Array.isArray(range_2))) == false ){
@@ -137,6 +100,7 @@ function Soma_Ranges(range_1 = [[]], range_2=[[]]) {
             i++;
             j++;
         }
+        
         resul[contador] = [valor_min+contador,soma]
         contador+=1
     }
@@ -227,7 +191,7 @@ function Converte_em_Porcentagem(Range){
 
 // edita os dados dos arrays =======================================================================================
 
-// executa um calculo os valores de dois arrays 
+// executa um calculo para cada igualdade entre os ranges
 function Range_X_Range(Range_1 = [[]], sinal="+",Range_2 = [[]]){
 
     // valida se os dados recebidos estão corretos, se não retorna um erro
