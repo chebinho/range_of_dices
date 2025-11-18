@@ -22,30 +22,26 @@ function Calculo_em_Range_2(...range){
 
 }
 
-// codigo feito pelo GPT
-function test_sequencia(valor = 1){
-    if (valor < 1) return null; // remove valores negativos
-    // obtem o menor valor mais proximo dentro da sequencia 2^0,2^1,2^2,2^3,...
-    return Math.floor(Math.log2(valor));
-}
-
 function menor_sequencia(valor = 0){
+    if (valor < 1) return 0 // remove valores negativos
 
-    let min = test_sequencia(valor)
-    if(min == null) return 0
+    // obtem o menor valor mais proximo dentro da sequencia 2^0,2^1,2^2,2^3,...
+    let min = Math.floor(Math.log2(valor))
 
     let resul = []
     resul[resul.length] = min+1
 
+    // busca o resto anterior e repete o calculo anterior até que o resto vire 0
     let resto = valor - (2**min)
+
     while(resto > 0){
-        min = test_sequencia(resto)
+        min = Math.floor(Math.log2(resto))
         resul[resul.length] = min+1
 
         resto = resto - (2**min)
     }
 
-    return resul
+    return resul.reverse()
 }
 console.log(menor_sequencia(5))
 console.log(" ----------------- ")
