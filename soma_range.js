@@ -1,5 +1,58 @@
 // faz um array com todas as possibilidades de um range de valores
 // se existir mais de um range fornecido a função faz a soma das possibilidades
+function Calculo_em_Range_2(...range){
+    // recebe os valores em pares ou trios que são separados em duas variaveis
+    const Regex = /(-?[0-9]+)[^0-9\n-]+(-?[0-9]+)([^0-9\n-]+(-?[0-9]+))?/
+
+    // $1 = valor um do range ou quantidade de dados que seram jogados
+    // $2 = valor dois ou um dependendo se o $4 existir
+    // $4 = valor dois
+
+    let resul = [[]]
+
+    for(let a=0;a<range.length;a++){
+
+        let Regex_$4 = Number(range[a].replace(Regex, "$4"));
+        let Regex_$1 = Number(range[a].replace(Regex, "$1"));
+        let Regex_$2 = Number(range[a].replace(Regex, "$2"));
+
+
+
+    }
+
+}
+
+// codigo feito pelo GPT
+function test_sequencia(valor = 1){
+    if (valor < 1) return null; // remove valores negativos
+    // obtem o menor valor mais proximo dentro da sequencia 2^0,2^1,2^2,2^3,...
+    return Math.floor(Math.log2(valor));
+}
+
+function menor_sequencia(valor = 0){
+
+    let min = test_sequencia(valor)
+    if(min == null) return 0
+
+    let resul = []
+    resul[resul.length] = min+1
+
+    let resto = valor - (2**min)
+    while(resto > 0){
+        min = test_sequencia(resto)
+        resul[resul.length] = min+1
+
+        resto = resto - (2**min)
+    }
+
+    return resul
+}
+console.log(menor_sequencia(5))
+console.log(" ----------------- ")
+console.log(menor_sequencia(500))
+
+// faz um array com todas as possibilidades de um range de valores
+// se existir mais de um range fornecido a função faz a soma das possibilidades
 function Calculo_em_Range(...range){
     // recebe os valores em pares ou trios que são separados em duas variaveis
     const Regex = /(-?[0-9]+)[^0-9\n-]+(-?[0-9]+)([^0-9\n-]+(-?[0-9]+))?/
@@ -263,6 +316,14 @@ function Range_X_Range(Range_1 = [[]], sinal="+",Range_2 = [[]]){
             //console.log(a+") "+test_Range_1 +" - "+ test_Range_2)
         }
         return resul_final
+    }
+}
+
+// testes =======================================================================================
+
+function test(val){
+    for(let a=1;a<=val;a++){
+        console.log(Calculo_em_Range(a+"d4/1"))
     }
 }
 
