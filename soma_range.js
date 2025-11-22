@@ -239,6 +239,17 @@ function Converte_em_Porcentagem(Range){
 
 // edita os dados dos arrays =======================================================================================
 
+//converte um range para uma convolução
+function toConvolutionForm(Range = [[]]){
+    let resul = []
+
+    for(let a=0; a<Range.length; a++){
+        resul[a] = Range[a][0]*Range[a][1]
+    }
+
+    return resul
+}
+
 // executa um calculo para cada igualdade entre os ranges
 function Range_X_Range(Range_1 = [[]], sinal="+",Range_2 = [[]]){
 
