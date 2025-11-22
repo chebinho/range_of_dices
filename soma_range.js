@@ -1,6 +1,6 @@
 // faz um array com todas as possibilidades de um range de valores
 // se existir mais de um range fornecido a função faz a soma das possibilidades
-function Calculo_em_Range_2(...range){
+function Calculo_em_Range(...range){
 
     function menor_sequencia(valor = 0){
         if (valor < 1) return 0 // remove valores negativos
@@ -35,11 +35,11 @@ function Calculo_em_Range_2(...range){
 
     for(let a=0;a<range.length;a++){
 
-        let Regex_$4 = Number(range[a].replace(Regex, "$4"));
+        let Regex_$4 = range[a].replace(Regex, "$4");
         let Regex_$1 = Number(range[a].replace(Regex, "$1"));
         let Regex_$2 = Number(range[a].replace(Regex, "$2"));
 
-        if(Regex_$4 == 0){
+        if(Regex_$4 == ""){
 
             let menor_val = 0
             let maior_val = 0
@@ -64,6 +64,7 @@ function Calculo_em_Range_2(...range){
             resul = Soma_Ranges(resul,range_temp)
 
         }else{
+            Regex_$4 = Number(Regex_$4)
 
             let menor_val = 0
             let maior_val = 0
@@ -85,13 +86,14 @@ function Calculo_em_Range_2(...range){
                 range_temp[c] = [b,1]
                 c+=1
             }
+            c = 0
 
             // faz a soma dos multiplos rangens da forma mais eficiente possivel
             if(sequencia[0] == 1){
                 resul = Soma_Ranges(resul,range_temp)
+                c = 1
             }
 
-            c = 1
             for(let a=2;a<=sequencia[sequencia.length-1];a++){
                 range_temp = Soma_Ranges(range_temp,range_temp)
                 
@@ -105,81 +107,6 @@ function Calculo_em_Range_2(...range){
 
         }
 
-    }
-
-    return resul
-}
-
-// faz um array com todas as possibilidades de um range de valores
-// se existir mais de um range fornecido a função faz a soma das possibilidades
-function Calculo_em_Range(...range){
-    // recebe os valores em pares ou trios que são separados em duas variaveis
-    const Regex = /(-?[0-9]+)[^0-9\n-]+(-?[0-9]+)([^0-9\n-]+(-?[0-9]+))?/
-
-    // $1 = valor um do range ou quantidade de dados que seram jogados
-    // $2 = valor dois ou um dependendo se o $4 existir
-    // $4 = valor dois
-
-    let range_val_1 = []
-    let range_val_2 = []
-    let dimensoes = []
-
-    let extra = 0 //número de espaços extra necessário
-
-    for(let a=0;a<range.length;a++){
-
-        let Regex_$4 = Number(range[a].replace(Regex, "$4"));
-        let Regex_$1 = Number(range[a].replace(Regex, "$1"));
-        let Regex_$2 = Number(range[a].replace(Regex, "$2"));
-
-        if(Regex_$4 == 0){
-
-            if(Regex_$1 < Regex_$2){
-                range_val_1[a+extra] = Regex_$1
-                range_val_2[a+extra] = Regex_$2
-            }else{
-                range_val_1[a+extra] = Regex_$2
-                range_val_2[a+extra] = Regex_$1
-            }
-            dimensoes[a+extra] = range_val_2[a+extra] - range_val_1[a+extra]+1
-
-        }else{
-            let b
-            for(b=0;b<Regex_$1;b++){
-
-                if(Regex_$2 < Regex_$4){
-                    range_val_1[a+extra+b] = Regex_$2
-                    range_val_2[a+extra+b] = Regex_$4
-                }else{
-                    range_val_1[a+extra+b] = Regex_$4
-                    range_val_2[a+extra+b] = Regex_$2
-                }
-
-                dimensoes[a+extra+b] = range_val_2[a+extra+b] - range_val_1[a+extra+b]+1
-            }
-            extra = extra+b-1
-        }
-    }
-
-    // cria o primeiro range de possibilidades 
-    let resul = [[]]
-    let c = 0
-    for(let b=range_val_1[0];b<=range_val_2[0];b++){
-        resul[c] = [b,1]
-        c+=1
-    }
-    
-    // acresenta as outras dimenções para o range se precisar
-    for(let a=1;a<dimensoes.length;a++){
-
-        let new_range = [[]]
-        let c = 0
-        for(let b=range_val_1[a];b<=range_val_2[a];b++){
-            new_range[c] = [b,1]
-            c+=1
-        }
-
-        resul = Soma_Ranges(resul, new_range)
     }
 
     return resul
