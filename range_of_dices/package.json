@@ -5,17 +5,21 @@
   "main": "./src/index.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/chebinho/cheb_tests.git"
+    "url": "git+https://github.com/chebinho/range_of_dices.git"
   },
   "keywords": [
+    "range_of_dices",
+    "range",
+    "ranges",
     "dice",
+    "dices",
     "probability",
     "Convolution"
   ],
   "author": "Carlos Eduardo Glinski de Souza",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/chebinho/cheb_tests/issues"
+    "url": "https://github.com/chebinho/range_of_dices/issues"
   },
-  "homepage": "https://github.com/chebinho/cheb_tests#readme"
+  "homepage": "https://github.com/chebinho/range_of_dices#readme"
 }

@@ -1,4 +1,4 @@
-arquivo apenas de exemplo !!!!!!!!
+arquivo para ser usado apenas de exemplo !!!!!!!!
 
 A crate for calculating discrete probability distributions of dice.
 
