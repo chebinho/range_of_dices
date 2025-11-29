@@ -1,0 +1,21 @@
+{
+  "name": "range_of_dices",
+  "version": "1.0.0",
+  "description": "test",
+  "main": "./src/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chebinho/cheb_tests.git"
+  },
+  "keywords": [
+    "dice",
+    "probability",
+    "Convolution"
+  ],
+  "author": "Carlos Eduardo Glinski de Souza",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/chebinho/cheb_tests/issues"
+  },
+  "homepage": "https://github.com/chebinho/cheb_tests#readme"
+}
