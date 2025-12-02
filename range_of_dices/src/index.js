@@ -25,7 +25,7 @@ export function Calculo_em_Range(...range){
     }
 
     // recebe os valores em pares ou trios que são separados em duas variaveis
-    const Regex = /(-?[0-9]+)[^0-9\n-]+(-?[0-9]+)([^0-9\n-]+(-?[0-9]+))?/
+    const Regex = /(-?[0-9]+)[^0-9\n\-]+(-?[0-9]+)([^0-9\n\-]+(-?[0-9]+))?/
 
     // $1 = valor um do range ou quantidade de dados que seram jogados
     // $2 = valor dois ou um dependendo se o $4 existir
@@ -168,12 +168,3 @@ export function Soma_Ranges(range_1 = [[]], range_2=[[]]) {
 
     return resul;
 }
-
-// Calculo_em_Range()
-// Soma_Ranges()
-
-//export default {Calculo_em_Range, Soma_Ranges}
-
-
-//module.exports = { Calculo_em_Range,Soma_Ranges };
-//export function minhaFuncao() { ... }
