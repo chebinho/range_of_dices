@@ -1,29 +1,109 @@
-// roll any dice
-function roll_dice(amount=1, faces=20, min=1){
+// roll any dice one or more times.
+function roll_dice(amount=1, biggest_face=20, smaller_face=1){
+
+    let max = biggest_face - smaller_face
+    let fix = 0
+
+    // corrects the values ​​that can be obtained
+    if(biggest_face>smaller_face){
+        max += 1
+        //fix -= 1
+    }else{
+        max -= 1
+        //fix += 1
+    }
+
     let resul = 0
     for(let a=0;a<amount;a++){
-        resul = resul + Math.trunc( (Math.random())*faces + min )
+        resul = resul + Math.trunc( (Math.random())*max+smaller_face+fix )
+    }
+    return resul 
+}
+
+
+for(let a=0;a<100;a++){
+    let test = roll_dice(1, 10, 1)
+
+    if(test == 10){
+        console.log("-------->"+test)
+    }else{
+        console.log(test)
+    }
+}
+
+
+
+// roll any dice in advantage one or more times.
+function roll_advantage(amount=1, biggest_face=20, smaller_face=1){
+
+    let max = biggest_face - smaller_face
+    let fix = 0
+
+    // corrects the values ​​that can be obtained
+    if(biggest_face>smaller_face){
+        max += 1
+        fix -= 1
+    }else{
+        max -= 1
+        fix += 1
+    }
+
+    let resul = Math.trunc( (Math.random())*max+smaller_face+fix )
+    for(let a=0;a<amount;a++){
+        let new_roll = Math.trunc( (Math.random())*max+smaller_face+fix )
+        if(resul < new_roll){
+            resul = new_roll
+        }
     }
     return resul
 }
 
-function roll_all(...dices){
+// roll any dice in disadvantage one or more times.
+function roll_disadvantage(amount=1, biggest_face=20, smaller_face=1){
+
+    let max = biggest_face - smaller_face
+    let fix = 0
+
+    // corrects the values ​​that can be obtained
+    if(biggest_face>smaller_face){
+        max += 1
+        fix -= 1
+    }else{
+        max -= 1
+        fix += 1
+    }
+
+    let resul = Math.trunc( (Math.random())*max+smaller_face+fix )
+    for(let a=0;a<amount;a++){
+        let new_roll = Math.trunc( (Math.random())*max+smaller_face+fix )
+        if(resul > new_roll){
+            resul = new_roll
+        }
+    }
+    return resul
+}
+
+function roll(...dices){
+
+    // search for this pattern: 1d10 / 1d-10_-1 / 2w20_1 / 10 anything 10 anything -10
     const Regex = /(-?[0-9]+)[^0-9\n\+\*\-]+(-?[0-9]+)([^0-9\n\+\*\-]+(-?[0-9]+))?/g
+
+    console.log(dices[0].matchAll(Regex))
+
+    for (const match of dices[0].matchAll(Regex)) {
+        console.log(match);
+        console.log(roll_dice(match[1],match[2],match[4]))
+    }
+
     
     let results = []
-
     for(let a=0;a<dices.length;a++){
 
         let val_1 = dices[a].replace(Regex, "$1")
         let val_2 = dices[a].replace(Regex, "$2")
         let val_3 = dices[a].replace(Regex, "$4")
 
-        if(val_3 == ""){
-            results[a] = roll_dice(val_1,val_2)
-        }else{
-            results[a] = roll_dice(val_1,val_2,val_3)
-        }
-        
+        results[a] = roll_dice(val_1,val_2,val_3)
     }
 
     if(dices.length == 0){
@@ -33,5 +113,17 @@ function roll_all(...dices){
     }
 }
 
-console.log(roll_all("1d10+2+1d10"))
-console.log(roll_dice(10, 10, 1))
+//console.log(roll("1d10+2+1d10")
+//console.log(roll_disadvantage(10, 10, 1))
+
+
+/*
+roll_dice\(([0-9\,\-]+)\)
+roll_dice($1,$2,$4)
+*/
+
+//Atributo: DEX
+//Valor: 14
+//Atributo: INT
+//Valor: 12
+
