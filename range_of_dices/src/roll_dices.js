@@ -1,56 +1,43 @@
 // roll any dice one or more times.
 function roll_dice(amount=1, biggest_face=20, smaller_face=1){
 
-    let max = biggest_face - smaller_face
-    let fix = 0
+    let max = 0
+    let min = 0
 
     // corrects the values ​​that can be obtained
     if(biggest_face>smaller_face){
-        max += 1
-        //fix -= 1
+        max = (biggest_face - smaller_face)+1
+        min = smaller_face
     }else{
-        max -= 1
-        //fix += 1
+        max = (smaller_face - biggest_face)+1
+        min = biggest_face
     }
 
     let resul = 0
     for(let a=0;a<amount;a++){
-        resul = resul + Math.trunc( (Math.random())*max+smaller_face+fix )
+        resul = resul + Math.trunc((Math.random())*max)+min
     }
     return resul 
 }
 
-
-for(let a=0;a<100;a++){
-    let test = roll_dice(1, 10, 1)
-
-    if(test == 10){
-        console.log("-------->"+test)
-    }else{
-        console.log(test)
-    }
-}
-
-
-
 // roll any dice in advantage one or more times.
 function roll_advantage(amount=1, biggest_face=20, smaller_face=1){
 
-    let max = biggest_face - smaller_face
-    let fix = 0
+    let max = 0
+    let min = 0
 
     // corrects the values ​​that can be obtained
     if(biggest_face>smaller_face){
-        max += 1
-        fix -= 1
+        max = (biggest_face - smaller_face)+1
+        min = smaller_face
     }else{
-        max -= 1
-        fix += 1
+        max = (smaller_face - biggest_face)+1
+        min = biggest_face
     }
 
-    let resul = Math.trunc( (Math.random())*max+smaller_face+fix )
+    let resul = Math.trunc((Math.random())*max)+min
     for(let a=0;a<amount;a++){
-        let new_roll = Math.trunc( (Math.random())*max+smaller_face+fix )
+        let new_roll = Math.trunc((Math.random())*max)+min
         if(resul < new_roll){
             resul = new_roll
         }
@@ -61,21 +48,21 @@ function roll_advantage(amount=1, biggest_face=20, smaller_face=1){
 // roll any dice in disadvantage one or more times.
 function roll_disadvantage(amount=1, biggest_face=20, smaller_face=1){
 
-    let max = biggest_face - smaller_face
-    let fix = 0
+    let max = 0
+    let min = 0
 
     // corrects the values ​​that can be obtained
     if(biggest_face>smaller_face){
-        max += 1
-        fix -= 1
+        max = (biggest_face - smaller_face)+1
+        min = smaller_face
     }else{
-        max -= 1
-        fix += 1
+        max = (smaller_face - biggest_face)+1
+        min = biggest_face
     }
 
-    let resul = Math.trunc( (Math.random())*max+smaller_face+fix )
+    let resul = Math.trunc((Math.random())*max)+min
     for(let a=0;a<amount;a++){
-        let new_roll = Math.trunc( (Math.random())*max+smaller_face+fix )
+        let new_roll = Math.trunc((Math.random())*max)+min
         if(resul > new_roll){
             resul = new_roll
         }
