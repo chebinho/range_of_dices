@@ -21,7 +21,7 @@ function roll_dice(amount=1, biggest_face=20, smaller_face=1){
 }
 
 // roll any dice in advantage one or more times.
-function roll_advantage(amount=1, biggest_face=20, smaller_face=1){
+function roll_vantage(amount=1, biggest_face=20, smaller_face=1){
 
     let max = 0
     let min = 0
@@ -46,7 +46,7 @@ function roll_advantage(amount=1, biggest_face=20, smaller_face=1){
 }
 
 // roll any dice in disadvantage one or more times.
-function roll_disadvantage(amount=1, biggest_face=20, smaller_face=1){
+function roll_disvantage(amount=1, biggest_face=20, smaller_face=1){
 
     let max = 0
     let min = 0
@@ -72,25 +72,47 @@ function roll_disadvantage(amount=1, biggest_face=20, smaller_face=1){
 
 function roll(...dices){
 
-    // search for this pattern: 1d10 / 1d-10_-1 / 2w20_1 / 10 anything 10 anything -10
-    const Regex = /(-?[0-9]+)[^0-9\n\+\*\-]+(-?[0-9]+)([^0-9\n\+\*\-]+(-?[0-9]+))?/g
+    const allowedFunctions = {
+        roll_dice,
+        roll_vantage,
+        roll_disvantage,
+    };
 
-    console.log(dices[0].matchAll(Regex))
+    function exec_func_string(str){
+        const callRegex = /(\w*)\(([^)]*)\)/g;
 
-    for (const match of dices[0].matchAll(Regex)) {
-        console.log(match);
-        console.log(roll_dice(match[1],match[2],match[4]))
+        return str.replace(callRegex, (match, fname, args) => {
+
+            // Verifica se a função existe na lista de permitidas
+            if (!allowedFunctions[fname]) {
+                return match; // mantém como texto se não for permitida
+            }
+
+            // Converte os argumentos separados por vírgula
+            const argArray = args
+                .split(",")
+                .map(v => Number(v.trim()));
+
+            // Executa a função real
+            const result = allowedFunctions[fname](...argArray);
+
+            return result;
+        });
     }
 
-    
+    // search for this pattern: 1d10 / des1d-10_-1 / van 2w20_1 / 10 anything 10 anything -10
+    const Regex_dis = /dis ?(\d+)[^0-9\n\+\*-\\]+(-?\d+)([^0-9\n\+\*-\\]+(-?\d+))?/g
+    const Regex_van = /van ?(\d+)[^0-9\n\+\*-\\]+(-?\d+)([^0-9\n\+\*-\\]+(-?\d+))?/g
+    const Regex_roll = /(\d+)[^0-9\n\+\*-\\]+(-?\d+)([^0-9\n\+\*-\\]+(-?\d+))?/g
+
     let results = []
     for(let a=0;a<dices.length;a++){
 
-        let val_1 = dices[a].replace(Regex, "$1")
-        let val_2 = dices[a].replace(Regex, "$2")
-        let val_3 = dices[a].replace(Regex, "$4")
+        results[a] = dices[a].replace(Regex_dis, "roll_disvantage($1,$2,$4)")
+        results[a] = results[a].replace(Regex_van, "roll_vantage($1,$2,$4)")
+        results[a] = results[a].replace(Regex_roll, "roll_dice($1,$2,$4)")
 
-        results[a] = roll_dice(val_1,val_2,val_3)
+        results[a] = exec_func_string(results[a])
     }
 
     if(dices.length == 0){
@@ -100,17 +122,9 @@ function roll(...dices){
     }
 }
 
-//console.log(roll("1d10+2+1d10")
+console.log(roll("1d10+2+1d10"))
 //console.log(roll_disadvantage(10, 10, 1))
 
+// safe eval = (\(?[0-9\+\-\*]+\)?)
 
-/*
-roll_dice\(([0-9\,\-]+)\)
-roll_dice($1,$2,$4)
-*/
-
-//Atributo: DEX
-//Valor: 14
-//Atributo: INT
-//Valor: 12
-
+// (des ?|van ?)?([0-9]+)[^0-9\n\+\*-\\]+(-?[0-9]+)([^0-9\n\+\*-\\]+(-?[0-9]+))?
