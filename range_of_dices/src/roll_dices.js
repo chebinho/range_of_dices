@@ -89,14 +89,18 @@ function roll(...dices){
             }
 
             // Converte os argumentos separados por vírgula
-            const argArray = args
-                .split(",")
-                .map(v => Number(v.trim()));
+            let argArray = args.split(",")
+
+            // substituir os elementos vazios por 1
+            for(let a=0;a<argArray.length;a++){
+                if(argArray[a] == ""){
+                    argArray[a] = 1
+                }
+                argArray[a] = Number(argArray[a])
+            }
 
             // Executa a função real
-            const result = allowedFunctions[fname](...argArray);
-
-            return result;
+            return allowedFunctions[fname](...argArray)
         });
     }
 
@@ -113,6 +117,7 @@ function roll(...dices){
         results[a] = results[a].replace(Regex_roll, "roll_dice($1,$2,$4)")
 
         results[a] = exec_func_string(results[a])
+        results[a] = results[a] + " = " + eval(results[a].toString())
     }
 
     if(dices.length == 0){
@@ -122,7 +127,7 @@ function roll(...dices){
     }
 }
 
-console.log(roll("1d10+2+1d10"))
+console.log(roll("1d20_1 + 1d12"))
 //console.log(roll_disadvantage(10, 10, 1))
 
 // safe eval = (\(?[0-9\+\-\*]+\)?)
