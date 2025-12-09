@@ -79,9 +79,9 @@ function roll(...dices){
     };
 
     function exec_func_string(str){
-        const callRegex = /(\w*)\(([^)]*)\)/g;
+        const Regex = /(\w*)\(([^)]*)\)/g;
 
-        return str.replace(callRegex, (match, fname, args) => {
+        return str.replace(Regex, (match, fname, args) => {
 
             // Verifica se a função existe na lista de permitidas
             if (!allowedFunctions[fname]) {
@@ -104,9 +104,14 @@ function roll(...dices){
         });
     }
 
-    // search for this pattern: 1d10 / des1d-10_-1 / van 2w20_1 / 10 anything 10 anything -10
+    // Captures commands beginning with “dis” (disadvantage), extracting the numbers involved.
+    // Ex: dis 1d20 | dis 3d10_1 
     const Regex_dis = /dis ?(\d+)[^0-9\n\+\*-\\]+(-?\d+)([^0-9\n\+\*-\\]+(-?\d+))?/g
+    // Capture commands beginning with “van” (advantage), extracting the numbers.
+    // Ex: van 1d20 | van 3d10_1 
     const Regex_van = /van ?(\d+)[^0-9\n\+\*-\\]+(-?\d+)([^0-9\n\+\*-\\]+(-?\d+))?/g
+    // Captures the same numeric pattern, but without “van” or “dis” at the beginning.
+    // Ex: 1d20 | 3d10_1 | 2d-20_-1
     const Regex_roll = /(\d+)[^0-9\n\+\*-\\]+(-?\d+)([^0-9\n\+\*-\\]+(-?\d+))?/g
 
     let results = []
@@ -117,7 +122,7 @@ function roll(...dices){
         results[a] = results[a].replace(Regex_roll, "roll_dice($1,$2,$4)")
 
         results[a] = exec_func_string(results[a])
-        results[a] = results[a] + " = " + eval(results[a].toString())
+        results[a] = results[a] + " = " + safe_math_eval(results[a].toString())
     }
 
     if(dices.length == 0){
@@ -127,9 +132,35 @@ function roll(...dices){
     }
 }
 
-console.log(roll("1d20_1 + 1d12"))
-//console.log(roll_disadvantage(10, 10, 1))
+//console.log(roll("1d20_1 + 1d12"))
 
-// safe eval = (\(?[0-9\+\-\*]+\)?)
+function safe_math_eval(text = ""){
 
-// (des ?|van ?)?([0-9]+)[^0-9\n\+\*-\\]+(-?[0-9]+)([^0-9\n\+\*-\\]+(-?[0-9]+))?
+    // Find mathematical expressions in parentheses, such as “(10 + 2 * 3)”. 
+    const Regex_1 = /\(( *[0-9\.]+ *( *[\+\-\*\/\%]\*? *[0-9\.]+)* *)\)/g
+    // Find mathematical expressions outside parentheses, such as “13 + 5 * 2.”
+    const Regex_2 = /( *[0-9\.]+( *[\+\-\*\/\%]\*? *[0-9\.]+)+)/g
+
+    let last_resul = ""
+    let resul = text
+
+    for(let a=0;a<1000;a++){
+
+        last_resul = resul
+
+        resul = resul.replace(Regex_1, (match) => {
+            return eval(match)
+        });
+
+        if(last_resul == resul){
+            a = 1001
+        }
+    }
+
+    resul = resul.replace(Regex_2, (match) => {
+        return eval(match)
+    });
+
+    return resul
+
+}
