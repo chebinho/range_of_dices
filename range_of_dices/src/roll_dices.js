@@ -1,5 +1,5 @@
 // roll any dice one or more times.
-function roll_dice(amount=1, biggest_face=20, smaller_face=1){
+export function roll_dice(amount=1, biggest_face=20, smaller_face=1){
 
     let max = 0
     let min = 0
@@ -21,7 +21,7 @@ function roll_dice(amount=1, biggest_face=20, smaller_face=1){
 }
 
 // roll any dice in advantage one or more times.
-function roll_vantage(amount=1, biggest_face=20, smaller_face=1){
+export function roll_vantage(amount=1, biggest_face=20, smaller_face=1){
 
     let max = 0
     let min = 0
@@ -46,7 +46,7 @@ function roll_vantage(amount=1, biggest_face=20, smaller_face=1){
 }
 
 // roll any dice in disadvantage one or more times.
-function roll_disvantage(amount=1, biggest_face=20, smaller_face=1){
+export function roll_disvantage(amount=1, biggest_face=20, smaller_face=1){
 
     let max = 0
     let min = 0
@@ -70,7 +70,9 @@ function roll_disvantage(amount=1, biggest_face=20, smaller_face=1){
     return resul
 }
 
-function roll(...dices){
+// solve any equation with a data rollover together.
+// Ex: roll("1d20 + 10 - 1d6") --> 15 + 10 - 3 = 22
+export function roll(...dices){
 
     const allowedFunctions = {
         roll_dice,
@@ -79,19 +81,20 @@ function roll(...dices){
     };
 
     function exec_func_string(str){
+        // Find any function in a string
         const Regex = /(\w*)\(([^)]*)\)/g;
 
         return str.replace(Regex, (match, fname, args) => {
 
-            // Verifica se a função existe na lista de permitidas
+            // Checks if the function exists in the list of allowed functions
             if (!allowedFunctions[fname]) {
-                return match; // mantém como texto se não for permitida
+                return match;
             }
 
-            // Converte os argumentos separados por vírgula
+            // Converts arguments separated by commas
             let argArray = args.split(",")
 
-            // substituir os elementos vazios por 1
+            // Replace empty elements with 1
             for(let a=0;a<argArray.length;a++){
                 if(argArray[a] == ""){
                     argArray[a] = 1
@@ -99,28 +102,30 @@ function roll(...dices){
                 argArray[a] = Number(argArray[a])
             }
 
-            // Executa a função real
+            // Execute the actual function
             return allowedFunctions[fname](...argArray)
         });
     }
 
     // Captures commands beginning with “dis” (disadvantage), extracting the numbers involved.
     // Ex: dis 1d20 | dis 3d10_1 
-    const Regex_dis = /dis ?(\d+)[^0-9\n\+\*-\\]+(-?\d+)([^0-9\n\+\*-\\]+(-?\d+))?/g
+    const Regex_dis = /dis ?(\d+)d(-?\d+)(_(-?\d+))?/g
     // Capture commands beginning with “van” (advantage), extracting the numbers.
     // Ex: van 1d20 | van 3d10_1 
-    const Regex_van = /van ?(\d+)[^0-9\n\+\*-\\]+(-?\d+)([^0-9\n\+\*-\\]+(-?\d+))?/g
+    const Regex_van = /van ?(\d+)d(-?\d+)(_(-?\d+))?/g
     // Captures the same numeric pattern, but without “van” or “dis” at the beginning.
     // Ex: 1d20 | 3d10_1 | 2d-20_-1
-    const Regex_roll = /(\d+)[^0-9\n\+\*-\\]+(-?\d+)([^0-9\n\+\*-\\]+(-?\d+))?/g
+    const Regex_roll = /(\d+)d(-?\d+)(_(-?\d+))?/g
 
     let results = []
     for(let a=0;a<dices.length;a++){
 
+        // converts the user's command into its respective function
         results[a] = dices[a].replace(Regex_dis, "roll_disvantage($1,$2,$4)")
         results[a] = results[a].replace(Regex_van, "roll_vantage($1,$2,$4)")
         results[a] = results[a].replace(Regex_roll, "roll_dice($1,$2,$4)")
 
+        // execute the functions and replaces them with the results
         results[a] = exec_func_string(results[a])
         results[a] = results[a] + " = " + safe_math_eval(results[a].toString())
     }
@@ -132,9 +137,8 @@ function roll(...dices){
     }
 }
 
-//console.log(roll("1d20_1 + 1d12"))
-
-function safe_math_eval(text = ""){
+// solves a string equation into a result when possible.
+export function safe_math_eval(text = ""){
 
     // Find mathematical expressions in parentheses, such as “(10 + 2 * 3)”. 
     const Regex_1 = /\(( *[0-9\.]+ *( *[\+\-\*\/\%]\*? *[0-9\.]+)* *)\)/g
@@ -144,23 +148,19 @@ function safe_math_eval(text = ""){
     let last_resul = ""
     let resul = text
 
-    for(let a=0;a<1000;a++){
-
+    // solve all equations in parentheses until there are no more
+    while(last_resul != resul){
         last_resul = resul
 
         resul = resul.replace(Regex_1, (match) => {
             return eval(match)
         });
-
-        if(last_resul == resul){
-            a = 1001
-        }
     }
 
+    // take care of the rest
     resul = resul.replace(Regex_2, (match) => {
         return eval(match)
     });
 
     return resul
-
 }
