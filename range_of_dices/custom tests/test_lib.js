@@ -1,22 +1,8 @@
-import * as lib_RoD from '../src/index.js';
-import * as lib_roll from '../src/roll_dices.js';
+import * as lib_RoD from '../src/range_of_dices.js';
+import * as lib_Roll from '../src/roll_dices.js';
 
-function test_1(haaa = 1){
-    console.log(haaa)
-    console.log(lib_RoD.Calculo_em_Range("4d10_1"))
-
-    console.log(lib_RoD.Soma_Ranges(lib_RoD.Calculo_em_Range("2d10_1"),lib_RoD.Calculo_em_Range("2d10_1")))
-    console.log(lib_roll.roll("1d20 + 10 - 1d6"))
-}
-
-function exec_func(str = ""){
-    const allowedFunctions = {
-        roll_dice,
-        roll_vantage,
-        roll_disvantage,
-        roll,
-        safe_math_eval
-    };
+function test_lib_Roll(){
+    let text = document.getElementById("text").value
 
     function exec_func_string(str){
         // Find any function in a string
@@ -25,7 +11,7 @@ function exec_func(str = ""){
         return str.replace(Regex, (match, fname, args) => {
 
             // Checks if the function exists in the list of allowed functions
-            if (!allowedFunctions[fname]) {
+            if (!lib_Roll[fname]) {
                 return match;
             }
 
@@ -33,9 +19,11 @@ function exec_func(str = ""){
             let argArray = args.split(",")
 
             // Execute the actual function
-            return allowedFunctions[fname](...argArray)
+            return lib_Roll[fname](...argArray)
         });
     }
+
+    console.log(exec_func_string(text))
 }
 
-document.getElementById("execute").onclick = () => test_1(10);
+document.getElementById("execute").onclick = () => test_lib_Roll();
