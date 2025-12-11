@@ -82,7 +82,7 @@ export function roll(...dices){
 
     function exec_func_string(str){
         // Find any function in a string
-        const Regex = /(\w*)\(([^)]*)\)/g;
+        const Regex = /(\w*)\(([^()]*)\)/g;
 
         return str.replace(Regex, (match, fname, args) => {
 
@@ -92,7 +92,7 @@ export function roll(...dices){
             }
 
             // Converts arguments separated by commas
-            let argArray = args.split(",")
+            let argArray = args.split(",").map(a => a.trim());
 
             // Replace empty elements with 1
             for(let a=0;a<argArray.length;a++){
@@ -130,7 +130,7 @@ export function roll(...dices){
         results[a] = results[a] + " = " + safe_math_eval(results[a].toString())
     }
 
-    if(dices.length == 0){
+    if(dices.length > 1){
         return results
     }else{
         return results[0]
@@ -163,4 +163,34 @@ export function safe_math_eval(text = ""){
     });
 
     return resul
+}
+
+// executes the functions of a string that are part of this library
+export function exec_lib_string(text = ""){
+
+    const allowedFunctions = {
+        roll_dice,
+        roll_vantage,
+        roll_disvantage,
+        roll,
+        safe_math_eval
+    };
+
+    // Find any function in a string
+    const Regex = /(\w*)\(([^()]*)\)/g;
+
+    return text.replace(Regex, (match, fname, args) => {
+
+        // Checks if the function exists in the list of allowed functions
+        if (!allowedFunctions[fname]) {
+            return match;
+        }
+
+        // Converts arguments separated by commas
+        let argArray = args.split(",").map(a => a.trim());
+
+        // Execute the actual function
+        return allowedFunctions[fname](...argArray)
+    });
+    
 }

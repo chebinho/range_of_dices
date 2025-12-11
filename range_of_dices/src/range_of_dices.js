@@ -1,6 +1,6 @@
 // faz um array com todas as possibilidades de um range de valores
 // se existir mais de um range fornecido a função faz a soma das possibilidades
-export function Calculo_em_Range(...range){
+export function range(...range){
 
     function menor_sequencia(valor = 0){
         if (valor < 1) return 0 // remove valores negativos
