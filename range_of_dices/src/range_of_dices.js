@@ -61,7 +61,7 @@ export function range(...range){
                 c+=1
             }
 
-            resul = Soma_Ranges(resul,range_temp)
+            resul = join_ranges(resul,range_temp)
 
         }else{
             Regex_$4 = Number(Regex_$4)
@@ -90,15 +90,15 @@ export function range(...range){
 
             // faz a soma dos multiplos rangens da forma mais eficiente possivel
             if(sequencia[0] == 1){
-                resul = Soma_Ranges(resul,range_temp)
+                resul = join_ranges(resul,range_temp)
                 c = 1
             }
 
             for(let a=2;a<=sequencia[sequencia.length-1];a++){
-                range_temp = Soma_Ranges(range_temp,range_temp)
+                range_temp = join_ranges(range_temp,range_temp)
                 
                 if(a == sequencia[c]){
-                    resul = Soma_Ranges(resul,range_temp)
+                    resul = join_ranges(resul,range_temp)
                     c += 1
                 }
             }
@@ -114,7 +114,7 @@ export function range(...range){
 
 // faz a soma das possibilidades de dois ranges
 // feito pelo chatgpt mas posteriormente adaptado
-export function Soma_Ranges(range_1 = [[]], range_2=[[]]) {
+export function join_ranges(range_1 = [[]], range_2=[[]]) {
 
     // valida se os dados recebidos estão corretos, se não retorna um erro ou um resultado
     if( (Array.isArray(range_1) && (Array.isArray(range_2))) == false ){
@@ -167,4 +167,33 @@ export function Soma_Ranges(range_1 = [[]], range_2=[[]]) {
     }
 
     return resul;
+}
+
+// executes the functions of a string that are part of this library
+export function exec_lib_string(text = ""){
+
+    const allowedFunctions = {
+        range,
+        join_ranges
+    };
+
+    // Find any function in a string
+    const Regex = /(\w*)\(([^()]*)\)/g;
+
+    return text.replace(Regex, (match, fname, args) => {
+
+        // Checks if the function exists in the list of allowed functions
+        if (!allowedFunctions[fname]) {
+            return match;
+        }
+
+        // Converts arguments separated by commas
+        let argArray = args.split(",").map(a => a.trim());
+
+        // Execute the actual function
+        let resul = allowedFunctions[fname](...argArray)
+        console.log(resul)
+        return resul
+    });
+    
 }
