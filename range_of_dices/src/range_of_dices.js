@@ -188,12 +188,14 @@ export function exec_lib_string(text = ""){
         }
 
         // Converts arguments separated by commas
-        let argArray = args.split(",").map(a => a.trim());
+        let argArray = args.split(",");
+
+        resul = join_ranges(resul , allowedFunctions[fname](...argArray))
+        //console.log(resul)
+
 
         // Execute the actual function
-        let resul = allowedFunctions[fname](...argArray)
-        console.log(resul)
-        return resul
+        return allowedFunctions[fname](...argArray)
     });
-    
+
 }

@@ -74,20 +74,26 @@ export function roll_disvantage(amount=1, biggest_face=20, smaller_face=1){
 // Ex: roll("1d20 + 10 - 1d6") --> 15 + 10 - 3 = 22
 export function roll(...dices){
 
-    const allowedFunctions = {
+    const allowedFunctions = [
         roll_dice,
         roll_vantage,
         roll_disvantage,
-    };
+    ];
 
     function exec_func_string(str){
         // Find any function in a string
-        const Regex = /(\w*)\(([^()]*)\)/g;
+        const Regex = /([a-zA-Z]\w*)\(([^()]*)\)/g;
 
         return str.replace(Regex, (match, fname, args) => {
 
             // Checks if the function exists in the list of allowed functions
-            if (!allowedFunctions[fname]) {
+            let find = false
+            for(let a=0;a<allowedFunctions.length;a++){
+                if(allowedFunctions[a].name === fname){
+                    find = a
+                }
+            }
+            if(find === false){
                 return match;
             }
 
@@ -103,7 +109,7 @@ export function roll(...dices){
             }
 
             // Execute the actual function
-            return allowedFunctions[fname](...argArray)
+            return allowedFunctions[find](...argArray)
         });
     }
 
@@ -127,7 +133,9 @@ export function roll(...dices){
 
         // execute the functions and replaces them with the results
         results[a] = exec_func_string(results[a])
-        results[a] = results[a] + " = " + safe_math_eval(results[a].toString())
+        if(isNaN(results[a])){
+            results[a] = results[a] + " = " + safe_math_eval(results[a])
+        }
     }
 
     if(dices.length > 1){
@@ -168,29 +176,35 @@ export function safe_math_eval(text = ""){
 // executes the functions of a string that are part of this library
 export function exec_lib_string(text = ""){
 
-    const allowedFunctions = {
+    const allowedFunctions = [
         roll_dice,
         roll_vantage,
         roll_disvantage,
         roll,
         safe_math_eval
-    };
+    ]
 
     // Find any function in a string
-    const Regex = /(\w*)\(([^()]*)\)/g;
+    const Regex = /([a-zA-Z]\w*)\(([^()]*)\)/g;
 
     return text.replace(Regex, (match, fname, args) => {
 
         // Checks if the function exists in the list of allowed functions
-        if (!allowedFunctions[fname]) {
+        let find = false
+        for(let a=0;a<allowedFunctions.length;a++){
+            if(allowedFunctions[a].name === fname){
+                find = a
+            }
+        }
+        if(find === false){
             return match;
         }
 
         // Converts arguments separated by commas
-        let argArray = args.split(",").map(a => a.trim());
+        args = args.split(",").map(a => a.trim());
 
         // Execute the actual function
-        return allowedFunctions[fname](...argArray)
+        return allowedFunctions[find](...args)
     });
     
 }
