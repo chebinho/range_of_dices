@@ -149,15 +149,16 @@ export function roll(...dices){
 export function safe_math_eval(text = ""){
 
     // Find mathematical expressions in parentheses, such as “(10 + 2 * 3)”. 
-    const Regex_1 = /\(( *[0-9\.]+ *( *[\+\-\*\/\%]\*? *[0-9\.]+)* *)\)/g
+    const Regex_1 = /\(( *-?\d+(\.\d+)?(e[\+\-]?\d+)? *( *([\+\-\*\/\%]|\*\*) *-?\d+(\.\d+)?(e[\+\-]?\d+)?)* *)\)/g
     // Find mathematical expressions outside parentheses, such as “13 + 5 * 2.”
-    const Regex_2 = /( *[0-9\.]+( *[\+\-\*\/\%]\*? *[0-9\.]+)+)/g
+    const Regex_2 = /(-?\d+(\.\d+)?(e[\+\-]?\d+)?( *([\+\-\*\/\%]|\*\*) *-?\d+(\.\d+)?)+(e[\+\-]?\d+)?)/g
 
     let last_resul = ""
     let resul = text
 
     // solve all equations in parentheses until there are no more
-    while(last_resul != resul){
+    let guard = 0;
+    while ((last_resul !== resul) && (guard++ < 100)) {
         last_resul = resul
 
         resul = resul.replace(Regex_1, (match) => {
