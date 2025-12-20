@@ -1,17 +1,21 @@
-// faz um array com todas as possibilidades de um range de valores
-// se existir mais de um range fornecido a função faz a soma das possibilidades
+// this function creates an array with the number of possibilities for each possible value
+// the first value represents the “face” of a dice and the second value represents how many times that value appears
+// and if there is more than one dice within the function, the values will all be added together
+// ex: range("1d4") -> [[1,1], [2,1], [3,1], [4,1]]
 export function range(...range){
 
-    function menor_sequencia(valor = 0){
-        if (valor < 1) return 0 // remove valores negativos
+    // This function is used to search for the sequence of ranges that, when added together, will return a sum of specific ranges
+    // ex: smallest_sequence(1000) -> [4, 6, 7, 8, 9, 10]
+    function smallest_sequence(valor = 0){
+        if (valor < 1) return 0 // blocks negative values
 
-        // obtem o menor valor mais proximo dentro da sequencia 2^0,2^1,2^2,2^3,...
+        // obtain the smallest value closest to the sequence 2^0, 2^1, 2^2, 2^3, ...
         let min = Math.floor(Math.log2(valor))
 
         let resul = []
         resul[resul.length] = min+1
 
-        // busca o resto anterior e repete o calculo anterior até que o resto vire 0
+        // search for the previous remainder and repeat the previous calculation until the remainder becomes 0
         let resto = valor - (2**min)
 
         while(resto > 0){
@@ -24,39 +28,35 @@ export function range(...range){
         return resul.reverse()
     }
 
-    // recebe os valores em pares ou trios que são separados em duas variaveis
-    const Regex = /(-?[0-9]+)[^0-9\n\-]+(-?[0-9]+)([^0-9\n\-]+(-?[0-9]+))?/
-
-    // $1 = valor um do range ou quantidade de dados que seram jogados
-    // $2 = valor dois ou um dependendo se o $4 existir
-    // $4 = valor dois
+    // separates the values received into three other numeric variables
+    const Regex = /((-?\d+)d)?(-?\d+)(_(-?\d+))?/gm
 
     let resul = [[]]
 
     for(let a=0;a<range.length;a++){
 
-        let Regex_$4 = range[a].replace(Regex, "$4");
-        let Regex_$1 = Number(range[a].replace(Regex, "$1"));
-        let Regex_$2 = Number(range[a].replace(Regex, "$2"));
+        let amount = range[a].replace(Regex, "$2")
+        let greater_val = Number(range[a].replace(Regex, "$3"))
+        let lowest_val = range[a].replace(Regex, "$5")
 
-        if(Regex_$4 == ""){
+        // correct the values obtained if necessary
+        if((amount == "") || (amount <= 0)){
+            amount = 1
+        }else{
+            amount = Number(amount)
+        }
+        if((lowest_val == "")){
+            lowest_val = 1
+        }else{
+            lowest_val = Number(lowest_val)
+        }
 
-            let menor_val = 0
-            let maior_val = 0
-
-            // verifica qual é o maior e menor valor
-            if(Regex_$1 < Regex_$2){
-                menor_val = Regex_$1
-                maior_val = Regex_$2
-            }else{
-                menor_val = Regex_$2
-                maior_val = Regex_$1
-            }
-            
-            // cria uma range temporario simples e une ele com o resul
+        // calculates the range in the correct format 
+        if(amount == 1){
+            // creates a simple temporary range and joins it with the result
             let range_temp = [[]]
             let c = 0
-            for(let b=menor_val;b<=maior_val;b++){
+            for(let b=lowest_val;b<=greater_val;b++){
                 range_temp[c] = [b,1]
                 c+=1
             }
@@ -64,49 +64,33 @@ export function range(...range){
             resul = join_ranges(resul,range_temp)
 
         }else{
-            Regex_$4 = Number(Regex_$4)
-
-            let menor_val = 0
-            let maior_val = 0
-            let sequencia = menor_sequencia(Regex_$1)
-
-            // verifica qual é o maior e menor valor
-            if(Regex_$2 < Regex_$4){
-                menor_val = Regex_$2
-                maior_val = Regex_$4
-            }else{
-                menor_val = Regex_$4
-                maior_val = Regex_$2
-            }
-
-            // cria uma range temporario simples
+            // creates a simple temporary range
             let range_temp = [[]]
             let c = 0
-            for(let b=menor_val;b<=maior_val;b++){
+            for(let b=lowest_val;b<=greater_val;b++){
                 range_temp[c] = [b,1]
                 c+=1
             }
             c = 0
 
-            // faz a soma dos multiplos rangens da forma mais eficiente possivel
-            if(sequencia[0] == 1){
+            // search for the smallest sequence to make the range
+            let sequence = smallest_sequence(amount)
+
+            // adds up the equal multiples in the most efficient way possible
+            if(sequence[0] == 1){
                 resul = join_ranges(resul,range_temp)
                 c = 1
             }
 
-            for(let a=2;a<=sequencia[sequencia.length-1];a++){
+            for(let a=2;a<=sequence[sequence.length-1];a++){
                 range_temp = join_ranges(range_temp,range_temp)
                 
-                if(a == sequencia[c]){
+                if(a == sequence[c]){
                     resul = join_ranges(resul,range_temp)
                     c += 1
                 }
             }
-
-            return resul
-
         }
-
     }
 
     return resul
