@@ -96,12 +96,56 @@ export function range(...range){
     return resul
 }
 
-// faz a soma das possibilidades de dois ranges
-// feito pelo chatgpt mas posteriormente adaptado
-export function join_ranges(range_1 = [[]], range_2=[[]]) {
+export function join_ranges2(range_1 = [[]], range_2 = [[]]) {
 
     // valida se os dados recebidos estão corretos, se não retorna um erro ou um resultado
-    if( (Array.isArray(range_1) && (Array.isArray(range_2))) == false ){
+    if( (Array.isArray(range_1) && (Array.isArray(range_2))) == false){
+        return null
+    }else if(Number.isInteger(range_1[0][0]) == false){
+        if(Number.isInteger(range_2[0][0]) == false){
+            return null
+        }else{
+            return range_2
+        }
+    }else if(Number.isInteger(range_2[0][0]) == false){
+        if(Number.isInteger(range_1[0][0]) == false){
+            return null
+        }else{
+            return range_1
+        }
+    }
+
+    const coluns = range_1.length
+    const lines = range_2.length
+
+    let resul = [[]]
+
+    // define os valores possiveis para as faces
+    let a 
+    for(a=0;a<coluns;a++){
+        resul[a] = [range_1[a][0] + range_2[0][0],0]
+    }
+    a -= 1
+    for(let b=0;b<lines;b++){
+        resul[b+a] = [range_1[a][0] + range_2[b][0],0]
+    }
+
+
+    
+
+    return resul
+}
+
+console.log(range("2d20"))
+console.log(" - - - - - - - - ")
+console.log(join_ranges2(range("1d20"),range("1d20")))
+
+// faz a soma das possibilidades de dois ranges
+// feito pelo chatgpt mas posteriormente adaptado
+export function join_ranges(range_1 = [[]], range_2 = [[]]) {
+
+    // valida se os dados recebidos estão corretos, se não retorna um erro ou um resultado
+    if( (Array.isArray(range_1) && (Array.isArray(range_2))) == false){
         return null
     }else if(Number.isInteger(range_1[0][0]) == false){
         if(Number.isInteger(range_2[0][0]) == false){
