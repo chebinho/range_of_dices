@@ -115,30 +115,42 @@ export function join_ranges2(range_1 = [[]], range_2 = [[]]) {
         }
     }
 
-    const coluns = range_1.length
-    const lines = range_2.length
+    let sequence_r1 = []
+    let sequence_r2 = []
+    let lest_val = 0
 
     let resul = [[]]
 
     // define os valores possiveis para as faces
     let a 
-    for(a=0;a<coluns;a++){
+    for(a=0;a<range_1.length;a++){
         resul[a] = [range_1[a][0] + range_2[0][0],0]
+
+        // determina a diferença entre os valores
+        sequence_r1[a] = range_1[a][0] - lest_val
+        lest_val = range_1[a][0]
     }
     a -= 1
-    for(let b=0;b<lines;b++){
+    lest_val = 0
+    for(let b=0;b<range_2.length;b++){
         resul[b+a] = [range_1[a][0] + range_2[b][0],0]
+
+        // determina a diferença entre os valores
+        sequence_r2[b] = range_2[b][0] - lest_val
+        lest_val = range_2[b][0]
     }
 
 
-    
+    console.log(sequence_r1)
+    console.log(sequence_r2)
+
 
     return resul
 }
 
-console.log(range("2d20"))
+console.log(range("4d20"))
 console.log(" - - - - - - - - ")
-console.log(join_ranges2(range("1d20"),range("1d20")))
+console.log(join_ranges2(range("2d20"),range("2d20")))
 
 // faz a soma das possibilidades de dois ranges
 // feito pelo chatgpt mas posteriormente adaptado
