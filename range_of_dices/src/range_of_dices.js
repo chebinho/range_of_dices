@@ -218,6 +218,8 @@ export function join_ranges2(range_1 = [[]], range_2 = [[]]) {
 
     let lest_val = 0
 
+
+    // não funciona em sequencias variadas
     // define os valores possiveis para as faces
     let a 
     for(a=0;a<range_1.length;a++){
@@ -243,23 +245,40 @@ export function join_ranges2(range_1 = [[]], range_2 = [[]]) {
 
 
 
-    let temp_range_2 = temp_range_1
 
-    // cria um array importate para o calculo
-    let temp_range_1 = []
 
-    temp_range_1[0] = range_1[0][1] * range_2[0][1]
-    let espace = 0
-    for(let a=1;a<=sequence_r1.length;a++){
-        for(let b=0;b<sequence_r1[a-1]-1;b++){
-            temp_range_1[a+espace] = 0
-            espace += 1
+    let temp_range_2 = []
+    let espace_2 = 0
+    for(let c=0;c<range_2.length;c++){
+
+        // cria um array importate para o calculo
+        let temp_range_1 = []
+
+        let staps = 0
+        for(let a=0;a<range_1.length;a++){
+
+            temp_range_1[a + staps] = range_1[a][1] * range_2[0][1]
+
+            if(sequence_r1[a] != undefined){
+                for(let e=0;e<sequence_r1[a]-1;e++){
+                    staps += 1
+                    temp_range_1[a + staps] = 0
+                }
+            }
         }
-        temp_range_1[a+espace] = range_1[a][1] * range_2[0][1]
+
+
+        // faz a segunda parte do calculo
+        for(let b=0;b<temp_range_1.length;b++){
+            if(temp_range_2[b+espace_2] != undefined){
+                temp_range_2[b+espace_2] += temp_range_1[b]
+            }else{
+                temp_range_2[b+espace_2] = temp_range_1[b]
+            }
+        }
+        espace_2 += sequence_r2[c]
     }
 
-
-    console.log(temp_range_1)
     console.log(temp_range_2)
     console.log(" - - - - - - - - ")
     console.log(sequence_r1)
@@ -283,12 +302,13 @@ export function convolve(distA, distB) {
 }
 
 //console.log(convolve(range("2d20"),range("2d20")))
-//console.log(" - - - - - - - - ")
-//console.log(range("4d40"))
-//console.log(" - - - - - - - - ")
-//console.log(join_ranges2(range("2d20"),range("2d20")))
+//console.log("===========================")
+console.log(range("4d40"))
+console.log("===========================")
+console.log(join_ranges2(range("2d20"),range("2d20")))
 
-console.log(join_ranges2(d40, range("2d20")))
+//console.log(join_ranges2(d40, range("2d20")))
+//console.log(range("2d20"))
 
 
 // faz a soma das possibilidades de dois ranges
