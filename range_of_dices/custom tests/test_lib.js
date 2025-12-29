@@ -20,4 +20,12 @@ function test(test){
 //test("roll(1d20+5)")
 //console.log(lib_RoD.range("1d20_1"))
 
+
+
+function outro_test(){
+    //lib_RoD.convolve(lib_RoD.range("200d20"),lib_RoD.range("200d20"))
+    console.log(lib_RoD.range("400d20"))
+}
+
 document.getElementById("execute").onclick = () => test();
+document.getElementById("test").onclick = () => outro_test();

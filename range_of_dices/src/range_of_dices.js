@@ -1,3 +1,94 @@
+let d40 = [
+    [
+        1,
+        1
+    ],
+    [
+        3,
+        1
+    ],
+    [
+        5,
+        1
+    ],
+    [
+        7,
+        1
+    ],
+    [
+        9,
+        1
+    ],
+    [
+        11,
+        1
+    ],
+    [
+        13,
+        1
+    ],
+    [
+        15,
+        1
+    ],
+    [
+        17,
+        1
+    ],
+    [
+        19,
+        1
+    ],
+    [
+        21,
+        1
+    ],
+    [
+        23,
+        1
+    ],
+    [
+        25,
+        1
+    ],
+    [
+        27,
+        1
+    ],
+    [
+        29,
+        1
+    ],
+    [
+        31,
+        1
+    ],
+    [
+        33,
+        1
+    ],
+    [
+        35,
+        1
+    ],
+    [
+        37,
+        1
+    ],
+    [
+        39,
+        1
+    ]
+]
+
+
+
+
+
+
+
+
+
 // this function creates an array with the number of possibilities for each possible value
 // the first value represents the “face” of a dice and the second value represents how many times that value appears
 // and if there is more than one dice within the function, the values will all be added together
@@ -38,6 +129,12 @@ export function range(...range){
         let amount = range[a].replace(Regex, "$2")
         let greater_val = Number(range[a].replace(Regex, "$3"))
         let lowest_val = range[a].replace(Regex, "$5")
+
+        if(greater_val < lowest_val){
+            let temp = greater_val
+            greater_val = lowest_val
+            lowest_val = temp
+        }
 
         // correct the values obtained if necessary
         if((amount == "") || (amount <= 0)){
@@ -99,7 +196,7 @@ export function range(...range){
 export function join_ranges2(range_1 = [[]], range_2 = [[]]) {
 
     // valida se os dados recebidos estão corretos, se não retorna um erro ou um resultado
-    if( (Array.isArray(range_1) && (Array.isArray(range_2))) == false){
+    if( (!Array.isArray(range_1) && (!Array.isArray(range_2))) ){
         return null
     }else if(Number.isInteger(range_1[0][0]) == false){
         if(Number.isInteger(range_2[0][0]) == false){
@@ -117,9 +214,9 @@ export function join_ranges2(range_1 = [[]], range_2 = [[]]) {
 
     let sequence_r1 = []
     let sequence_r2 = []
-    let lest_val = 0
-
     let resul = [[]]
+
+    let lest_val = 0
 
     // define os valores possiveis para as faces
     let a 
@@ -140,17 +237,59 @@ export function join_ranges2(range_1 = [[]], range_2 = [[]]) {
         lest_val = range_2[b][0]
     }
 
+    // remove o primeiro valor invalido
+    sequence_r1.shift()
+    sequence_r2.shift()
 
+
+
+    let temp_range_2 = temp_range_1
+
+    // cria um array importate para o calculo
+    let temp_range_1 = []
+
+    temp_range_1[0] = range_1[0][1] * range_2[0][1]
+    let espace = 0
+    for(let a=1;a<=sequence_r1.length;a++){
+        for(let b=0;b<sequence_r1[a-1]-1;b++){
+            temp_range_1[a+espace] = 0
+            espace += 1
+        }
+        temp_range_1[a+espace] = range_1[a][1] * range_2[0][1]
+    }
+
+
+    console.log(temp_range_1)
+    console.log(temp_range_2)
+    console.log(" - - - - - - - - ")
     console.log(sequence_r1)
     console.log(sequence_r2)
-
 
     return resul
 }
 
-console.log(range("4d20"))
-console.log(" - - - - - - - - ")
-console.log(join_ranges2(range("2d20"),range("2d20")))
+
+export function convolve(distA, distB) {
+  const result = new Map();
+
+  for (const [va, ca] of distA) {
+    for (const [vb, cb] of distB) {
+      const sum = va + vb;
+      result.set(sum, (result.get(sum) || 0) + ca * cb);
+    }
+  }
+
+  return [...result.entries()].sort((a, b) => a[0] - b[0]);
+}
+
+//console.log(convolve(range("2d20"),range("2d20")))
+//console.log(" - - - - - - - - ")
+//console.log(range("4d40"))
+//console.log(" - - - - - - - - ")
+//console.log(join_ranges2(range("2d20"),range("2d20")))
+
+console.log(join_ranges2(d40, range("2d20")))
+
 
 // faz a soma das possibilidades de dois ranges
 // feito pelo chatgpt mas posteriormente adaptado
