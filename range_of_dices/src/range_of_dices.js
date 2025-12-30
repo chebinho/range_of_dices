@@ -218,8 +218,6 @@ export function join_ranges2(range_1 = [[]], range_2 = [[]]) {
 
     let lest_val = 0
 
-
-    // não funciona em sequencias variadas
     // define os valores possiveis para as faces
     let a 
     for(a=0;a<range_1.length;a++){
@@ -243,10 +241,6 @@ export function join_ranges2(range_1 = [[]], range_2 = [[]]) {
     sequence_r1.shift()
     sequence_r2.shift()
 
-
-
-
-
     let temp_range_2 = []
     let espace_2 = 0
     for(let c=0;c<range_2.length;c++){
@@ -257,7 +251,7 @@ export function join_ranges2(range_1 = [[]], range_2 = [[]]) {
         let staps = 0
         for(let a=0;a<range_1.length;a++){
 
-            temp_range_1[a + staps] = range_1[a][1] * range_2[0][1]
+            temp_range_1[a + staps] = range_1[a][1] * range_2[c][1]
 
             if(sequence_r1[a] != undefined){
                 for(let e=0;e<sequence_r1[a]-1;e++){
@@ -266,7 +260,6 @@ export function join_ranges2(range_1 = [[]], range_2 = [[]]) {
                 }
             }
         }
-
 
         // faz a segunda parte do calculo
         for(let b=0;b<temp_range_1.length;b++){
@@ -279,10 +272,9 @@ export function join_ranges2(range_1 = [[]], range_2 = [[]]) {
         espace_2 += sequence_r2[c]
     }
 
-    console.log(temp_range_2)
-    console.log(" - - - - - - - - ")
-    console.log(sequence_r1)
-    console.log(sequence_r2)
+    for(let a=0;a<resul.length;a++){
+        resul[a][1] = temp_range_2[a]
+    }
 
     return resul
 }
@@ -303,9 +295,9 @@ export function convolve(distA, distB) {
 
 //console.log(convolve(range("2d20"),range("2d20")))
 //console.log("===========================")
-console.log(range("4d40"))
-console.log("===========================")
-console.log(join_ranges2(range("2d20"),range("2d20")))
+//console.log(range("4d20"))
+//console.log("===========================")
+//console.log(join_ranges2(range("2d20"),range("2d20")))
 
 //console.log(join_ranges2(d40, range("2d20")))
 //console.log(range("2d20"))
