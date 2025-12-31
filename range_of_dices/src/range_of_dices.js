@@ -193,7 +193,7 @@ export function range(...range){
     return resul
 }
 
-export function join_ranges2(range_1 = [[]], range_2 = [[]]) {
+export function join_ranges(range_1 = [[]], range_2 = [[]]) {
 
     // valida se os dados recebidos estão corretos, se não retorna um erro ou um resultado
     if( (!Array.isArray(range_1) && (!Array.isArray(range_2))) ){
@@ -272,25 +272,16 @@ export function join_ranges2(range_1 = [[]], range_2 = [[]]) {
         espace_2 += sequence_r2[c]
     }
 
-    for(let a=0;a<resul.length;a++){
-        resul[a][1] = temp_range_2[a]
+    // remove os valores iguais a 0
+    let count = 0
+    for(let a=0;a<temp_range_2.length;a++){
+        if(temp_range_2[a] != 0){
+            resul[count][1] = temp_range_2[a]
+            count += 1
+        }
     }
 
     return resul
-}
-
-
-export function convolve(distA, distB) {
-  const result = new Map();
-
-  for (const [va, ca] of distA) {
-    for (const [vb, cb] of distB) {
-      const sum = va + vb;
-      result.set(sum, (result.get(sum) || 0) + ca * cb);
-    }
-  }
-
-  return [...result.entries()].sort((a, b) => a[0] - b[0]);
 }
 
 //console.log(convolve(range("2d20"),range("2d20")))
@@ -299,13 +290,13 @@ export function convolve(distA, distB) {
 //console.log("===========================")
 //console.log(join_ranges2(range("2d20"),range("2d20")))
 
-//console.log(join_ranges2(d40, range("2d20")))
+console.log(join_ranges(d40, d40))
 //console.log(range("2d20"))
 
 
 // faz a soma das possibilidades de dois ranges
 // feito pelo chatgpt mas posteriormente adaptado
-export function join_ranges(range_1 = [[]], range_2 = [[]]) {
+export function join_ranges_old(range_1 = [[]], range_2 = [[]]) {
 
     // valida se os dados recebidos estão corretos, se não retorna um erro ou um resultado
     if( (Array.isArray(range_1) && (Array.isArray(range_2))) == false){
