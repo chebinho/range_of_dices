@@ -1,93 +1,22 @@
-let d40 = [
-    [
-        1,
-        1
-    ],
-    [
-        3,
-        1
-    ],
-    [
-        5,
-        1
-    ],
-    [
-        7,
-        1
-    ],
-    [
-        9,
-        1
-    ],
-    [
-        11,
-        1
-    ],
-    [
-        13,
-        1
-    ],
-    [
-        15,
-        1
-    ],
-    [
-        17,
-        1
-    ],
-    [
-        19,
-        1
-    ],
-    [
-        21,
-        1
-    ],
-    [
-        23,
-        1
-    ],
-    [
-        25,
-        1
-    ],
-    [
-        27,
-        1
-    ],
-    [
-        29,
-        1
-    ],
-    [
-        31,
-        1
-    ],
-    [
-        33,
-        1
-    ],
-    [
-        35,
-        1
-    ],
-    [
-        37,
-        1
-    ],
-    [
-        39,
-        1
-    ]
-]
+// cria um renge simples com o valor das possibilidades em um para todos os valores possiveis
+export function simple_range(biggest_val=20, smaller_val=1, gap=1){
 
+    if(biggest_val < smaller_val){
+        let temp = biggest_val
+        biggest_val = smaller_val
+        smaller_val = temp
+    }
 
+    let resul = [[]]
 
+    let b = 0
+    for(let a=smaller_val;a<=biggest_val;a+=gap){
+        resul[b] = [a,1]
+        b+=1
+    }
 
-
-
-
-
+    return resul
+}
 
 // this function creates an array with the number of possibilities for each possible value
 // the first value represents the “face” of a dice and the second value represents how many times that value appears
@@ -196,6 +125,8 @@ export function range(...range){
 export function join_ranges(range_1 = [[]], range_2 = [[]]) {
 
     // valida se os dados recebidos estão corretos, se não retorna um erro ou um resultado
+    if (!Array.isArray(range_1[0]) || !Array.isArray(range_2[0])) return null;
+
     if( (!Array.isArray(range_1) && (!Array.isArray(range_2))) ){
         return null
     }else if(Number.isInteger(range_1[0][0]) == false){
@@ -283,16 +214,6 @@ export function join_ranges(range_1 = [[]], range_2 = [[]]) {
 
     return resul
 }
-
-//console.log(convolve(range("2d20"),range("2d20")))
-//console.log("===========================")
-//console.log(range("4d20"))
-//console.log("===========================")
-//console.log(join_ranges2(range("2d20"),range("2d20")))
-
-console.log(join_ranges(d40, d40))
-//console.log(range("2d20"))
-
 
 // faz a soma das possibilidades de dois ranges
 // feito pelo chatgpt mas posteriormente adaptado
