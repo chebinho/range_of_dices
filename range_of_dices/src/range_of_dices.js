@@ -50,6 +50,7 @@ export function range(...range){
 
     // separates the values received into three other numeric variables
     const Regex = /((-?\d+)d)?(-?\d+)(_(-?\d+))?/gm
+    // ((-?\d+)d)?(-?\d+)(\.\.\.(-?\d+))?(_(-?\d+))?
 
     let resul = [[]]
 
