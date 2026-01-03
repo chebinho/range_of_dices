@@ -26,7 +26,8 @@ export function simple_range(biggest_val=20, smaller_val=1, gap=1, possibility=1
     return resul
 }
 
-console.log(join_ranges(simple_range(100,0,2),simple_range(100,1,3)))
+console.log(convolve(simple_range(-20,1,2),simple_range(-10,1,1)))
+//console.log(convolve_ranges(simple_range(20,1,2),simple_range(10,1,1)))
 
 // this function creates an array with the number of possibilities for each possible value
 // the first value represents the “face” of a dice and the second value represents how many times that value appears
@@ -91,7 +92,7 @@ export function range(...range){
 
         if(amount == 1){
             // make the range and joins it with the result
-            resul = join_ranges(resul,simple_range(greater_val,lowest_val))
+            resul = join_ranges_old(resul,simple_range(greater_val,lowest_val))
 
         }else{
 
@@ -103,15 +104,15 @@ export function range(...range){
             // adds up the equal multiples in the most efficient way possible
             let c = 0
             if(sequence[0] == 1){
-                resul = join_ranges(resul,range_temp)
+                resul = join_ranges_old(resul,range_temp)
                 c = 1
             }
 
             for(let a=2;a<=sequence[sequence.length-1];a++){
-                range_temp = join_ranges(range_temp,range_temp)
+                range_temp = join_ranges_old(range_temp,range_temp)
                 
                 if(a == sequence[c]){
-                    resul = join_ranges(resul,range_temp)
+                    resul = join_ranges_old(resul,range_temp)
                     c += 1
                 }
             }
@@ -121,19 +122,83 @@ export function range(...range){
     return resul
 }
 
-export function convolve(distA, distB) {
-  const result = new Map();
+export function convolve(range_1 = [[]], range_2 = [[]]){
+    // validates whether the received data is correct
+    // if not, returns an error or one of the valid results
+    if (!Array.isArray(range_1[0]) || !Array.isArray(range_2[0])) return null;
 
-  for (const [va, ca] of distA) {
-    for (const [vb, cb] of distB) {
-      const sum = va + vb;
-      result.set(sum, (result.get(sum) || 0) + ca * cb);
+    if( (!Array.isArray(range_1) && (!Array.isArray(range_2))) ){
+        return null
+    }else if(!Number.isInteger(range_1[0][0])){
+        if(!Number.isInteger(range_2[0][0])){
+            return null
+        }else{
+            return range_2
+        }
+    }else if(!Number.isInteger(range_2[0][0])){
+        if(!Number.isInteger(range_1[0][0])){
+            return null
+        }else{
+            return range_1
+        }
     }
-  }
 
-  return [...result.entries()].sort((a, b) => a[0] - b[0]);
+    let resul = {}
+
+    for(let b=0;b<range_2.length;b++){
+        let temp_resul = {}
+
+        for(let a=0;a<range_1.length;a++){
+            temp_resul[range_1[a][0]+range_2[b][0]] = range_1[a][1]
+        }
+
+        Object.entries(temp_resul).forEach(([type, value]) => {
+            if (resul[type] === undefined) {
+                resul[type] = value;
+            } else {
+                resul[type] += value;
+            }
+        });
+    }
+
+    return resul
 }
 
+export function convolve_ranges(range_1 = [[]], range_2 = [[]]) {
+    // validates whether the received data is correct
+    // if not, returns an error or one of the valid results
+    if (!Array.isArray(range_1[0]) || !Array.isArray(range_2[0])) return null;
+
+    if( (!Array.isArray(range_1) && (!Array.isArray(range_2))) ){
+        return null
+    }else if(!Number.isInteger(range_1[0][0])){
+        if(!Number.isInteger(range_2[0][0])){
+            return null
+        }else{
+            return range_2
+        }
+    }else if(!Number.isInteger(range_2[0][0])){
+        if(!Number.isInteger(range_1[0][0])){
+            return null
+        }else{
+            return range_1
+        }
+    }
+
+    // solution found with GPT chat
+    // calculates all sums of terms in ranges in an object, is O(n²)
+    const result = new Map();
+
+    for (const [va, ca] of range_1) {
+        for (const [vb, cb] of range_2) {
+            const sum = va + vb;
+            result.set(sum, (result.get(sum) || 0) + ca * cb);
+        }
+    }
+
+    // converts the result object into the standard range array
+    return [...result.entries()].sort((a, b) => a[0] - b[0]);
+}
 
 export function join_ranges(range_1 = [[]], range_2 = [[]]) {
 
@@ -210,20 +275,17 @@ export function join_ranges(range_1 = [[]], range_2 = [[]]) {
         espace_2 += sequence_r2[c]
     }
 
-    console.log(resul)
-    //console.log(temp_range_2)
-
     // remove os valores iguais a 0
     let count = 0
+    let count2 = range_1[0][1] + range_2[0][1]
     for(let a=0;a<temp_range_2.length;a++){
         if(temp_range_2[a] != 0){
-            resul[count] = [count,temp_range_2[a]]
+            resul[count] = [count2,temp_range_2[a]]
             count += 1
         }
+        count2 += 1
     }
     
-    
-
     return resul
 }
 
