@@ -1,22 +1,32 @@
-// cria um renge simples com o valor das possibilidades em um para todos os valores possiveis
-export function simple_range(biggest_val=20, smaller_val=1, gap=1){
+// creates a simple range with the value of possibilities set to one value for all possibilities
+export function simple_range(biggest_val=20, smaller_val=1, gap=1, possibility=1){
 
+    // ensures that biggest_val and smaller_val are correct
     if(biggest_val < smaller_val){
         let temp = biggest_val
         biggest_val = smaller_val
         smaller_val = temp
     }
 
-    let resul = [[]]
+    // prevents the gap between values from being negative or 0
+    if(gap==0){
+        return Infinity
+    }else if(gap<0){
+        gap = 0 - gap
+    }
 
+    // creates the range
+    let resul = [[]]
     let b = 0
     for(let a=smaller_val;a<=biggest_val;a+=gap){
-        resul[b] = [a,1]
+        resul[b] = [a,possibility]
         b+=1
     }
 
     return resul
 }
+
+console.log(join_ranges(simple_range(100,0,2),simple_range(100,1,3)))
 
 // this function creates an array with the number of possibilities for each possible value
 // the first value represents the “face” of a dice and the second value represents how many times that value appears
@@ -60,6 +70,7 @@ export function range(...range){
         let greater_val = Number(range[a].replace(Regex, "$3"))
         let lowest_val = range[a].replace(Regex, "$5")
 
+        // ensures that greater_val and lowest_val are correct
         if(greater_val < lowest_val){
             let temp = greater_val
             greater_val = lowest_val
@@ -78,32 +89,19 @@ export function range(...range){
             lowest_val = Number(lowest_val)
         }
 
-        // calculates the range in the correct format 
         if(amount == 1){
-            // creates a simple temporary range and joins it with the result
-            let range_temp = [[]]
-            let c = 0
-            for(let b=lowest_val;b<=greater_val;b++){
-                range_temp[c] = [b,1]
-                c+=1
-            }
-
-            resul = join_ranges(resul,range_temp)
+            // make the range and joins it with the result
+            resul = join_ranges(resul,simple_range(greater_val,lowest_val))
 
         }else{
-            // creates a simple temporary range
-            let range_temp = [[]]
-            let c = 0
-            for(let b=lowest_val;b<=greater_val;b++){
-                range_temp[c] = [b,1]
-                c+=1
-            }
-            c = 0
 
+            let range_temp = simple_range(greater_val,lowest_val)
+            
             // search for the smallest sequence to make the range
             let sequence = smallest_sequence(amount)
 
             // adds up the equal multiples in the most efficient way possible
+            let c = 0
             if(sequence[0] == 1){
                 resul = join_ranges(resul,range_temp)
                 c = 1
@@ -122,6 +120,20 @@ export function range(...range){
 
     return resul
 }
+
+export function convolve(distA, distB) {
+  const result = new Map();
+
+  for (const [va, ca] of distA) {
+    for (const [vb, cb] of distB) {
+      const sum = va + vb;
+      result.set(sum, (result.get(sum) || 0) + ca * cb);
+    }
+  }
+
+  return [...result.entries()].sort((a, b) => a[0] - b[0]);
+}
+
 
 export function join_ranges(range_1 = [[]], range_2 = [[]]) {
 
@@ -151,19 +163,12 @@ export function join_ranges(range_1 = [[]], range_2 = [[]]) {
     let lest_val = 0
 
     // define os valores possiveis para as faces
-    let a 
-    for(a=0;a<range_1.length;a++){
-        resul[a] = [range_1[a][0] + range_2[0][0],0]
-
+    for(let a=0;a<range_1.length;a++){
         // determina a diferença entre os valores
         sequence_r1[a] = range_1[a][0] - lest_val
         lest_val = range_1[a][0]
     }
-    a -= 1
-    lest_val = 0
     for(let b=0;b<range_2.length;b++){
-        resul[b+a] = [range_1[a][0] + range_2[b][0],0]
-
         // determina a diferença entre os valores
         sequence_r2[b] = range_2[b][0] - lest_val
         lest_val = range_2[b][0]
@@ -172,6 +177,7 @@ export function join_ranges(range_1 = [[]], range_2 = [[]]) {
     // remove o primeiro valor invalido
     sequence_r1.shift()
     sequence_r2.shift()
+
 
     let temp_range_2 = []
     let espace_2 = 0
@@ -204,14 +210,19 @@ export function join_ranges(range_1 = [[]], range_2 = [[]]) {
         espace_2 += sequence_r2[c]
     }
 
+    console.log(resul)
+    //console.log(temp_range_2)
+
     // remove os valores iguais a 0
     let count = 0
     for(let a=0;a<temp_range_2.length;a++){
         if(temp_range_2[a] != 0){
-            resul[count][1] = temp_range_2[a]
+            resul[count] = [count,temp_range_2[a]]
             count += 1
         }
     }
+    
+    
 
     return resul
 }
