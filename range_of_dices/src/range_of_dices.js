@@ -26,8 +26,8 @@ export function simple_range(biggest_val=20, smaller_val=1, gap=1, possibility=1
     return resul
 }
 
-console.log(convolve(simple_range(-20,1,2),simple_range(-10,1,1)))
-//console.log(convolve_ranges(simple_range(20,1,2),simple_range(10,1,1)))
+console.log(convolve_all(simple_range(-20,1,2),simple_range(-10,1,1)))
+console.log(convolve_ranges(simple_range(-20,1,5),simple_range(-10,1,1)))
 
 // this function creates an array with the number of possibilities for each possible value
 // the first value represents the “face” of a dice and the second value represents how many times that value appears
@@ -92,7 +92,7 @@ export function range(...range){
 
         if(amount == 1){
             // make the range and joins it with the result
-            resul = join_ranges_old(resul,simple_range(greater_val,lowest_val))
+            resul = convolve_all(resul,simple_range(greater_val,lowest_val))
 
         }else{
 
@@ -104,15 +104,15 @@ export function range(...range){
             // adds up the equal multiples in the most efficient way possible
             let c = 0
             if(sequence[0] == 1){
-                resul = join_ranges_old(resul,range_temp)
+                resul = convolve_all(resul,range_temp)
                 c = 1
             }
 
             for(let a=2;a<=sequence[sequence.length-1];a++){
-                range_temp = join_ranges_old(range_temp,range_temp)
+                range_temp = convolve_all(range_temp,range_temp)
                 
                 if(a == sequence[c]){
-                    resul = join_ranges_old(resul,range_temp)
+                    resul = convolve_all(resul,range_temp)
                     c += 1
                 }
             }
@@ -122,43 +122,76 @@ export function range(...range){
     return resul
 }
 
+
+export function convolve_all(range_1 = [[]], range_2 = [[]]){
+    // validates whether the received data is correct
+    // if not, returns an error or one of the valid results
+    if (!Array.isArray(range_1[0]) || !Array.isArray(range_2[0])) return null;
+    if (!Number.isInteger(range_1[0][0])) return range_2;
+    if (!Number.isInteger(range_2[0][0])) return range_1;
+
+    // sempre itera no menor range
+    if (range_1.length > range_2.length) {
+        [range_1, range_2] = [range_2, range_1];
+    }
+
+    const obj_resul = Object.create(null);
+
+    for(let b=0;b<range_2.length;b++){
+        const vb = range_2[b][0];
+        const cb = range_2[b][1];
+
+        for(let a=0;a<range_1.length;a++){
+            const sum = range_1[a][0] + vb;
+            obj_resul[sum] = (obj_resul[sum] || 0) + range_1[a][1] * cb;
+
+        }
+    }
+
+    // converts the result object into the standard range array
+    const keys = Object.keys(obj_resul)
+    keys.sort(function(a, b) { return a - b; })
+    
+    let resul = [[]]
+    for(let a=0;a<keys.length;a++){
+        const k = +keys[a];
+        resul[a] = [k, obj_resul[keys[a]]]
+    }
+
+    return resul
+}
+
 export function convolve(range_1 = [[]], range_2 = [[]]){
     // validates whether the received data is correct
     // if not, returns an error or one of the valid results
     if (!Array.isArray(range_1[0]) || !Array.isArray(range_2[0])) return null;
+    if (!Number.isInteger(range_1[0][0])) return range_2;
+    if (!Number.isInteger(range_2[0][0])) return range_1;
 
-    if( (!Array.isArray(range_1) && (!Array.isArray(range_2))) ){
-        return null
-    }else if(!Number.isInteger(range_1[0][0])){
-        if(!Number.isInteger(range_2[0][0])){
-            return null
-        }else{
-            return range_2
-        }
-    }else if(!Number.isInteger(range_2[0][0])){
-        if(!Number.isInteger(range_1[0][0])){
-            return null
-        }else{
-            return range_1
-        }
-    }
 
-    let resul = {}
+    let obj_resul = {}
 
     for(let b=0;b<range_2.length;b++){
         let temp_resul = {}
 
         for(let a=0;a<range_1.length;a++){
-            temp_resul[range_1[a][0]+range_2[b][0]] = range_1[a][1]
+            temp_resul[range_1[a][0]+range_2[b][0]] = range_1[a][1]*range_2[b][1]
         }
 
         Object.entries(temp_resul).forEach(([type, value]) => {
-            if (resul[type] === undefined) {
-                resul[type] = value;
+            if (obj_resul[type] === undefined) {
+                obj_resul[type] = value;
             } else {
-                resul[type] += value;
+                obj_resul[type] += value;
             }
         });
+    }
+
+    const ordered_sequence = Object.keys(obj_resul).sort(function(a, b) { return a - b; });
+    
+    let resul = [[]]
+    for(let a=0;a<ordered_sequence.length;a++){
+        resul[a] = [Number(ordered_sequence[a]), obj_resul[ordered_sequence[a]]]
     }
 
     return resul
@@ -168,22 +201,8 @@ export function convolve_ranges(range_1 = [[]], range_2 = [[]]) {
     // validates whether the received data is correct
     // if not, returns an error or one of the valid results
     if (!Array.isArray(range_1[0]) || !Array.isArray(range_2[0])) return null;
-
-    if( (!Array.isArray(range_1) && (!Array.isArray(range_2))) ){
-        return null
-    }else if(!Number.isInteger(range_1[0][0])){
-        if(!Number.isInteger(range_2[0][0])){
-            return null
-        }else{
-            return range_2
-        }
-    }else if(!Number.isInteger(range_2[0][0])){
-        if(!Number.isInteger(range_1[0][0])){
-            return null
-        }else{
-            return range_1
-        }
-    }
+    if (!Number.isInteger(range_1[0][0])) return range_2;
+    if (!Number.isInteger(range_2[0][0])) return range_1;
 
     // solution found with GPT chat
     // calculates all sums of terms in ranges in an object, is O(n²)
