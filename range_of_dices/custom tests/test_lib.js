@@ -12,7 +12,7 @@ function test(test){
         text = lib_Roll.exec_lib_string(text)
     }
 
-    //text = lib_RoD.exec_lib_string(text)
+    text = lib_RoD.exec_lib_string(text)
 
     console.log(text)
 }

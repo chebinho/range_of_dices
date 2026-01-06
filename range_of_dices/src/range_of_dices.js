@@ -1,7 +1,19 @@
 // creates a simple range with the value of possibilities set to one value for all possibilities
 export function simple_range(biggest_val=20, smaller_val=1, gap=1, possibility=1){
 
-    // ensures that biggest_val and smaller_val are correct
+    // ensures that all values are numbers
+    // if not, returns null 
+    biggest_val = Number(biggest_val)
+    smaller_val = Number(smaller_val)
+    gap = Number(gap)
+    possibility = Number(possibility)
+
+    if (!Number.isInteger(biggest_val)) return null;
+    if (!Number.isInteger(smaller_val)) return null;
+    if (!Number.isInteger(gap)) return null;
+    if (!Number.isInteger(possibility)) return null;
+
+    // and ensures that biggest_val and smaller_val are correct
     if(biggest_val < smaller_val){
         let temp = biggest_val
         biggest_val = smaller_val
@@ -213,93 +225,40 @@ export function join_ranges_fast(range_1 = [[]], range_2 = [[]], gap = 1){
 
     return resul
 }
-console.log(join_ranges(simple_range(20,1),simple_range(10,1)))
 
-
-// faz a soma das possibilidades de dois ranges
-// feito pelo chatgpt mas posteriormente adaptado
-export function join_ranges_old(range_1 = [[]], range_2 = [[]]) {
-
-    // valida se os dados recebidos estão corretos, se não retorna um erro ou um resultado
-    if( (Array.isArray(range_1) && (Array.isArray(range_2))) == false){
-        return null
-    }else if(Number.isInteger(range_1[0][0]) == false){
-        if(Number.isInteger(range_2[0][0]) == false){
-            return null
-        }else{
-            return range_2
-        }
-    }else if(Number.isInteger(range_2[0][0]) == false){
-        if(Number.isInteger(range_1[0][0]) == false){
-            return null
-        }else{
-            return range_1
-        }
-    }
-
-    const n = range_1.length;  // número de linhas
-    const m = range_2.length;  // número de colunas
-    let resul = [[]]
-
-    const valor_min = range_1[0][0] + range_2[0][0] // menor valor base do resultado
-    let contador = 0
-    // 1 Diagonais que começam na primeira coluna (de baixo para cima)
-    for (let startRow = n - 1; startRow >= 0; startRow--) {
-        let soma = 0;
-        let i = startRow, j = 0;
-        while (i < n && j < m) {
-            soma += range_1[i][1] * range_2[j][1];
-            i++;
-            j++;
-        }
-        
-        resul[contador] = [valor_min+contador,soma]
-        contador+=1
-    }
-
-    // 2 Diagonais que começam na primeira linha (da segunda coluna em diante)
-    for (let startCol = 1; startCol < m; startCol++) {
-        let soma = 0;
-        let i = 0, j = startCol;
-        while (i < n && j < m) {
-            soma += range_1[i][1] * range_2[j][1];
-            i++;
-            j++;
-        }
-        resul[contador] = [valor_min+contador,soma]
-        contador+=1
-    }
-
-    return resul;
-}
 
 // executes the functions of a string that are part of this library
 export function exec_lib_string(text = ""){
 
-    const allowedFunctions = {
+    const allowedFunctions = [
+        simple_range,
         range,
-        join_ranges
-    };
+        join_ranges,
+        join_ranges_all,
+        join_ranges_fast
+    ]
 
     // Find any function in a string
-    const Regex = /(\w*)\(([^()]*)\)/g;
+    const Regex = /([a-zA-Z]\w*)\(([^()]*)\)/g
 
     return text.replace(Regex, (match, fname, args) => {
 
         // Checks if the function exists in the list of allowed functions
-        if (!allowedFunctions[fname]) {
+        let find = false
+        for(let a=0;a<allowedFunctions.length;a++){
+            if(allowedFunctions[a].name === fname){
+                find = a
+            }
+        }
+        if(find === false){
             return match;
         }
 
         // Converts arguments separated by commas
-        let argArray = args.split(",");
-
-        resul = join_ranges(resul , allowedFunctions[fname](...argArray))
-        //console.log(resul)
-
+        args = args.split(",").map(a => a.trim());
 
         // Execute the actual function
-        return allowedFunctions[fname](...argArray)
+        return allowedFunctions[find](...args)
     });
 
 }

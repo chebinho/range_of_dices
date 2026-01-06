@@ -186,7 +186,7 @@ export function exec_lib_string(text = ""){
     ]
 
     // Find any function in a string
-    const Regex = /([a-zA-Z]\w*)\(([^()]*)\)/g;
+    const Regex = /([a-zA-Z]\w*)\(([^()]*)\)/g
 
     return text.replace(Regex, (match, fname, args) => {
 
