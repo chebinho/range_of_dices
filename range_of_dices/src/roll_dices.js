@@ -177,6 +177,8 @@ export function safe_math_eval(text = ""){
 // executes the functions of a string that are part of this library
 export function exec_lib_string(text = ""){
 
+    text = String(text)
+
     const allowedFunctions = [
         roll_dice,
         roll_vantage,
@@ -188,24 +190,32 @@ export function exec_lib_string(text = ""){
     // Find any function in a string
     const Regex = /([a-zA-Z]\w*)\(([^()]*)\)/g
 
-    return text.replace(Regex, (match, fname, args) => {
+    // repeat the code until there are no changes in the result
+    let last_resul = ""
+    let limit = 1000
+    while((last_resul != text) && limit--){
+        last_resul = text
 
-        // Checks if the function exists in the list of allowed functions
-        let find = false
-        for(let a=0;a<allowedFunctions.length;a++){
-            if(allowedFunctions[a].name === fname){
-                find = a
+        text = text.replace(Regex, (match, fname, args) => {
+
+            // Checks if the function exists in the list of allowed functions
+            let find = -1
+            for(let a=0;a<allowedFunctions.length;a++){
+                if(allowedFunctions[a].name === fname){
+                    find = a
+                }
             }
-        }
-        if(find === false){
-            return match;
-        }
+            if(find === -1){
+                return match;
+            }
 
-        // Converts arguments separated by commas
-        args = args.split(",").map(a => a.trim());
+            // Converts arguments separated by commas
+            args = args.split(",").map(a => a.trim());
 
-        // Execute the actual function
-        return allowedFunctions[find](...args)
-    });
+            // Execute the actual function
+            return allowedFunctions[find](...args)
+        });
+    }
     
+    return text
 }

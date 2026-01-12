@@ -230,6 +230,8 @@ export function join_ranges_fast(range_1 = [[]], range_2 = [[]], gap = 1){
 // executes the functions of a string that are part of this library
 export function exec_lib_string(text = ""){
 
+    text = String(text)
+
     const allowedFunctions = [
         simple_range,
         range,
@@ -240,25 +242,57 @@ export function exec_lib_string(text = ""){
 
     // Find any function in a string
     const Regex = /([a-zA-Z]\w*)\(([^()]*)\)/g
+    const Regex_2d = /\[((,?\[[^\[\]]*\])*)\]/g
+    //  /(,?\[[^\[\]]*\])+/g
 
-    return text.replace(Regex, (match, fname, args) => {
+    // repeat the code until there are no changes in the result
+    let last_resul = ""
+    let limit = 1000
+    while((last_resul != text) && limit--){
+        last_resul = text
 
-        // Checks if the function exists in the list of allowed functions
-        let find = false
-        for(let a=0;a<allowedFunctions.length;a++){
-            if(allowedFunctions[a].name === fname){
-                find = a
+        text = text.replace(Regex, (match, fname, args) => {
+
+            // Checks if the function exists in the list of allowed functions
+            let find = -1
+            for(let a=0;a<allowedFunctions.length;a++){
+                if(allowedFunctions[a].name === fname){
+                    find = a
+                }
             }
-        }
-        if(find === false){
-            return match;
-        }
+            if(find === -1){
+                return match;
+            }
 
-        // Converts arguments separated by commas
-        args = args.split(",").map(a => a.trim());
+            // verifica se existe um array 2d dentro da strig
+            const find_array = args.match(Regex_2d);
+            if(find_array !== null){
+                args = find_array.map(s => JSON.parse(s));
 
-        // Execute the actual function
-        return allowedFunctions[find](...args)
-    });
+            }else{
+                // Converts arguments separated by commas
+                args = args.split(",").map(a => {
+                    a = a.trim()
+                    if (!isNaN(a)) return Number(a)
+                    return a
+                })
+            }
 
+            // Execute the actual function
+            const result = allowedFunctions[find](...args)
+
+            if (typeof result === "string") return result
+            if (typeof result === "number") return String(result)
+            return JSON.stringify(result)
+        });
+
+    }
+
+    if(text.match(/^\[((,?\[[^\[\]]*\])*)\]$/) !== null){
+        return JSON.parse(text)
+    }else{
+        return text
+    }
 }
+
+console.log(exec_lib_string("join_ranges(simple_range(20),simple_range(20))"))
