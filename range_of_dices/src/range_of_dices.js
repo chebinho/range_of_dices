@@ -131,6 +131,8 @@ export function range(...range){
     return resul
 }
 
+// todas as funções join_ranges... fazem a soma das possibilidades de 2 ranges
+// verifica qual é a melhor função "join_ranges" mais rapida para resolver o problema
 export function join_ranges(range_1 = [[]], range_2 = [[]]){
     // validates whether the received data is correct
     // if not, returns an error or one of the valid results
@@ -200,8 +202,8 @@ export function join_ranges_fast(range_1 = [[]], range_2 = [[]], gap = 1){
     let r1_length = range_1.length
     let r2_length = range_2.length
 
-    const r1 = range_1.map(v => v[1]);
-    const r2 = range_2.map(v => v[1]);
+    const r1 = range_1.map(v => v[1])
+    const r2 = range_2.map(v => v[1])
 
     let new_size = r1_length + r2_length -1
     let smaller_val = range_1[0][0] + range_2[0][0]
@@ -227,72 +229,120 @@ export function join_ranges_fast(range_1 = [[]], range_2 = [[]], gap = 1){
 }
 
 
-// executes the functions of a string that are part of this library
-export function exec_lib_string(text = ""){
+//converte um range para uma convolução
+export function range_to_convolution(Range = [[]]){
+    let resul = []
 
-    text = String(text)
-
-    const allowedFunctions = [
-        simple_range,
-        range,
-        join_ranges,
-        join_ranges_all,
-        join_ranges_fast
-    ]
-
-    // Find any function in a string
-    const Regex = /([a-zA-Z]\w*)\(([^()]*)\)/g
-    const Regex_2d = /\[((,?\[[^\[\]]*\])*)\]/g
-    //  /(,?\[[^\[\]]*\])+/g
-
-    // repeat the code until there are no changes in the result
-    let last_resul = ""
-    let limit = 1000
-    while((last_resul != text) && limit--){
-        last_resul = text
-
-        text = text.replace(Regex, (match, fname, args) => {
-
-            // Checks if the function exists in the list of allowed functions
-            let find = -1
-            for(let a=0;a<allowedFunctions.length;a++){
-                if(allowedFunctions[a].name === fname){
-                    find = a
-                }
-            }
-            if(find === -1){
-                return match;
-            }
-
-            // verifica se existe um array 2d dentro da strig
-            const find_array = args.match(Regex_2d);
-            if(find_array !== null){
-                args = find_array.map(s => JSON.parse(s));
-
-            }else{
-                // Converts arguments separated by commas
-                args = args.split(",").map(a => {
-                    a = a.trim()
-                    if (!isNaN(a)) return Number(a)
-                    return a
-                })
-            }
-
-            // Execute the actual function
-            const result = allowedFunctions[find](...args)
-
-            if (typeof result === "string") return result
-            if (typeof result === "number") return String(result)
-            return JSON.stringify(result)
-        });
-
+    for(let a=0; a<Range.length; a++){
+        resul[a] = Range[a][0]*Range[a][1]
     }
 
-    if(text.match(/^\[((,?\[[^\[\]]*\])*)\]$/) !== null){
-        return JSON.parse(text)
-    }else{
-        return text
-    }
+    return resul
 }
 
-console.log(exec_lib_string("join_ranges(simple_range(20),simple_range(20))"))
+// executa um calculo para cada igualdade entre os ranges
+export function range_X_range(range_1 = [[]], operator="+",range_2 = [[]]){
+
+    // validates whether the received data is correct
+    // if not, returns an error or one of the valid results
+    if (!Array.isArray(range_1[0]) || !Array.isArray(range_2[0])) return null;
+    if (!Number.isInteger(range_1[0][0])) return range_2;
+    if (!Number.isInteger(range_2[0][0])) return range_1;
+
+    const op = {
+        "+": (a,b) => a + b,
+        "-": (a,b) => a - b,
+        "*": (a,b) => a * b,
+        "/": (a,b) => a / b
+    }[operator];
+
+    if (!op) throw new Error("Invalid operator");
+
+    // variavel que armazenara o resultado final
+    let resul_final = []
+    
+    // verifica se existe a necessidade fazer o calculo para cada celula
+    // se não ouver necesidade os dados são unidos na sequencia do menor para o maior
+    if(range_1[0][0] > range_2[range_2.length-1][0]){
+        resul_final = range_2.concat(range_1)
+        return resul_final
+        
+    }else if(range_2[0][0] > range_1[range_1.length-1][0]){
+        resul_final = range_1.concat(range_2)
+        return resul_final
+    }else{
+
+        // código que faz o calculo nas partes necessarias
+        let limi1 = range_1.length-1
+        let limi2 = range_2.length-1
+        let menor_val = (range_1[0][0] < range_2[0][0]) ? range_1[0][0] : range_2[0][0]
+        let maior_val = (range_1[limi1][0] > range_2[limi2][0]) ? range_1[limi1][0] : range_2[limi2][0]
+
+        let index_resul = 0
+        let index_Range_1 = 0
+        let index_Range_2 = 0
+
+        // loop que percorre todos os valores necessariso
+        for(let a=menor_val; a<=maior_val; a++){
+
+            let valor = 0
+
+            let test_Range_1 = index_Range_1<(limi1+1) ? (range_1[index_Range_1][0] == a) : false
+            let test_Range_2 = index_Range_2<(limi2+1) ? (range_2[index_Range_2][0] == a) : false
+
+            if(test_Range_1 == true){
+                if(test_Range_2 == true){
+                    valor = op(range_1[index_Range_1][1],range_2[index_Range_2][1])
+                    resul_final[index_resul] = [a,valor]
+
+                    index_Range_1 += 1
+                    index_Range_2 += 1
+                    index_resul += 1
+
+                }else{
+                    valor = range_1[index_Range_1][1]
+                    resul_final[index_resul] = [a,valor]
+
+                    index_Range_1 += 1
+                    index_resul += 1
+                }
+            }else{
+                if(test_Range_2 == true){
+                    valor = range_2[index_Range_2][1]
+                    resul_final[index_resul] = [a,valor]
+
+                    index_Range_2 += 1
+                    index_resul += 1
+                }
+            }
+        }
+        return resul_final
+    }
+
+}
+
+export function range_X_range_2(range_1 = [[]], sinal="+",range_2 = [[]]){
+    // validates whether the received data is correct
+    // if not, returns an error or one of the valid results
+    if (!Array.isArray(range_1[0]) || !Array.isArray(range_2[0])) return null;
+    if (!Number.isInteger(range_1[0][0])) return range_2;
+    if (!Number.isInteger(range_2[0][0])) return range_1;
+
+    const op = {
+        "+": (a,b) => a + b,
+        "-": (a,b) => a - b,
+        "*": (a,b) => a * b,
+        "/": (a,b) => a / b
+    }[sinal];
+
+    if (!op) throw new Error("Operador inválido");
+
+    let index_range_1 = 0
+    let index_range_2 = 0
+
+    const resul = []
+
+    return resul
+}
+
+console.log(range_X_range_2( simple_range(20,1,2,10),"*",simple_range(20,1,1,10) ))
