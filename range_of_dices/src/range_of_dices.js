@@ -240,109 +240,58 @@ export function range_to_convolution(Range = [[]]){
     return resul
 }
 
-// executa um calculo para cada igualdade entre os ranges
-export function range_X_range(range_1 = [[]], operator="+",range_2 = [[]]){
-
+// performs a mathematical operation for each equality between ranges
+export function range_X_range(range_1 = [[]], sinal="+",range_2 = [[]]){
     // validates whether the received data is correct
     // if not, returns an error or one of the valid results
     if (!Array.isArray(range_1[0]) || !Array.isArray(range_2[0])) return null;
     if (!Number.isInteger(range_1[0][0])) return range_2;
     if (!Number.isInteger(range_2[0][0])) return range_1;
 
+    // creates the op function to perform the calculation when necessary
     const op = {
         "+": (a,b) => a + b,
         "-": (a,b) => a - b,
         "*": (a,b) => a * b,
-        "/": (a,b) => a / b
-    }[operator];
-
-    if (!op) throw new Error("Invalid operator");
-
-    // variavel que armazenara o resultado final
-    let resul_final = []
-    
-    // verifica se existe a necessidade fazer o calculo para cada celula
-    // se não ouver necesidade os dados são unidos na sequencia do menor para o maior
-    if(range_1[0][0] > range_2[range_2.length-1][0]){
-        resul_final = range_2.concat(range_1)
-        return resul_final
-        
-    }else if(range_2[0][0] > range_1[range_1.length-1][0]){
-        resul_final = range_1.concat(range_2)
-        return resul_final
-    }else{
-
-        // código que faz o calculo nas partes necessarias
-        let limi1 = range_1.length-1
-        let limi2 = range_2.length-1
-        let menor_val = (range_1[0][0] < range_2[0][0]) ? range_1[0][0] : range_2[0][0]
-        let maior_val = (range_1[limi1][0] > range_2[limi2][0]) ? range_1[limi1][0] : range_2[limi2][0]
-
-        let index_resul = 0
-        let index_Range_1 = 0
-        let index_Range_2 = 0
-
-        // loop que percorre todos os valores necessariso
-        for(let a=menor_val; a<=maior_val; a++){
-
-            let valor = 0
-
-            let test_Range_1 = index_Range_1<(limi1+1) ? (range_1[index_Range_1][0] == a) : false
-            let test_Range_2 = index_Range_2<(limi2+1) ? (range_2[index_Range_2][0] == a) : false
-
-            if(test_Range_1 == true){
-                if(test_Range_2 == true){
-                    valor = op(range_1[index_Range_1][1],range_2[index_Range_2][1])
-                    resul_final[index_resul] = [a,valor]
-
-                    index_Range_1 += 1
-                    index_Range_2 += 1
-                    index_resul += 1
-
-                }else{
-                    valor = range_1[index_Range_1][1]
-                    resul_final[index_resul] = [a,valor]
-
-                    index_Range_1 += 1
-                    index_resul += 1
-                }
-            }else{
-                if(test_Range_2 == true){
-                    valor = range_2[index_Range_2][1]
-                    resul_final[index_resul] = [a,valor]
-
-                    index_Range_2 += 1
-                    index_resul += 1
-                }
-            }
-        }
-        return resul_final
-    }
-
-}
-
-export function range_X_range_2(range_1 = [[]], sinal="+",range_2 = [[]]){
-    // validates whether the received data is correct
-    // if not, returns an error or one of the valid results
-    if (!Array.isArray(range_1[0]) || !Array.isArray(range_2[0])) return null;
-    if (!Number.isInteger(range_1[0][0])) return range_2;
-    if (!Number.isInteger(range_2[0][0])) return range_1;
-
-    const op = {
-        "+": (a,b) => a + b,
-        "-": (a,b) => a - b,
-        "*": (a,b) => a * b,
+        "x": (a,b) => a * b,
+        "X": (a,b) => a * b,
+        "%": (a,b) => a % b,
         "/": (a,b) => a / b
     }[sinal];
-
     if (!op) throw new Error("Operador inválido");
 
     let index_range_1 = 0
     let index_range_2 = 0
 
+    const max_range_1 = range_1.length
+    const max_range_2 = range_2.length
+
     const resul = []
+
+    // forms the result following the following logic
+    // when the “faces” of the range are equal, the op function is executed
+    // if not, the value is simply added to the result 
+    while( (index_range_1<max_range_1)||(index_range_2<max_range_2) ){
+
+        const [x1, v1] = (range_1[index_range_1] != undefined) ? range_1[index_range_1] : [Infinity]
+        const [x2, v2] = (range_2[index_range_2] != undefined) ? range_2[index_range_2] : [Infinity]   
+
+        if (x1 === x2) {
+            resul.push([x1, op(v1, v2)])
+
+            index_range_1++
+            index_range_2++
+        } else if (x1 < x2) {
+            resul.push([x1, v1])
+
+            index_range_1++
+        } else {
+            resul.push([x2, v2])
+
+            index_range_2++
+        }
+
+    }
 
     return resul
 }
-
-console.log(range_X_range_2( simple_range(20,1,2,10),"*",simple_range(20,1,1,10) ))
