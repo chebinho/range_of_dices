@@ -1,5 +1,5 @@
 // creates a simple range with the value of possibilities set to one value for all possibilities
-export function simple_range(biggest_val=20, smaller_val=1, gap=1, possibility=1){
+export function range_simple(biggest_val=20, smaller_val=1, gap=1, possibility=1){
 
     // ensures that all values are numbers
     // if not, returns null 
@@ -36,6 +36,65 @@ export function simple_range(biggest_val=20, smaller_val=1, gap=1, possibility=1
     }
 
     return resul
+}
+
+// creates a simple range with the number of possibilities for an “advantage or disadvantage roll”
+// basically calculates the number of possibilities for a person to roll one or more dice and
+// take the highest value of the dice in the case of advantage or the lowest value in the case of disadvantage
+export function range_van_or_des(amount=1,biggest_val=20, smaller_val=1, gap=1, desvantage=false){
+
+    // ensures that all values are numbers
+    // if not, returns null 
+    biggest_val = Number(biggest_val)
+    smaller_val = Number(smaller_val)
+    gap = Number(gap)
+
+    if (!Number.isInteger(biggest_val)) return null;
+    if (!Number.isInteger(smaller_val)) return null;
+    if (!Number.isInteger(gap)) return null;
+
+    // and ensures that biggest_val and smaller_val are correct
+    if(biggest_val < smaller_val){
+        let temp = biggest_val
+        biggest_val = smaller_val
+        smaller_val = temp
+    }
+
+    if(amount<0) return null
+
+    // performs the calculation that results in the possibilities of the advantage
+    let num_values = biggest_val - smaller_val +1
+
+    let temp_resul = [1]
+    let values = [1]
+    for(let a=1;a<num_values;a++){
+
+        temp_resul[a] = (a+1)**(amount+1)
+        values[a] = temp_resul[a] - temp_resul[a - 1];
+    }
+
+    // converts the advantage into a disadvantage if necessary 
+    if(desvantage){
+        values.reverse()
+    }
+    
+    // creates the range
+    let resul = [[]]
+    let b = 0
+    for(let a=smaller_val;a<=biggest_val;a+=gap){
+        resul[b] = [a,values[b]]
+        b+=1
+    }
+
+    return resul
+}
+
+// Abbreviations for the previous function
+export function range_vantage(amount=1,biggest_val=20, smaller_val=1, gap=1){
+    return range_van_or_des(amount,biggest_val, smaller_val, gap, false)
+}
+export function range_desvantage(amount=1,biggest_val=20, smaller_val=1, gap=1){
+    return range_van_or_des(amount,biggest_val, smaller_val, gap, true)
 }
 
 // this function creates an array with the number of possibilities for each possible value
@@ -101,11 +160,11 @@ export function range(...range){
 
         if(amount == 1){
             // make the range and joins it with the result
-            resul = join_ranges(resul,simple_range(greater_val,lowest_val))
+            resul = join_ranges(resul,range_simple(greater_val,lowest_val))
 
         }else{
 
-            let range_temp = simple_range(greater_val,lowest_val)
+            let range_temp = range_simple(greater_val,lowest_val)
             
             // search for the smallest sequence to make the range
             let sequence = smallest_sequence(amount)
@@ -229,17 +288,6 @@ export function join_ranges_fast(range_1 = [[]], range_2 = [[]], gap = 1){
 }
 
 
-//converte um range para uma convolução
-export function range_to_convolution(Range = [[]]){
-    let resul = []
-
-    for(let a=0; a<Range.length; a++){
-        resul[a] = Range[a][0]*Range[a][1]
-    }
-
-    return resul
-}
-
 // performs a mathematical operation for each equality between ranges
 export function range_X_range(range_1 = [[]], sinal="+",range_2 = [[]]){
     // validates whether the received data is correct
@@ -295,3 +343,15 @@ export function range_X_range(range_1 = [[]], sinal="+",range_2 = [[]]){
 
     return resul
 }
+
+//converts a range to a convolution
+export function range_to_convolution(Range = [[]]){
+    let resul = []
+
+    for(let a=0; a<Range.length; a++){
+        resul[a] = Range[a][0]*Range[a][1]
+    }
+
+    return resul
+}
+
