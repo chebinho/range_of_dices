@@ -1,3 +1,5 @@
+// create simple ranges =======================================================================================
+
 // creates a simple range with the value of possibilities set to one value for all possibilities
 export function range_simple(biggest_val=20, smaller_val=1, gap=1, possibility=1){
 
@@ -96,6 +98,8 @@ export function range_vantage(amount=1,biggest_val=20, smaller_val=1, gap=1){
 export function range_desvantage(amount=1,biggest_val=20, smaller_val=1, gap=1){
     return range_van_or_des(amount,biggest_val, smaller_val, gap, true)
 }
+
+// make or edit ranges =======================================================================================
 
 // this function creates an array with the number of possibilities for each possible value
 // the first value represents the “face” of a dice and the second value represents how many times that value appears
@@ -344,6 +348,8 @@ export function range_X_range(range_1 = [[]], sinal="+",range_2 = [[]]){
     return resul
 }
 
+// convert data =======================================================================================
+
 //converts a range to a convolution
 export function range_to_convolution(Range = [[]]){
     let resul = []
@@ -355,3 +361,48 @@ export function range_to_convolution(Range = [[]]){
     return resul
 }
 
+// Converts the values ​​in a range to percentages
+export function range_to_percentage(Range){
+    let resul = [[]]
+
+    // add up all possibilities to get the total
+    let total_possib = 0 
+    for(let a=0; a<Range.length; a++){
+        total_possib = Range[a][1] + total_possib
+    }
+
+    // creates the response and converts it to a percentage
+    for(let a=0; a<Range.length; a++){
+        resul[a] = [Range[a][0], (Range[a][1]/total_possib)*100]
+    }
+
+    return resul
+}
+
+// creates an object with the sum of the possibilities that are negative, positive, zero, and the total
+export function count_type_values(range=[[]]){
+
+    let resul = {
+        negatives:0,
+        positives:0,
+        zeros:0,
+        total:0
+    }
+
+    for(let a=0;a<range.length;a++){
+        if(range[a][0]<0){
+            resul.negatives += range[a][1]
+
+        }else if(range[a][0]==0){
+            resul.zeros += range[a][1]
+
+        }else{
+            resul.positives += range[a][1]
+
+        }
+    }
+
+    resul.total = resul.negatives + resul.zeros + resul.positives
+
+    return resul
+}
