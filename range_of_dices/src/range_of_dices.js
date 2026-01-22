@@ -40,6 +40,72 @@ export function range_simple(biggest_val=20, smaller_val=1, gap=1, possibility=1
     return resul
 }
 
+// fastest way for this library to make all combinations of several equal ranges
+export function range_combinations(amount=1,biggest_val, smaller_val=1, gap=1){
+
+    // This function is used to search for the sequence of ranges that, when added together, will return a sum of specific ranges
+    // ex: smallest_sequence(1000) -> [4, 6, 7, 8, 9, 10]
+    function smallest_sequence(valor = 0){
+        if (valor < 1) return 0 // blocks negative values
+
+        // obtain the smallest value closest to the sequence 2^0, 2^1, 2^2, 2^3, ...
+        let min = Math.floor(Math.log2(valor))
+
+        let resul = []
+        resul[resul.length] = min+1
+
+        // search for the previous remainder and repeat the previous calculation until the remainder becomes 0
+        let resto = valor - (2**min)
+
+        while(resto > 0){
+            min = Math.floor(Math.log2(resto))
+            resul[resul.length] = min+1
+
+            resto = resto - (2**min)
+        }
+
+        return resul.reverse()
+    }
+
+    // ensures that biggest_val and smaller_val are correct
+    if(biggest_val < smaller_val){
+        let temp = biggest_val
+        biggest_val = smaller_val
+        smaller_val = temp
+    }
+
+    let resul = []
+    if(amount == 1){
+        // make the range and joins it with the result
+        resul = range_simple(biggest_val, smaller_val, gap)
+    }else{
+
+        let range_temp = range_simple(biggest_val,smaller_val,gap)
+            
+        // search for the smallest sequence to make the range
+        let sequence = smallest_sequence(amount)
+
+        // adds up the equal multiples in the most efficient way possible
+        let c = 0
+        if(sequence[0] == 1){
+            resul = join_ranges(resul,range_temp)
+            c = 1
+        }
+
+        for(let a=2;a<=sequence[sequence.length-1];a++){
+            range_temp = join_ranges(range_temp,range_temp)
+            
+            if(a == sequence[c]){
+                resul = join_ranges(resul,range_temp)
+                c += 1
+            }
+        }
+
+    }
+
+    return resul
+}
+
 // creates a simple range with the number of possibilities for an “advantage or disadvantage roll”
 // basically calculates the number of possibilities for a person to roll one or more dice and
 // take the highest value of the dice in the case of advantage or the lowest value in the case of disadvantage
@@ -99,7 +165,19 @@ export function range_desvantage(amount=1,biggest_val=20, smaller_val=1, gap=1){
     return range_van_or_des(amount,biggest_val, smaller_val, gap, true)
 }
 
-// make or edit ranges =======================================================================================
+
+export function range_2(...text){
+
+    const Regex = /((van *|des *)?(\d+)d(-?\d+)(_(-?\d+))?)|(\+\+|\*\*|[\+\-\*\/\%])|(\()|(\))|(\d+)/g
+
+    for(let a=0;a<text.length;a++){
+        
+        console.log(text[a].match(Regex))
+    }
+
+}
+
+//console.log(range_2("(van 2d20) + 2d20"))
 
 // this function creates an array with the number of possibilities for each possible value
 // the first value represents the “face” of a dice and the second value represents how many times that value appears
@@ -133,7 +211,6 @@ export function range(...range){
 
     // separates the values received into three other numeric variables
     const Regex = /((-?\d+)d)?(-?\d+)(_(-?\d+))?/gm
-    // ((-?\d+)d)?(-?\d+)(\.\.\.(-?\d+))?(_(-?\d+))?
 
     let resul = [[]]
 
@@ -194,15 +271,28 @@ export function range(...range){
     return resul
 }
 
+// edit ranges =======================================================================================
+
 // todas as funções join_ranges... fazem a soma das possibilidades de 2 ranges
 // verifica qual é a melhor função "join_ranges" mais rapida para resolver o problema
 export function join_ranges(range_1 = [[]], range_2 = [[]]){
     // validates whether the received data is correct
     // if not, returns an error or one of the valid results
-    if (!Array.isArray(range_1[0]) || !Array.isArray(range_2[0])) return null;
+    if (!Array.isArray(range_1[0])){
+        if(!Array.isArray(range_2[0])){
+            return null
+        }else{
+            return range_2
+        }
+    }else{
+        if(!Array.isArray(range_2[0])){
+            return range_1
+        }
+    }
     if (!Number.isInteger(range_1[0][0])) return range_2;
     if (!Number.isInteger(range_2[0][0])) return range_1;
 
+    // checks if all values in a range have the same gap
     function density(range){
         let first_val = range[1][0] - range[0][0]
 
@@ -291,7 +381,6 @@ export function join_ranges_fast(range_1 = [[]], range_2 = [[]], gap = 1){
     return resul
 }
 
-
 // performs a mathematical operation for each equality between ranges
 export function range_X_range(range_1 = [[]], sinal="+",range_2 = [[]]){
     // validates whether the received data is correct
@@ -362,7 +451,7 @@ export function range_to_convolution(Range = [[]]){
 }
 
 // Converts the values ​​in a range to percentages
-export function range_to_percentage(Range){
+export function range_to_percentage(Range = [[]]){
     let resul = [[]]
 
     // add up all possibilities to get the total

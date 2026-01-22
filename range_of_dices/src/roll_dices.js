@@ -115,10 +115,10 @@ export function roll(...dices){
 
     // Captures commands beginning with “dis” (disadvantage), extracting the numbers involved.
     // Ex: dis 1d20 | dis 3d10_1 
-    const Regex_dis = /dis ?(\d+)d(-?\d+)(_(-?\d+))?/g
+    const Regex_dis = /dis *(\d+)d(-?\d+)(_(-?\d+))?/g
     // Capture commands beginning with “van” (advantage), extracting the numbers.
     // Ex: van 1d20 | van 3d10_1 
-    const Regex_van = /van ?(\d+)d(-?\d+)(_(-?\d+))?/g
+    const Regex_van = /van *(\d+)d(-?\d+)(_(-?\d+))?/g
     // Captures the same numeric pattern, but without “van” or “dis” at the beginning.
     // Ex: 1d20 | 3d10_1 | 2d-20_-1
     const Regex_roll = /(\d+)d(-?\d+)(_(-?\d+))?/g
@@ -149,9 +149,9 @@ export function roll(...dices){
 export function safe_math_eval(text = ""){
 
     // Find mathematical expressions in parentheses, such as “(10 + 2 * 3)”. 
-    const Regex_1 = /\(( *-?\d+(\.\d+)?(e[\+\-]?\d+)? *( *([\+\-\*\/\%]|\*\*) *-?\d+(\.\d+)?(e[\+\-]?\d+)?)* *)\)/g
+    const Regex_1 = /\(( *-?\d+(\.\d+)?(e[\+\-]?\d+)? *( *(\*\*|[\+\-\*\/\%]) *-?\d+(\.\d+)?(e[\+\-]?\d+)?)* *)\)/g
     // Find mathematical expressions outside parentheses, such as “13 + 5 * 2.”
-    const Regex_2 = /(-?\d+(\.\d+)?(e[\+\-]?\d+)?( *([\+\-\*\/\%]|\*\*) *-?\d+(\.\d+)?)+(e[\+\-]?\d+)?)/g
+    const Regex_2 = /(-?\d+(\.\d+)?(e[\+\-]?\d+)?( *(\*\*|[\+\-\*\/\%]) *-?\d+(\.\d+)?)+(e[\+\-]?\d+)?)/g
 
     let last_resul = ""
     let resul = text
