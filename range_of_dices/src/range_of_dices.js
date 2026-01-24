@@ -381,11 +381,62 @@ export function join_ranges_fast(range_1 = [[]], range_2 = [[]], gap = 1){
     return resul
 }
 
+export function merge_ranges_or_num(range_1 = [[]], operator="+",number){
+
+    // creates the op function to perform the calculation when necessary
+    const op = {
+        "+": (a,b) => a + b,
+        "-": (a,b) => a - b,
+        "*": (a,b) => a * b,
+        "x": (a,b) => a * b,
+        "X": (a,b) => a * b,
+        "%": (a,b) => a % b,
+        "/": (a,b) => a / b
+    }[operator];
+    if (!op) throw new Error("Operador inválido");
+
+    // valida se é necessari executar a função 
+    if(!Array.isArray(range_1[0])){
+        if(!Number.isInteger(range_1)){
+            return null
+        }else{
+            if(!Number.isInteger(number)){
+                return merge_ranges_or_num(number,operator,range_1)
+            }else{
+                return op(range_1,number)
+            }
+        }
+    }else{
+        if(Array.isArray(number[0])){
+            return merge_ranges(range_1,operator,number)
+        }
+    }
+    if (!Number.isInteger(range_1[0][0])) return null;
+
+
+    // performs the calculation for each value of the possibilities
+    let resul = []
+    for(let a=0;a<range_1.length;a++){
+        resul[a] = [range_1[a][0],op(range_1[a][1],number)]
+    }
+    return resul
+}
+
 // performs a mathematical operation for each equality between ranges
-export function range_X_range(range_1 = [[]], sinal="+",range_2 = [[]]){
+export function merge_ranges(range_1 = [[]], operator="+",range_2 = [[]]){
     // validates whether the received data is correct
     // if not, returns an error or one of the valid results
-    if (!Array.isArray(range_1[0]) || !Array.isArray(range_2[0])) return null;
+    if (!Array.isArray(range_1[0])){
+        if(!Array.isArray(range_2[0])){
+            return null
+        }else{
+            return range_2
+        }
+    }else{
+        if(!Array.isArray(range_2[0])){
+            return range_1
+        }
+    }
     if (!Number.isInteger(range_1[0][0])) return range_2;
     if (!Number.isInteger(range_2[0][0])) return range_1;
 
@@ -398,7 +449,7 @@ export function range_X_range(range_1 = [[]], sinal="+",range_2 = [[]]){
         "X": (a,b) => a * b,
         "%": (a,b) => a % b,
         "/": (a,b) => a / b
-    }[sinal];
+    }[operator];
     if (!op) throw new Error("Operador inválido");
 
     let index_range_1 = 0
