@@ -113,10 +113,10 @@ export function roll(...dices){
         });
     }
 
-    // Captures commands beginning with “dis” (disadvantage), extracting the numbers involved.
+    // Captures commands beginning with “dis” (disvantage), extracting the numbers involved.
     // Ex: dis 1d20 | dis 3d10_1 
     const Regex_dis = /dis *(\d+)d(-?\d+)(_(-?\d+))?/g
-    // Capture commands beginning with “van” (advantage), extracting the numbers.
+    // Capture commands beginning with “van” (vantage), extracting the numbers.
     // Ex: van 1d20 | van 3d10_1 
     const Regex_van = /van *(\d+)d(-?\d+)(_(-?\d+))?/g
     // Captures the same numeric pattern, but without “van” or “dis” at the beginning.

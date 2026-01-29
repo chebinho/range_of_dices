@@ -113,10 +113,12 @@ export function range_van_or_des(amount=1,biggest_val=20, smaller_val=1, gap=1, 
 
     // ensures that all values are numbers
     // if not, returns null 
+    amount = Number(amount)
     biggest_val = Number(biggest_val)
     smaller_val = Number(smaller_val)
     gap = Number(gap)
 
+    if (!Number.isInteger(amount)) return null;
     if (!Number.isInteger(biggest_val)) return null;
     if (!Number.isInteger(smaller_val)) return null;
     if (!Number.isInteger(gap)) return null;
@@ -165,15 +167,83 @@ export function range_desvantage(amount=1,biggest_val=20, smaller_val=1, gap=1){
     return range_van_or_des(amount,biggest_val, smaller_val, gap, true)
 }
 
+// busca por apenas um range dentro de uma string
+export function convert_string_to_range(string = ""){
 
-export function range_2(...text){
+    // Captures commands beginning with “dis” (disvantage), extracting the numbers involved.
+    // Ex: dis 1d20 | dis 3d10_1 
+    const Regex_dis = /dis *(\d+)d(-?\d+)(_(-?\d+))?(_(-?\d+))?/
+    // Capture commands beginning with “van” (vantage), extracting the numbers.
+    // Ex: van 1d20 | van 3d10_1 
+    const Regex_van = /van *(\d+)d(-?\d+)(_(-?\d+))?(_(-?\d+))?/
+    // Captures the same numeric pattern, but without “van” or “dis” at the beginning.
+    // Ex: 1d20 | 3d10_1 | 2d-20_-1
+    const Regex_combi = /(?<!(van *)|(dis *))(\d+)d(-?\d+)(_(-?\d+))?(_(-?\d+))?/
+
+    let resul
+    let resul_regex
+
+    resul_regex = string.match(Regex_van)
+    if(resul_regex !== null){
+        resul = range_vantage(
+            resul_regex[1],
+            resul_regex[2],
+            resul_regex[4],
+            resul_regex[6]
+        )
+    }
+
+    resul_regex = string.match(Regex_dis)
+    if(resul_regex !== null){
+        resul = range_desvantage(
+            resul_regex[1],
+            resul_regex[2],
+            resul_regex[4],
+            resul_regex[6]
+        )
+    }
+
+    resul_regex = string.match(Regex_combi)
+    if(resul_regex !== null){
+        resul = range_combinations(
+            resul_regex[3],
+            resul_regex[4],
+            resul_regex[6],
+            resul_regex[8]
+        )
+    }
+
+    return resul
+}
+
+
+export function range_2(text){
+
+    function find_parentheses(array){
+        let start = null
+        let end = null
+
+        for(let a=0;a<array.length;a++){
+
+            if(array[a] === "("){
+                start = a
+            }else if(array[a] === ")"){
+                end = a
+                a = array.length+1
+            }
+
+        }
+        return { start:start, end:end }
+    }
 
     const Regex = /((van *|des *)?(\d+)d(-?\d+)(_(-?\d+))?)|(\+\+|\*\*|[\+\-\*\/\%])|(\()|(\))|(\d+)/g
 
-    for(let a=0;a<text.length;a++){
+    let values = text.match(Regex)
+
+    // fruits.splice(2, 1, "aaaaaaaa")
         
-        console.log(text[a].match(Regex))
-    }
+    console.log(find_parentheses(values))
+    
 
 }
 
