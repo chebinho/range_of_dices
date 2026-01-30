@@ -216,38 +216,50 @@ export function convert_string_to_range(string = ""){
     return resul
 }
 
-
 export function range_2(text){
 
-    function find_parentheses(array){
-        let start = null
-        let end = null
+    function solve_range_equation(array){
+        if(!Array.isArray(array)) return null
 
-        for(let a=0;a<array.length;a++){
-
-            if(array[a] === "("){
-                start = a
-            }else if(array[a] === ")"){
-                end = a
-                a = array.length+1
-            }
-
+        // operadores permitidos
+        const op = {
+            "++": (a, b) => join_ranges(a, b),
+            "+": (a, b) => merge_ranges_faces(a, "+", b),
+            "-": (a, b) => merge_ranges_faces(a, "-", b),
+            "*": (a, b) => merge_ranges_faces(a, "*", b),
+            "**": (a, b) => merge_ranges_faces(a, "**", b),
+            "/": (a, b) => merge_ranges_faces(a, "/", b),
+            "%": (a, b) => merge_ranges_faces(a, "%", b)
         }
-        return { start:start, end:end }
+
+        let resul = []
+        for(let a=0;a<array.length;a++){
+            
+            if(typeof array[a] === "string"){
+
+            }
+        }
+        return resul
     }
 
     const Regex = /((van *|des *)?(\d+)d(-?\d+)(_(-?\d+))?)|(\+\+|\*\*|[\+\-\*\/\%])|(\()|(\))|(\d+)/g
 
     let values = text.match(Regex)
 
-    // fruits.splice(2, 1, "aaaaaaaa")
-        
-    console.log(find_parentheses(values))
-    
 
+    let par = find_parentheses(values)
+    let haaaaa = values.slice(par.start+1, par.end)
+
+    console.log(par)
+    console.log(haaaaa)
+    console.log(solve_range_equation(haaaaa))
+    console.log(values)
+
+
+    // fruits.splice(2, 1, "aaaaaaaa")
 }
 
-//console.log(range_2("(van 2d20) + 2d20"))
+console.log(range_2("(2d20 + 1) + 2d20"))
 
 // this function creates an array with the number of possibilities for each possible value
 // the first value represents the “face” of a dice and the second value represents how many times that value appears
@@ -346,6 +358,20 @@ export function range(...range){
 // todas as funções join_ranges... fazem a soma das possibilidades de 2 ranges
 // verifica qual é a melhor função "join_ranges" mais rapida para resolver o problema
 export function join_ranges(range_1 = [[]], range_2 = [[]]){
+    
+    // check if one of the ranges is a number
+    if(Number.isInteger(range_1)){
+        if(Number.isInteger(range_2)){
+            return range_1+range_2
+        }else if(Array.isArray(range_2[0])){
+            return merge_ranges_faces(range_2, "+",range_1)
+        }
+    }else if(Array.isArray(range_1[0])){
+        if(Number.isInteger(range_2)){
+            return merge_ranges_faces(range_1, "+",range_2)
+        }
+    }
+
     // validates whether the received data is correct
     // if not, returns an error or one of the valid results
     if (!Array.isArray(range_1[0])){
@@ -459,6 +485,7 @@ export function merge_ranges_possi(range_1 = [[]], operator="+",number){
         "+": (a,b) => a + b,
         "-": (a,b) => a - b,
         "*": (a,b) => a * b,
+        "**": (a,b) => a ** b,
         "x": (a,b) => a * b,
         "X": (a,b) => a * b,
         "%": (a,b) => a % b,
@@ -539,6 +566,7 @@ export function merge_ranges_faces(range_1 = [[]], operator="+",number){
         "+": (a,b) => a + b,
         "-": (a,b) => a - b,
         "*": (a,b) => a * b,
+        "**": (a,b) => a ** b,
         "x": (a,b) => a * b,
         "X": (a,b) => a * b,
         "%": (a,b) => a % b,
@@ -672,4 +700,23 @@ export function count_type_values(range=[[]]){
     resul.total = resul.negatives + resul.zeros + resul.positives
 
     return resul
+}
+
+// other necessary functions =======================================================================================
+
+export function find_parentheses(array){
+    let start = null
+    let end = null
+
+    for(let a=0;a<array.length;a++){
+
+        if(array[a] === "("){
+            start = a
+        }else if(array[a] === ")"){
+            end = a
+            a = array.length+1
+        }
+
+    }
+    return { start:start, end:end }
 }
