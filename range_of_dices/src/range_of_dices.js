@@ -30,7 +30,7 @@ export function range_simple(biggest_val=20, smaller_val=1, gap=1, possibility=1
     }
 
     // creates the range
-    let resul = [[]]
+    let resul = []
     let b = 0
     for(let a=smaller_val;a<=biggest_val;a+=gap){
         resul[b] = [a,possibility]
@@ -170,6 +170,8 @@ export function range_desvantage(amount=1,biggest_val=20, smaller_val=1, gap=1){
 // busca por apenas um range dentro de uma string
 export function convert_string_to_range(string = ""){
 
+    if (typeof string !== 'string') return string
+
     // Captures commands beginning with “dis” (disvantage), extracting the numbers involved.
     // Ex: dis 1d20 | dis 3d10_1 
     const Regex_dis = /dis *(\d+)d(-?\d+)(_(-?\d+))?(_(-?\d+))?/
@@ -221,7 +223,7 @@ export function range_2(text){
     function solve_range_equation(array){
         if(!Array.isArray(array)) return null
 
-        // operadores permitidos
+        // creates the op function to perform the calculation when necessary
         const op = {
             "++": (a, b) => join_ranges(a, b),
             "+": (a, b) => merge_ranges_faces(a, "+", b),
@@ -232,34 +234,117 @@ export function range_2(text){
             "%": (a, b) => merge_ranges_faces(a, "%", b)
         }
 
-        let resul = []
+        // define a prioridade nas execuções
+        const priority = {
+            "++": 2,
+            "+": 0,
+            "-": 0,
+            "*": 1,
+            "**": 2,
+            "/": 1,
+            "%": 1
+        }
+
+        // valida se o array recebido segue o padrão correto, se não o corrige da mehor forma possivel
+        let alternate_rule = 1
         for(let a=0;a<array.length;a++){
-            
-            if(typeof array[a] === "string"){
+
+            if(alternate_rule === 1){
+                let test = false
+
+                if(isNumber(array[a])){
+                    test = true
+                    array[a] = Number(array[a])
+                }else if(isTextRange(array[a])){
+                    test = true
+                    array[a] = convert_string_to_range(array[a])
+                }else if(Array.isArray(array[0])){
+                    test = true
+                }
+
+                if(test === true){
+                    alternate_rule = 2
+                }else{
+                    array.splice(a,1)
+                    a-=1
+                }
+
+            }else{
+                let test = false
+                
+                if(priority[array[a]] !== undefined){
+                    test = true
+                }
+
+                console.log(priority[array[a]])
+
+                if(test === true){
+                    alternate_rule = 1
+                }else{
+                    array.splice(a,1)
+                    a-=1
+                }
 
             }
         }
-        return resul
+        if(alternate_rule === 1){
+            array.pop()
+        }
+
+        console.log(array)
+
+        /*
+        
+        for(let b=2;b>=0;b--){ // repete uma vez para cada prioridade
+            for(let a=1;a<array.length;a+=2){ // verifica quando é possivel fazer o calculo
+                if(priority[array[a]] === b){
+
+                    let val_1 = array[a-1]
+                    let val_2 = array[a+1]
+
+                    console.log(val_1)
+                
+
+                    array.splice(a-1, 3, op[array[a]](val_1, val_2))
+                    a -= 2
+                }
+                //console.log(array)
+            }
+            
+        }
+        
+        */
+        
+
+        return array
     }
 
-    const Regex = /((van *|des *)?(\d+)d(-?\d+)(_(-?\d+))?)|(\+\+|\*\*|[\+\-\*\/\%])|(\()|(\))|(\d+)/g
+    const Regex = /((van *|des *)?(\d+)d(-?\d+)(_(-?\d+))?)|(\+\+|\*\*|[\+\-\*\/\%])|(\()|(\))|(\d+(\.\d+)?)/g
 
     let values = text.match(Regex)
 
-
     let par = find_parentheses(values)
+
+
+
+
     let haaaaa = values.slice(par.start+1, par.end)
 
-    console.log(par)
+    haaaaa[haaaaa.length] = "+" 
+    haaaaa[haaaaa.length] = [[1,2],[2,3]] 
+
     console.log(haaaaa)
+
+    //console.log(par)
+    //console.log(haaaaa)
     console.log(solve_range_equation(haaaaa))
-    console.log(values)
+    //console.log(values)
 
 
     // fruits.splice(2, 1, "aaaaaaaa")
 }
 
-console.log(range_2("(2d20 + 1) + 2d20"))
+console.log(range_2("(2d20 +10+10 - - - - - - - - 10 + 2 ** 2 ** 2 + + + + 10) + 2d20"))
 
 // this function creates an array with the number of possibilities for each possible value
 // the first value represents the “face” of a dice and the second value represents how many times that value appears
@@ -473,13 +558,11 @@ export function join_ranges_fast(range_1 = [[]], range_2 = [[]], gap = 1){
         resul[a] = [b,soma]
         b += gap
     }
-
     return resul
 }
 
 
 export function merge_ranges_possi(range_1 = [[]], operator="+",number){
-
     // creates the op function to perform the calculation when necessary
     const op = {
         "+": (a,b) => a + b,
@@ -506,7 +589,7 @@ export function merge_ranges_possi(range_1 = [[]], operator="+",number){
             if(!Number.isInteger(number)){
                 return merge_ranges_possi(number,operator,range_1)
             }else{
-                return op(range_1,number)
+                return op(range_1,Number(number))
             }
         }
     }else{
@@ -583,12 +666,11 @@ export function merge_ranges_faces(range_1 = [[]], operator="+",number){
             }else{
                 return number
             }
-            
         }else{
             if(!Number.isInteger(number)){
                 return merge_ranges_faces(number,operator,range_1)
             }else{
-                return op(range_1,number)
+                return op(range_1,Number(number))
             }
         }
     }else{
@@ -719,4 +801,22 @@ export function find_parentheses(array){
 
     }
     return { start:start, end:end }
+}
+
+// verifica se um valor é um numero é int ou float
+export function isNumber(value){
+    return !Number.isNaN(Number(value))
+}
+
+export function isTextRange(string){
+
+    if (typeof string !== 'string') return false
+
+    const Regex = /(van *|des *)?(\d+)d(-?\d+)(_(-?\d+))?/
+
+    if(string.match(Regex) !== null){
+        return true
+    }else{
+        return false
+    }
 }
