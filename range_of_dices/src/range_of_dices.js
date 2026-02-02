@@ -254,11 +254,9 @@ export function range_2(text){
 
                 if(isNumber(array[a])){
                     test = true
-                    array[a] = Number(array[a])
                 }else if(isTextRange(array[a])){
                     test = true
-                    array[a] = convert_string_to_range(array[a])
-                }else if(Array.isArray(array[0])){
+                }else if(Array.isArray(array[a][0])){
                     test = true
                 }
 
@@ -276,8 +274,6 @@ export function range_2(text){
                     test = true
                 }
 
-                console.log(priority[array[a]])
-
                 if(test === true){
                     alternate_rule = 1
                 }else{
@@ -290,61 +286,50 @@ export function range_2(text){
         if(alternate_rule === 1){
             array.pop()
         }
-
-        console.log(array)
-
-        /*
         
         for(let b=2;b>=0;b--){ // repete uma vez para cada prioridade
             for(let a=1;a<array.length;a+=2){ // verifica quando é possivel fazer o calculo
                 if(priority[array[a]] === b){
-
-                    let val_1 = array[a-1]
-                    let val_2 = array[a+1]
-
-                    console.log(val_1)
-                
-
-                    array.splice(a-1, 3, op[array[a]](val_1, val_2))
+                    array.splice(a-1, 3, op[array[a]](array[a-1], array[a+1]))
                     a -= 2
                 }
-                //console.log(array)
             }
-            
         }
-        
-        */
-        
 
-        return array
+        return array[0]
     }
 
     const Regex = /((van *|des *)?(\d+)d(-?\d+)(_(-?\d+))?)|(\+\+|\*\*|[\+\-\*\/\%])|(\()|(\))|(\d+(\.\d+)?)/g
+    let resul = text.match(Regex)
 
-    let values = text.match(Regex)
+    console.log(resul)
 
-    let par = find_parentheses(values)
+    let no_parent = true
+    let guard = 0;
+    while ((no_parent) && (guard++ < 100)) {
 
+        let par = find_parentheses(resul)
 
+        if(par.start == null) {
+            no_parent = false
+            par.start = 0
+        }
+        if(par.end == null) {
+            no_parent = false
+            par.end = resul.length
+        }
 
+        let temp_resul = solve_range_equation( resul.slice(par.start+1,par.end) )
 
-    let haaaaa = values.slice(par.start+1, par.end)
+        resul.splice(par.start,par.end+1, temp_resul)
+    }
 
-    haaaaa[haaaaa.length] = "+" 
-    haaaaa[haaaaa.length] = [[1,2],[2,3]] 
-
-    console.log(haaaaa)
-
-    //console.log(par)
-    //console.log(haaaaa)
-    console.log(solve_range_equation(haaaaa))
-    //console.log(values)
-
-
-    // fruits.splice(2, 1, "aaaaaaaa")
+    return resul
 }
 
-console.log(range_2("(2d20 +10+10 - - - - - - - - 10 + 2 ** 2 ** 2 + + + + 10) + 2d20"))
+console.log(range_2("(1d20 + 1d20) + 2d20"))
+
+console.log(range_2("10+10-(5*2)"))
 
 // this function creates an array with the number of possibilities for each possible value
 // the first value represents the “face” of a dice and the second value represents how many times that value appears
@@ -563,6 +548,13 @@ export function join_ranges_fast(range_1 = [[]], range_2 = [[]], gap = 1){
 
 
 export function merge_ranges_possi(range_1 = [[]], operator="+",number){
+
+    if(isTextRange(range_1)) {range_1 = convert_string_to_range(range_1)}
+    if(isTextRange(number)) {number = convert_string_to_range(number)}
+
+    if(isNumber(range_1)) {range_1 = Number(range_1)}
+    if(isNumber(number)) {number = Number(number)}
+
     // creates the op function to perform the calculation when necessary
     const op = {
         "+": (a,b) => a + b,
@@ -644,6 +636,13 @@ export function merge_ranges_possi(range_1 = [[]], operator="+",number){
 }
 
 export function merge_ranges_faces(range_1 = [[]], operator="+",number){
+
+    if(isTextRange(range_1)) {range_1 = convert_string_to_range(range_1)}
+    if(isTextRange(number)) {number = convert_string_to_range(number)}
+
+    if(isNumber(range_1)) {range_1 = Number(range_1)}
+    if(isNumber(number)) {number = Number(number)}
+
     // creates the op function to perform the calculation when necessary
     const op = {
         "+": (a,b) => a + b,
