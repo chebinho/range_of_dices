@@ -218,7 +218,11 @@ export function convert_string_to_range(string = ""){
     return resul
 }
 
-export function range_2(text){
+// this function creates an array with the number of possibilities for each possible value
+// the first value represents the “face” of a dice and the second value represents how many times that value appears
+// and if there is more than one dice within the function, the values will all be added together
+// ex: range("1d4") -> [[1,1], [2,1], [3,1], [4,1]]
+export function range(text){
 
     function solve_range_equation(array){
         if(!Array.isArray(array)) return null
@@ -302,14 +306,22 @@ export function range_2(text){
     const Regex = /((van *|des *)?(\d+)d(-?\d+)(_(-?\d+))?)|(\+\+|\*\*|[\+\-\*\/\%])|(\()|(\))|(\d+(\.\d+)?)/g
     let resul = text.match(Regex)
 
-    console.log(resul)
-
     let no_parent = true
+    let par = find_parentheses(resul)
+        if(par.start == null) {
+            no_parent = false
+        }
+        if(par.end == null) {
+            no_parent = false
+        }
+
     let guard = 0;
     while ((no_parent) && (guard++ < 100)) {
 
-        let par = find_parentheses(resul)
-
+        let temp_resul = solve_range_equation( resul.slice(par.start+1,par.end) )
+        resul.splice(par.start,par.end+1, temp_resul)
+        
+        par = find_parentheses(resul)
         if(par.start == null) {
             no_parent = false
             par.start = 0
@@ -318,116 +330,23 @@ export function range_2(text){
             no_parent = false
             par.end = resul.length
         }
-
-        let temp_resul = solve_range_equation( resul.slice(par.start+1,par.end) )
-
-        resul.splice(par.start,par.end+1, temp_resul)
     }
 
-    return resul
+    return solve_range_equation(resul)
 }
 
-console.log(range_2("(1d20 + 1d20) + 2d20"))
+console.log(range("(1d20 + 1d20) + 2d20"))
 
-console.log(range_2("10+10-(5*2)"))
-
-// this function creates an array with the number of possibilities for each possible value
-// the first value represents the “face” of a dice and the second value represents how many times that value appears
-// and if there is more than one dice within the function, the values will all be added together
-// ex: range("1d4") -> [[1,1], [2,1], [3,1], [4,1]]
-export function range(...range){
-
-    // This function is used to search for the sequence of ranges that, when added together, will return a sum of specific ranges
-    // ex: smallest_sequence(1000) -> [4, 6, 7, 8, 9, 10]
-    function smallest_sequence(valor = 0){
-        if (valor < 1) return 0 // blocks negative values
-
-        // obtain the smallest value closest to the sequence 2^0, 2^1, 2^2, 2^3, ...
-        let min = Math.floor(Math.log2(valor))
-
-        let resul = []
-        resul[resul.length] = min+1
-
-        // search for the previous remainder and repeat the previous calculation until the remainder becomes 0
-        let resto = valor - (2**min)
-
-        while(resto > 0){
-            min = Math.floor(Math.log2(resto))
-            resul[resul.length] = min+1
-
-            resto = resto - (2**min)
-        }
-
-        return resul.reverse()
-    }
-
-    // separates the values received into three other numeric variables
-    const Regex = /((-?\d+)d)?(-?\d+)(_(-?\d+))?/gm
-
-    let resul = [[]]
-
-    for(let a=0;a<range.length;a++){
-
-        let amount = range[a].replace(Regex, "$2")
-        let greater_val = Number(range[a].replace(Regex, "$3"))
-        let lowest_val = range[a].replace(Regex, "$5")
-
-        // ensures that greater_val and lowest_val are correct
-        if(greater_val < lowest_val){
-            let temp = greater_val
-            greater_val = lowest_val
-            lowest_val = temp
-        }
-
-        // correct the values obtained if necessary
-        if((amount == "") || (amount <= 0)){
-            amount = 1
-        }else{
-            amount = Number(amount)
-        }
-        if((lowest_val == "")){
-            lowest_val = 1
-        }else{
-            lowest_val = Number(lowest_val)
-        }
-
-        if(amount == 1){
-            // make the range and joins it with the result
-            resul = join_ranges(resul,range_simple(greater_val,lowest_val))
-
-        }else{
-
-            let range_temp = range_simple(greater_val,lowest_val)
-            
-            // search for the smallest sequence to make the range
-            let sequence = smallest_sequence(amount)
-
-            // adds up the equal multiples in the most efficient way possible
-            let c = 0
-            if(sequence[0] == 1){
-                resul = join_ranges(resul,range_temp)
-                c = 1
-            }
-
-            for(let a=2;a<=sequence[sequence.length-1];a++){
-                range_temp = join_ranges(range_temp,range_temp)
-                
-                if(a == sequence[c]){
-                    resul = join_ranges(resul,range_temp)
-                    c += 1
-                }
-            }
-        }
-    }
-
-    return resul
-}
+console.log(range("10+10-(5*2)"))
 
 // edit ranges =======================================================================================
 
-// todas as funções join_ranges... fazem a soma das possibilidades de 2 ranges
-// verifica qual é a melhor função "join_ranges" mais rapida para resolver o problema
+// all join_ranges functions... sum the possibilities of 2 ranges
+// checks which is the best and fastest “join_ranges” function to solve the problem
 export function join_ranges(range_1 = [[]], range_2 = [[]]){
+
+    if(isTextRange(range_1)) {range_1 = convert_string_to_range(range_1)}
+    if(isTextRange(range_2)) {range_2 = convert_string_to_range(range_2)}
     
     // check if one of the ranges is a number
     if(Number.isInteger(range_1)){
@@ -785,6 +704,7 @@ export function count_type_values(range=[[]]){
 
 // other necessary functions =======================================================================================
 
+// searches for a pair of parentheses and returns their position in an object
 export function find_parentheses(array){
     let start = null
     let end = null
@@ -802,11 +722,12 @@ export function find_parentheses(array){
     return { start:start, end:end }
 }
 
-// verifica se um valor é um numero é int ou float
+// validates whether a value is a number in the int or float standard
 export function isNumber(value){
     return !Number.isNaN(Number(value))
 }
 
+// validates whether a string is within the text range pattern
 export function isTextRange(string){
 
     if (typeof string !== 'string') return false
@@ -818,4 +739,16 @@ export function isTextRange(string){
     }else{
         return false
     }
+}
+
+// checks if an array is in the range pattern
+export function isArrayRange(range){
+    if(!Array.isArray(range)) return false
+
+    for(let a=0; a<range.length; a++){
+        if(!Array.isArray(range[a])) return false
+        if(!isNumber(range[a][0])) return false
+        if(!isNumber(range[a][1])) return false
+    }
+    return true
 }
