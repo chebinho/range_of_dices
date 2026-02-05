@@ -10,10 +10,10 @@ export function range_simple(biggest_val=20, smaller_val=1, gap=1, possibility=1
     gap = Number(gap)
     possibility = Number(possibility)
 
-    if (!Number.isInteger(biggest_val)) return null;
-    if (!Number.isInteger(smaller_val)) return null;
-    if (!Number.isInteger(gap)) return null;
-    if (!Number.isInteger(possibility)) return null;
+    if (!isNumber(biggest_val)) return null
+    if (!isNumber(smaller_val)) return null
+    if (!isNumber(gap)) return null
+    if (!isNumber(possibility)) return null
 
     // and ensures that biggest_val and smaller_val are correct
     if(biggest_val < smaller_val){
@@ -42,6 +42,18 @@ export function range_simple(biggest_val=20, smaller_val=1, gap=1, possibility=1
 
 // fastest way for this library to make all combinations of several equal ranges
 export function range_combinations(amount=1,biggest_val, smaller_val=1, gap=1){
+
+    // ensures that all values are numbers
+    // if not, returns null 
+    biggest_val = Number(biggest_val)
+    smaller_val = Number(smaller_val)
+    gap = Number(gap)
+    amount = Number(amount)
+
+    if (!isNumber(biggest_val)) return null
+    if (!isNumber(smaller_val)) return null
+    if (!isNumber(gap)) return null
+    if (!isNumber(amount)) return null
 
     // This function is used to search for the sequence of ranges that, when added together, will return a sum of specific ranges
     // ex: smallest_sequence(1000) -> [4, 6, 7, 8, 9, 10]
@@ -118,10 +130,10 @@ export function range_van_or_des(amount=1,biggest_val=20, smaller_val=1, gap=1, 
     smaller_val = Number(smaller_val)
     gap = Number(gap)
 
-    if (!Number.isInteger(amount)) return null;
-    if (!Number.isInteger(biggest_val)) return null;
-    if (!Number.isInteger(smaller_val)) return null;
-    if (!Number.isInteger(gap)) return null;
+    if (!isNumber(amount)) return null;
+    if (!isNumber(biggest_val)) return null;
+    if (!isNumber(smaller_val)) return null;
+    if (!isNumber(gap)) return null;
 
     // and ensures that biggest_val and smaller_val are correct
     if(biggest_val < smaller_val){
@@ -144,7 +156,7 @@ export function range_van_or_des(amount=1,biggest_val=20, smaller_val=1, gap=1, 
     }
 
     // converts the advantage into a disadvantage if necessary 
-    if(desvantage){
+    if(desvantage === true){
         values.reverse()
     }
     
@@ -168,7 +180,7 @@ export function range_desvantage(amount=1,biggest_val=20, smaller_val=1, gap=1){
 }
 
 // busca por apenas um range dentro de uma string
-export function convert_string_to_range(string = ""){
+export function string_to_range(string = ""){
 
     if (typeof string !== 'string') return string
 
@@ -218,10 +230,7 @@ export function convert_string_to_range(string = ""){
     return resul
 }
 
-// this function creates an array with the number of possibilities for each possible value
-// the first value represents the “face” of a dice and the second value represents how many times that value appears
-// and if there is more than one dice within the function, the values will all be added together
-// ex: range("1d4") -> [[1,1], [2,1], [3,1], [4,1]]
+
 export function range(text){
 
     function solve_range_equation(array){
@@ -260,7 +269,7 @@ export function range(text){
                     test = true
                 }else if(isTextRange(array[a])){
                     test = true
-                }else if(Array.isArray(array[a][0])){
+                }else if(isArrayRange(array[a])){
                     test = true
                 }
 
@@ -335,47 +344,53 @@ export function range(text){
     return solve_range_equation(resul)
 }
 
-console.log(range("(1d20 + 1d20) + 2d20"))
-
-console.log(range("10+10-(5*2)"))
-
 // edit ranges =======================================================================================
+
+export function operation_between_ranges(range_1 = [[]], operator="+", range_2 = [[]]){
+
+    if(isTextRange(range_1)) {range_1 = string_to_range(range_1)}
+    if(isTextRange(range_2)) {range_2 = string_to_range(range_2)}
+
+    if(!isArrayRange(range_1)) return null
+    if(!isArrayRange(range_2)) return null
+
+}
 
 // all join_ranges functions... sum the possibilities of 2 ranges
 // checks which is the best and fastest “join_ranges” function to solve the problem
 export function join_ranges(range_1 = [[]], range_2 = [[]]){
 
-    if(isTextRange(range_1)) {range_1 = convert_string_to_range(range_1)}
-    if(isTextRange(range_2)) {range_2 = convert_string_to_range(range_2)}
+    if(isTextRange(range_1)) {range_1 = string_to_range(range_1)}
+    if(isTextRange(range_2)) {range_2 = string_to_range(range_2)}
     
     // check if one of the ranges is a number
-    if(Number.isInteger(range_1)){
-        if(Number.isInteger(range_2)){
+    if(isNumber(range_1)){
+        if(isNumber(range_2)){
             return range_1+range_2
-        }else if(Array.isArray(range_2[0])){
+        }else if(isArrayRange(range_2)){
             return merge_ranges_faces(range_2, "+",range_1)
         }
-    }else if(Array.isArray(range_1[0])){
-        if(Number.isInteger(range_2)){
+    }else if(isArrayRange(range_1)){
+        if(isNumber(range_2)){
             return merge_ranges_faces(range_1, "+",range_2)
         }
     }
 
     // validates whether the received data is correct
     // if not, returns an error or one of the valid results
-    if (!Array.isArray(range_1[0])){
-        if(!Array.isArray(range_2[0])){
+    if (!isArrayRange(range_1)){
+        if(!isArrayRange(range_2)){
             return null
         }else{
             return range_2
         }
     }else{
-        if(!Array.isArray(range_2[0])){
+        if(!isArrayRange(range_2)){
             return range_1
         }
     }
-    if (!Number.isInteger(range_1[0][0])) return range_2;
-    if (!Number.isInteger(range_2[0][0])) return range_1;
+    if (!isNumber(range_1[0][0])) return range_2;
+    if (!isNumber(range_2[0][0])) return range_1;
 
     // checks if all values in a range have the same gap
     function density(range){
@@ -402,7 +417,6 @@ export function join_ranges(range_1 = [[]], range_2 = [[]]){
         return join_ranges_all(range_1,range_2)
     }
 }
-
 export function join_ranges_all(range_1 = [[]], range_2 = [[]]){
     // sempre itera no menor range
     if (range_1.length > range_2.length) {
@@ -434,7 +448,6 @@ export function join_ranges_all(range_1 = [[]], range_2 = [[]]){
 
     return resul
 }
-
 export function join_ranges_fast(range_1 = [[]], range_2 = [[]], gap = 1){
 
     let r1_length = range_1.length
@@ -465,11 +478,10 @@ export function join_ranges_fast(range_1 = [[]], range_2 = [[]], gap = 1){
     return resul
 }
 
+export function merge_ranges_possi(range_1 = [[]], operator="+", number = 0){
 
-export function merge_ranges_possi(range_1 = [[]], operator="+",number){
-
-    if(isTextRange(range_1)) {range_1 = convert_string_to_range(range_1)}
-    if(isTextRange(number)) {number = convert_string_to_range(number)}
+    if(isTextRange(range_1)) {range_1 = string_to_range(range_1)}
+    if(isTextRange(number)) {number = string_to_range(number)}
 
     if(isNumber(range_1)) {range_1 = Number(range_1)}
     if(isNumber(number)) {number = Number(number)}
@@ -554,10 +566,10 @@ export function merge_ranges_possi(range_1 = [[]], operator="+",number){
     return resul
 }
 
-export function merge_ranges_faces(range_1 = [[]], operator="+",number){
+export function merge_ranges_faces(range_1 = [[]], operator="+", number = 0){
 
-    if(isTextRange(range_1)) {range_1 = convert_string_to_range(range_1)}
-    if(isTextRange(number)) {number = convert_string_to_range(number)}
+    if(isTextRange(range_1)) {range_1 = string_to_range(range_1)}
+    if(isTextRange(number)) {number = string_to_range(number)}
 
     if(isNumber(range_1)) {range_1 = Number(range_1)}
     if(isNumber(number)) {number = Number(number)}
@@ -647,6 +659,8 @@ export function merge_ranges_faces(range_1 = [[]], operator="+",number){
 
 //converts a range to a convolution
 export function range_to_convolution(Range = [[]]){
+    if(isTextRange(Range)) {Range = string_to_range(Range)}
+
     let resul = []
 
     for(let a=0; a<Range.length; a++){
@@ -658,6 +672,8 @@ export function range_to_convolution(Range = [[]]){
 
 // Converts the values ​​in a range to percentages
 export function range_to_percentage(Range = [[]]){
+    if(isTextRange(Range)) {Range = string_to_range(Range)}
+
     let resul = [[]]
 
     // add up all possibilities to get the total
@@ -675,7 +691,9 @@ export function range_to_percentage(Range = [[]]){
 }
 
 // creates an object with the sum of the possibilities that are negative, positive, zero, and the total
-export function count_type_values(range=[[]]){
+export function count_type_values(range = [[]]){
+
+    if(isTextRange(range)) {range = string_to_range(range)}
 
     let resul = {
         negatives:0,
@@ -705,7 +723,7 @@ export function count_type_values(range=[[]]){
 // other necessary functions =======================================================================================
 
 // searches for a pair of parentheses and returns their position in an object
-export function find_parentheses(array){
+export function find_parentheses(array = []){
     let start = null
     let end = null
 
@@ -723,7 +741,10 @@ export function find_parentheses(array){
 }
 
 // validates whether a value is a number in the int or float standard
-export function isNumber(value){
+export function isNumber(value = 0){
+    if(typeof value == 'boolean') return false
+    if(value == null) return false
+    if(Array.isArray(value)) return false
     return !Number.isNaN(Number(value))
 }
 
