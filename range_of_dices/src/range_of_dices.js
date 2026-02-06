@@ -230,7 +230,6 @@ export function string_to_range(string = ""){
     return resul
 }
 
-
 export function range(text){
 
     function solve_range_equation(array){
@@ -239,12 +238,12 @@ export function range(text){
         // creates the op function to perform the calculation when necessary
         const op = {
             "++": (a, b) => join_ranges(a, b),
-            "+": (a, b) => merge_ranges_faces(a, "+", b),
-            "-": (a, b) => merge_ranges_faces(a, "-", b),
-            "*": (a, b) => merge_ranges_faces(a, "*", b),
-            "**": (a, b) => merge_ranges_faces(a, "**", b),
-            "/": (a, b) => merge_ranges_faces(a, "/", b),
-            "%": (a, b) => merge_ranges_faces(a, "%", b)
+            "+": (a, b) => merge_ranges(a, b, "+"),
+            "-": (a, b) => merge_ranges(a, b, "-"),
+            "*": (a, b) => merge_ranges(a, b, "*"),
+            "**": (a, b) => merge_ranges(a, b, "**"),
+            "/": (a, b) => merge_ranges(a, b, "/"),
+            "%": (a, b) => merge_ranges(a, b, "%")
         }
 
         // define a prioridade nas execuções
@@ -312,17 +311,19 @@ export function range(text){
         return array[0]
     }
 
+    if(isTextRange(text)) {return string_to_range(text)}
+
     const Regex = /((van *|des *)?(\d+)d(-?\d+)(_(-?\d+))?)|(\+\+|\*\*|[\+\-\*\/\%])|(\()|(\))|(\d+(\.\d+)?)/g
     let resul = text.match(Regex)
 
     let no_parent = true
     let par = find_parentheses(resul)
-        if(par.start == null) {
-            no_parent = false
-        }
-        if(par.end == null) {
-            no_parent = false
-        }
+    if(par.start == null) {
+        no_parent = false
+    }
+    if(par.end == null) {
+        no_parent = false
+    }
 
     let guard = 0;
     while ((no_parent) && (guard++ < 100)) {
@@ -351,8 +352,26 @@ export function operation_between_ranges(range_1 = [[]], operator="+", range_2 =
     if(isTextRange(range_1)) {range_1 = string_to_range(range_1)}
     if(isTextRange(range_2)) {range_2 = string_to_range(range_2)}
 
-    if(!isArrayRange(range_1)) return null
-    if(!isArrayRange(range_2)) return null
+    if(!isArrayRange(range_1)){
+        if(isNumber(range_1) && isArrayRange(range_2)){
+            return "test"
+        }else{
+            return null
+        }
+    }
+
+    if(!isArrayRange(range_2)){
+        if(isNumber(range_2) && isArrayRange(range_1)){
+            return "test"
+        }else{
+            return null
+        }
+    }
+
+    // creates the op function to perform the calculation when necessary
+    const op = {
+        "+": (a, b) => join_ranges(a, b),
+    }
 
 }
 
@@ -362,35 +381,35 @@ export function join_ranges(range_1 = [[]], range_2 = [[]]){
 
     if(isTextRange(range_1)) {range_1 = string_to_range(range_1)}
     if(isTextRange(range_2)) {range_2 = string_to_range(range_2)}
-    
-    // check if one of the ranges is a number
-    if(isNumber(range_1)){
-        if(isNumber(range_2)){
-            return range_1+range_2
-        }else if(isArrayRange(range_2)){
-            return merge_ranges_faces(range_2, "+",range_1)
-        }
-    }else if(isArrayRange(range_1)){
-        if(isNumber(range_2)){
-            return merge_ranges_faces(range_1, "+",range_2)
+
+    // checks if both ranges are indeed ranges
+    let value_check = false
+    if(!isArrayRange(range_1)){
+        if(isNumber(range_1)){
+            value_check = true
+        }else{
+            if(isArrayRange(range_2) || isNumber(range_2)){
+                return range_2
+            }else{
+                return null
+            }
         }
     }
-
-    // validates whether the received data is correct
-    // if not, returns an error or one of the valid results
-    if (!isArrayRange(range_1)){
-        if(!isArrayRange(range_2)){
-            return null
+    if(!isArrayRange(range_2)){
+        if(isNumber(range_2)){
+            if(value_check){
+                return range_1 + range_2
+            }else{
+                return merge_ranges(range_1,range_2)
+            }
         }else{
-            return range_2
-        }
-    }else{
-        if(!isArrayRange(range_2)){
             return range_1
         }
+
     }
-    if (!isNumber(range_1[0][0])) return range_2;
-    if (!isNumber(range_2[0][0])) return range_1;
+    if(value_check){
+        return merge_ranges(range_2,range_1)
+    }
 
     // checks if all values in a range have the same gap
     function density(range){
@@ -477,6 +496,110 @@ export function join_ranges_fast(range_1 = [[]], range_2 = [[]], gap = 1){
     }
     return resul
 }
+
+// combines all values from two ranges into a single range,
+// if there are values in the base, an operation will be performed. (default sum)
+export function merge_ranges(range_1 = [[]], range_2 = [[]], operator="+"){
+
+    if(isTextRange(range_1)) {range_1 = string_to_range(range_1)}
+    if(isTextRange(range_2)) {range_2 = string_to_range(range_2)}
+
+    if(isNumber(range_1)) {range_1 = Number(range_1)}
+    if(isNumber(range_2)) {range_2 = Number(range_2)}
+
+    // creates the op function to perform the calculation when necessary
+    const op = {
+        "+": (a,b) => a + b,
+        "-": (a,b) => a - b,
+        "*": (a,b) => a * b,
+        "**": (a,b) => a ** b,
+        "x": (a,b) => a * b,
+        "X": (a,b) => a * b,
+        "%": (a,b) => a % b,
+        "/": (a,b) => a / b
+    }[operator];
+    if (!op) throw new Error("Operador inválido");
+
+    // checks if both ranges are indeed ranges
+    let test = false
+    if(!isArrayRange(range_1)){
+        if(isNumber(range_1)){
+            test = true
+        }else{
+            return null
+        }
+    }
+    if(!isArrayRange(range_2)){
+        if(isNumber(range_2)){
+            if(test){
+                return op(range_1,range_2)
+            }else{
+                return merge_range_and_number(range_1,range_2)
+            }
+        }else{
+            return null
+        }
+
+    }
+    if(test){
+        return merge_range_and_number(range_2,range_1)
+    }
+
+    // forms the result following the following logic
+    // when the “faces” of the range are equal, the op function is executed
+    // if not, the value is simply added to the result 
+    let index_range_1 = 0
+    let index_range_2 = 0
+
+    const max_range_1 = range_1.length
+    const max_range_2 = range_2.length
+
+    const resul = []
+
+    while( (index_range_1<max_range_1)||(index_range_2<max_range_2) ){
+        const [x1, v1] = (range_1[index_range_1] != undefined) ? range_1[index_range_1] : [Infinity]
+        const [x2, v2] = (range_2[index_range_2] != undefined) ? range_2[index_range_2] : [Infinity]   
+
+        if (x1 === x2) {
+            resul.push([x1, op(v1, v2)])
+
+            index_range_1++
+            index_range_2++
+        } else if (x1 < x2) {
+            resul.push([x1, v1])
+
+            index_range_1++
+        } else {
+            resul.push([x2, v2])
+
+            index_range_2++
+        }
+    }
+    return resul
+}
+// function that performs an operation on all values
+export function merge_range_and_number(range = [[]], number = 1, operator="+"){
+
+    // creates the op function to perform the calculation when necessary
+    const op = {
+        "+": (a,b) => a + b,
+        "-": (a,b) => a - b,
+        "*": (a,b) => a * b,
+        "**": (a,b) => a ** b,
+        "x": (a,b) => a * b,
+        "X": (a,b) => a * b,
+        "%": (a,b) => a % b,
+        "/": (a,b) => a / b
+    }[operator];
+    if (!op) throw new Error("Operador inválido");
+
+    let resul = []
+    for(let a=0;a<range.length;a++){
+        resul[a] = [ op(range[a][0],number), range[a][1] ]
+    }
+    return resul
+}
+
 
 export function merge_ranges_possi(range_1 = [[]], operator="+", number = 0){
 
@@ -565,7 +688,6 @@ export function merge_ranges_possi(range_1 = [[]], operator="+", number = 0){
     }
     return resul
 }
-
 export function merge_ranges_faces(range_1 = [[]], operator="+", number = 0){
 
     if(isTextRange(range_1)) {range_1 = string_to_range(range_1)}
@@ -765,6 +887,7 @@ export function isTextRange(string){
 // checks if an array is in the range pattern
 export function isArrayRange(range){
     if(!Array.isArray(range)) return false
+    if(range.length == 0) return false
 
     for(let a=0; a<range.length; a++){
         if(!Array.isArray(range[a])) return false
