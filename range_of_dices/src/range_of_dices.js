@@ -170,7 +170,6 @@ export function range_van_or_des(amount=1,biggest_val=20, smaller_val=1, gap=1, 
 
     return resul
 }
-
 // Abbreviations for the previous function
 export function range_vantage(amount=1,biggest_val=20, smaller_val=1, gap=1){
     return range_van_or_des(amount,biggest_val, smaller_val, gap, false)
@@ -179,7 +178,7 @@ export function range_desvantage(amount=1,biggest_val=20, smaller_val=1, gap=1){
     return range_van_or_des(amount,biggest_val, smaller_val, gap, true)
 }
 
-// busca por apenas um range dentro de uma string
+// converts a string with a range into an array of the range
 export function string_to_range(string = ""){
 
     if (typeof string !== 'string') return string
@@ -230,6 +229,8 @@ export function string_to_range(string = ""){
     return resul
 }
 
+console.log(range("1d20 * 5"))
+
 export function range(text){
 
     function solve_range_equation(array){
@@ -246,7 +247,7 @@ export function range(text){
             "%": (a, b) => merge_ranges(a, b, "%")
         }
 
-        // define a prioridade nas execuções
+        // defines the priority of executions
         const priority = {
             "++": 2,
             "+": 0,
@@ -257,7 +258,7 @@ export function range(text){
             "%": 1
         }
 
-        // valida se o array recebido segue o padrão correto, se não o corrige da mehor forma possivel
+        // validates whether the received array follows the correct pattern; if not, corrects it in the best possible way
         let alternate_rule = 1
         for(let a=0;a<array.length;a++){
 
@@ -298,7 +299,11 @@ export function range(text){
         if(alternate_rule === 1){
             array.pop()
         }
-        
+
+        if(array.length == 1){
+            return string_to_range(array[0])
+        }
+
         for(let b=2;b>=0;b--){ // repete uma vez para cada prioridade
             for(let a=1;a<array.length;a+=2){ // verifica quando é possivel fazer o calculo
                 if(priority[array[a]] === b){
@@ -310,8 +315,6 @@ export function range(text){
 
         return array[0]
     }
-
-    if(isTextRange(text)) {return string_to_range(text)}
 
     const Regex = /((van *|des *)?(\d+)d(-?\d+)(_(-?\d+))?)|(\+\+|\*\*|[\+\-\*\/\%])|(\()|(\))|(\d+(\.\d+)?)/g
     let resul = text.match(Regex)
@@ -346,34 +349,6 @@ export function range(text){
 }
 
 // edit ranges =======================================================================================
-
-export function operation_between_ranges(range_1 = [[]], operator="+", range_2 = [[]]){
-
-    if(isTextRange(range_1)) {range_1 = string_to_range(range_1)}
-    if(isTextRange(range_2)) {range_2 = string_to_range(range_2)}
-
-    if(!isArrayRange(range_1)){
-        if(isNumber(range_1) && isArrayRange(range_2)){
-            return "test"
-        }else{
-            return null
-        }
-    }
-
-    if(!isArrayRange(range_2)){
-        if(isNumber(range_2) && isArrayRange(range_1)){
-            return "test"
-        }else{
-            return null
-        }
-    }
-
-    // creates the op function to perform the calculation when necessary
-    const op = {
-        "+": (a, b) => join_ranges(a, b),
-    }
-
-}
 
 // all join_ranges functions... sum the possibilities of 2 ranges
 // checks which is the best and fastest “join_ranges” function to solve the problem
@@ -596,183 +571,6 @@ export function merge_range_and_number(range = [[]], number = 1, operator="+"){
     let resul = []
     for(let a=0;a<range.length;a++){
         resul[a] = [ op(range[a][0],number), range[a][1] ]
-    }
-    return resul
-}
-
-
-export function merge_ranges_possi(range_1 = [[]], operator="+", number = 0){
-
-    if(isTextRange(range_1)) {range_1 = string_to_range(range_1)}
-    if(isTextRange(number)) {number = string_to_range(number)}
-
-    if(isNumber(range_1)) {range_1 = Number(range_1)}
-    if(isNumber(number)) {number = Number(number)}
-
-    // creates the op function to perform the calculation when necessary
-    const op = {
-        "+": (a,b) => a + b,
-        "-": (a,b) => a - b,
-        "*": (a,b) => a * b,
-        "**": (a,b) => a ** b,
-        "x": (a,b) => a * b,
-        "X": (a,b) => a * b,
-        "%": (a,b) => a % b,
-        "/": (a,b) => a / b
-    }[operator];
-    if (!op) throw new Error("Operador inválido");
-
-    // validates whether the received data is correct
-    // if not, returns an error or one of the valid results
-    if(!Array.isArray(range_1[0])){
-        if(!Number.isInteger(range_1)){
-            if(!Array.isArray(number[0])){
-                return null
-            }else{
-                return number
-            }
-        }else{
-            if(!Number.isInteger(number)){
-                return merge_ranges_possi(number,operator,range_1)
-            }else{
-                return op(range_1,Number(number))
-            }
-        }
-    }else{
-        if(Array.isArray(number[0])){
-            return merge_range_range(range_1,number)
-        }
-    }
-    if (!Number.isInteger(range_1[0][0])) return null;
-
-    // performs a mathematical operation for each equality between ranges
-    function merge_range_range(range_1 = [[]], range_2 = [[]]){
-        let index_range_1 = 0
-        let index_range_2 = 0
-
-        const max_range_1 = range_1.length
-        const max_range_2 = range_2.length
-
-        const resul = []
-
-        // forms the result following the following logic
-        // when the “faces” of the range are equal, the op function is executed
-        // if not, the value is simply added to the result 
-        while( (index_range_1<max_range_1)||(index_range_2<max_range_2) ){
-
-            const [x1, v1] = (range_1[index_range_1] != undefined) ? range_1[index_range_1] : [Infinity]
-            const [x2, v2] = (range_2[index_range_2] != undefined) ? range_2[index_range_2] : [Infinity]   
-
-            if (x1 === x2) {
-                resul.push([x1, op(v1, v2)])
-
-                index_range_1++
-                index_range_2++
-            } else if (x1 < x2) {
-                resul.push([x1, v1])
-
-                index_range_1++
-            } else {
-                resul.push([x2, v2])
-
-                index_range_2++
-            }
-        }
-        return resul
-    }
-
-    // performs the calculation for each value of the possibilities
-    let resul = []
-    for(let a=0;a<range_1.length;a++){
-        resul[a] = [range_1[a][0],op(range_1[a][1],number)]
-    }
-    return resul
-}
-export function merge_ranges_faces(range_1 = [[]], operator="+", number = 0){
-
-    if(isTextRange(range_1)) {range_1 = string_to_range(range_1)}
-    if(isTextRange(number)) {number = string_to_range(number)}
-
-    if(isNumber(range_1)) {range_1 = Number(range_1)}
-    if(isNumber(number)) {number = Number(number)}
-
-    // creates the op function to perform the calculation when necessary
-    const op = {
-        "+": (a,b) => a + b,
-        "-": (a,b) => a - b,
-        "*": (a,b) => a * b,
-        "**": (a,b) => a ** b,
-        "x": (a,b) => a * b,
-        "X": (a,b) => a * b,
-        "%": (a,b) => a % b,
-        "/": (a,b) => a / b
-    }[operator];
-    if (!op) throw new Error("Operador inválido");
-
-    // validates whether the received data is correct
-    // if not, returns an error or one of the valid results
-    if(!Array.isArray(range_1[0])){
-        if(!Number.isInteger(range_1)){
-            if(!Array.isArray(number[0])){
-                return null
-            }else{
-                return number
-            }
-        }else{
-            if(!Number.isInteger(number)){
-                return merge_ranges_faces(number,operator,range_1)
-            }else{
-                return op(range_1,Number(number))
-            }
-        }
-    }else{
-        if(Array.isArray(number[0])){
-            return modifier_range_range(range_1,number)
-        }
-    }
-    if (!Number.isInteger(range_1[0][0])) return null;
-
-    // essa parte está errada
-    function modifier_range_range(range_1 = [[]], range_2 = [[]]){
-        let index_range_1 = 0
-        let index_range_2 = 0
-
-        const max_range_1 = range_1.length
-        const max_range_2 = range_2.length
-
-        const resul = []
-
-        // forms the result following the following logic
-        // when the “faces” of the range are equal, the op function is executed
-        // if not, the value is simply added to the result 
-        while( (index_range_1<max_range_1)||(index_range_2<max_range_2) ){
-
-            const [x1, v1] = (range_1[index_range_1] != undefined) ? range_1[index_range_1] : [Infinity]
-            const [x2, v2] = (range_2[index_range_2] != undefined) ? range_2[index_range_2] : [Infinity]   
-
-            if (x1 === x2) {
-                resul.push([op(x1, x2), v1+v2])
-
-                index_range_1++
-                index_range_2++
-            } else if (x1 < x2) {
-                resul.push([x1, v1])
-
-                index_range_1++
-            } else {
-                resul.push([x2, v2])
-
-                index_range_2++
-            }
-        }
-        return resul
-
-    }
-
-    // performs the calculation for each value of the possibilities
-    let resul = []
-    for(let a=0;a<range_1.length;a++){
-        resul[a] = [op(range_1[a][0],number),range_1[a][1]]
     }
     return resul
 }
