@@ -1,4 +1,4 @@
-// create simple ranges =======================================================================================
+// create ranges =======================================================================================
 
 // creates a simple range with the value of possibilities set to one value for all possibilities
 export function range_simple(biggest_val=20, smaller_val=1, gap=1, possibility=1){
@@ -191,10 +191,11 @@ export function string_to_range(string = ""){
     const Regex_van = /van *(\d+)d(-?\d+)(_(-?\d+))?(_(-?\d+))?/
     // Captures the same numeric pattern, but without “van” or “dis” at the beginning.
     // Ex: 1d20 | 3d10_1 | 2d-20_-1
-    const Regex_combi = /(?<!(van *)|(dis *))(\d+)d(-?\d+)(_(-?\d+))?(_(-?\d+))?/
+    const Regex_combi = /(\d+)d(-?\d+)(_(-?\d+))?(_(-?\d+))?/
 
     let resul
     let resul_regex
+    let not_van_or_dis = true
 
     resul_regex = string.match(Regex_van)
     if(resul_regex !== null){
@@ -204,6 +205,7 @@ export function string_to_range(string = ""){
             resul_regex[4],
             resul_regex[6]
         )
+        not_van_or_dis = false
     }
 
     resul_regex = string.match(Regex_dis)
@@ -214,22 +216,23 @@ export function string_to_range(string = ""){
             resul_regex[4],
             resul_regex[6]
         )
+        not_van_or_dis = false
     }
 
-    resul_regex = string.match(Regex_combi)
-    if(resul_regex !== null){
-        resul = range_combinations(
-            resul_regex[3],
-            resul_regex[4],
-            resul_regex[6],
-            resul_regex[8]
-        )
+    if(not_van_or_dis){
+        resul_regex = string.match(Regex_combi)
+        if(resul_regex !== null){
+            resul = range_combinations(
+                resul_regex[1],
+                resul_regex[2],
+                resul_regex[4],
+                resul_regex[6]
+            )
+        }
     }
 
     return resul
 }
-
-console.log(range("1d20 * 5"))
 
 export function range(text){
 
@@ -303,7 +306,7 @@ export function range(text){
         if(array.length == 1){
             return string_to_range(array[0])
         }
-
+        
         for(let b=2;b>=0;b--){ // repete uma vez para cada prioridade
             for(let a=1;a<array.length;a+=2){ // verifica quando é possivel fazer o calculo
                 if(priority[array[a]] === b){
@@ -316,7 +319,7 @@ export function range(text){
         return array[0]
     }
 
-    const Regex = /((van *|des *)?(\d+)d(-?\d+)(_(-?\d+))?)|(\+\+|\*\*|[\+\-\*\/\%])|(\()|(\))|(\d+(\.\d+)?)/g
+    const Regex = /((van *|dis *)?(\d+)d(-?\d+)(_(-?\d+))?)|(\+\+|\*\*|[\+\-\*\/\%])|(\()|(\))|(\d+(\.\d+)?)/g
     let resul = text.match(Regex)
 
     let no_parent = true
@@ -509,7 +512,7 @@ export function merge_ranges(range_1 = [[]], range_2 = [[]], operator="+"){
             if(test){
                 return op(range_1,range_2)
             }else{
-                return merge_range_and_number(range_1,range_2)
+                return merge_range_and_number(range_1,range_2,operator)
             }
         }else{
             return null
@@ -517,7 +520,7 @@ export function merge_ranges(range_1 = [[]], range_2 = [[]], operator="+"){
 
     }
     if(test){
-        return merge_range_and_number(range_2,range_1)
+        return merge_range_and_number(range_2,range_1,operator)
     }
 
     // forms the result following the following logic
