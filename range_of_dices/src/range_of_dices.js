@@ -121,7 +121,7 @@ export function range_combinations(amount=1,biggest_val, smaller_val=1, gap=1){
 // creates a simple range with the number of possibilities for an “advantage or disadvantage roll”
 // basically calculates the number of possibilities for a person to roll one or more dice and
 // take the highest value of the dice in the case of advantage or the lowest value in the case of disadvantage
-export function range_van_or_des(amount=1,biggest_val=20, smaller_val=1, gap=1, desvantage=false){
+export function range_van_or_dis(amount=1,biggest_val=20, smaller_val=1, gap=1, desvantage=false){
 
     // ensures that all values are numbers
     // if not, returns null 
@@ -172,10 +172,10 @@ export function range_van_or_des(amount=1,biggest_val=20, smaller_val=1, gap=1, 
 }
 // Abbreviations for the previous function
 export function range_vantage(amount=1,biggest_val=20, smaller_val=1, gap=1){
-    return range_van_or_des(amount,biggest_val, smaller_val, gap, false)
+    return range_van_or_dis(amount,biggest_val, smaller_val, gap, false)
 }
 export function range_desvantage(amount=1,biggest_val=20, smaller_val=1, gap=1){
-    return range_van_or_des(amount,biggest_val, smaller_val, gap, true)
+    return range_van_or_dis(amount,biggest_val, smaller_val, gap, true)
 }
 
 // converts a string with a range into an array of the range
@@ -241,24 +241,36 @@ export function range(text){
 
         // creates the op function to perform the calculation when necessary
         const op = {
-            "++": (a, b) => join_ranges(a, b),
-            "+": (a, b) => merge_ranges(a, b, "+"),
-            "-": (a, b) => merge_ranges(a, b, "-"),
-            "*": (a, b) => merge_ranges(a, b, "*"),
-            "**": (a, b) => merge_ranges(a, b, "**"),
-            "/": (a, b) => merge_ranges(a, b, "/"),
-            "%": (a, b) => merge_ranges(a, b, "%")
+            "+": (a, b) => join_ranges(a, b),
+            "-": (a, b) => join_ranges(a, flip_range(b)),
+            "*": (a, b) => join_ranges_all(a, b, "*"),
+            "**": (a, b) => join_ranges_all(a, b, "**"),
+            "/": (a, b) => join_ranges_all(a, b, "/"),
+            "%": (a, b) => join_ranges_all(a, b, "%"),
+
+            "m+": (a, b) => merge_ranges(a, b, "+"),
+            "m-": (a, b) => merge_ranges(a, b, "-"),
+            "m*": (a, b) => merge_ranges(a, b, "*"),
+            "m**": (a, b) => merge_ranges(a, b, "**"),
+            "m/": (a, b) => merge_ranges(a, b, "/"),
+            "m%": (a, b) => merge_ranges(a, b, "%")
         }
 
         // defines the priority of executions
         const priority = {
-            "++": 2,
             "+": 0,
             "-": 0,
             "*": 1,
             "**": 2,
             "/": 1,
-            "%": 1
+            "%": 1,
+            
+            "m+": 0,
+            "m-": 0,
+            "m*": 1,
+            "m**": 2,
+            "m/": 1,
+            "m%": 1
         }
 
         // validates whether the received array follows the correct pattern; if not, corrects it in the best possible way
@@ -304,7 +316,11 @@ export function range(text){
         }
 
         if(array.length == 1){
-            return string_to_range(array[0])
+            if(isTextRange(array[0])) {
+                return string_to_range(array[0])
+            }else{
+                return array[0]
+            }
         }
         
         for(let b=2;b>=0;b--){ // repete uma vez para cada prioridade
@@ -319,7 +335,7 @@ export function range(text){
         return array[0]
     }
 
-    const Regex = /((van *|dis *)?(\d+)d(-?\d+)(_(-?\d+))?)|(\+\+|\*\*|[\+\-\*\/\%])|(\()|(\))|(\d+(\.\d+)?)/g
+    const Regex = /((van *|dis *)?(\d+)d(-?\d+)(_(-?\d+))?)|(\+\+|\*\*|m?[\+\-\*\/\%])|(\()|(\))|(\d+(\.\d+)?)/g
     let resul = text.match(Regex)
 
     let no_parent = true
@@ -414,7 +430,22 @@ export function join_ranges(range_1 = [[]], range_2 = [[]]){
         return join_ranges_all(range_1,range_2)
     }
 }
-export function join_ranges_all(range_1 = [[]], range_2 = [[]]){
+export function join_ranges_all(range_1 = [[]], range_2 = [[]], operator = "+"){
+
+    if(isTextRange(range_1)) {range_1 = string_to_range(range_1)}
+    if(isTextRange(range_2)) {range_2 = string_to_range(range_2)}
+
+    // creates the op function to perform the calculation when necessary
+    const op = {
+        "+": (a,b) => a + b,
+        "-": (a,b) => a - b,
+        "*": (a,b) => a * b,
+        "**": (a,b) => a ** b,
+        "%": (a,b) => a % b,
+        "/": (a,b) => a / b
+    }[operator];
+    if (!op) throw new Error("Operador inválido");
+
     // sempre itera no menor range
     if (range_1.length > range_2.length) {
         [range_1, range_2] = [range_2, range_1];
@@ -427,7 +458,7 @@ export function join_ranges_all(range_1 = [[]], range_2 = [[]]){
         const cb = range_2[b][1];
 
         for(let a=0;a<range_1.length;a++){
-            const sum = range_1[a][0] + vb;
+            const sum = op(range_1[a][0], vb);
             obj_resul[sum] = (obj_resul[sum] || 0) + range_1[a][1] * cb;
 
         }
@@ -641,6 +672,22 @@ export function count_type_values(range = [[]]){
     resul.total = resul.negatives + resul.zeros + resul.positives
 
     return resul
+}
+
+// flips the values in a range
+export function flip_range(range = [[]]){
+
+    if(isTextRange(range)) {range = string_to_range(range)}
+    if(!isArrayRange(range)) {return range}
+
+    range.reverse()
+
+    for(let a=0;a<range.length;a++){
+        range[a] = [ - range[a][0],range[a][1]]
+    }
+
+    return range
+
 }
 
 // other necessary functions =======================================================================================
