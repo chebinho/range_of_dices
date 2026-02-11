@@ -1,4 +1,17 @@
-essa lib e dividida em dois arquivos: 
+# o que a lib faz:
+
+essa lib foi feita para facilitar o calculo de possibilidades para cada jogada de dados
+
+Para a lib fazer isso é preciso definir um padrão para facilitar a leitura dos dados
+
+# como instalar:
+
+
+# exemplos de uso:
+
+## detalhes importantes sobre essa lib 
+
+### Essa lib e dividida em dois arquivos: 
 
 o primeiro arquivo chamado de "roll_dices.js" contém funções para executar jogadas de dados independentemente da quantidade de faces ou dos valores contidos nas faces
 
@@ -6,74 +19,68 @@ o segundo arquivo chamado de "range_of_dices.js" faz uma lista de todos os resul
 
 ## funções do arquivo roll_dices.js
 
-roll_dice()
+#### roll_dice()
 
-roll_vantage()
+#### roll_vantage()
 
-roll_disvantage()
+#### roll_disvantage()
 
-roll()
+#### roll()
 
-safe_math_eval()
+#### safe_math_eval()
 
-exec_lib_string()
+#### exec_lib_string()
 
 
 ## funções do arquivo range_of_dices.js
 
-range_simple()
+### create the ranges
 
-range_combinations()
+#### range_simple()
 
-range_van_or_dis()
+#### range_combinations()
 
-range_vantage()
+#### range_van_or_dis()
 
-range_desvantage()
+#### range_vantage()
 
-string_to_range()
+#### range_desvantage()
 
-range()
+#### string_to_range()
+
+#### range()
+
+### edit the ranges
+
+#### join_ranges()
+
+#### join_ranges_all()
+
+#### join_ranges_fast()
+
+#### merge_ranges()
+
+#### merge_range_and_number()
+
+### convert the ranges
+
+#### range_to_convolution()
+
+#### range_to_percentage()
+
+#### count_type_values()
+
+#### negative_range()
+
+### other usefull functions
+
+#### find_parentheses()
+
+#### isNumber()
+
+#### isTextRange()
+
+#### isArrayRange()
 
 
-join_ranges()
-
-join_ranges_all()
-
-join_ranges_fast()
-
-merge_ranges()
-
-merge_range_and_number()
-
-
-range_to_convolution()
-
-range_to_percentage()
-
-count_type_values()
-
-negative_range()
-
-
-find_parentheses()
-
-isNumber()
-
-isTextRange()
-
-isArrayRange()
-
-
-
-o que a lib faz
-
-    essa lib foi feita para facilitar o calculo de possibilidades para cada jogada de dados
-
-    Para a lib fazer isso é preciso definir um padrão para facilitar a leitura dos dados
-    
-como instalar
-
-exemplos de uso
-
-API/Documentação
+# API/Documentação
