@@ -1,5 +1,5 @@
 // roll any dice one or more times.
-export function roll_dice(amount=1, biggest_face=20, smaller_face=1){
+export function roll_dice(biggest_face=20, smaller_face=1, amount=1){
 
     let max = 0
     let min = 0
@@ -12,6 +12,8 @@ export function roll_dice(amount=1, biggest_face=20, smaller_face=1){
         max = (smaller_face - biggest_face)+1
         min = biggest_face
     }
+
+    if(amount < 1 ){amount = 1}
 
     let resul = 0
     for(let a=0;a<amount;a++){
@@ -21,7 +23,7 @@ export function roll_dice(amount=1, biggest_face=20, smaller_face=1){
 }
 
 // roll any dice in advantage one or more times.
-export function roll_vantage(amount=1, biggest_face=20, smaller_face=1){
+export function roll_vantage(biggest_face=20, smaller_face=1, amount=1){
 
     let max = 0
     let min = 0
@@ -34,6 +36,8 @@ export function roll_vantage(amount=1, biggest_face=20, smaller_face=1){
         max = (smaller_face - biggest_face)+1
         min = biggest_face
     }
+
+    if(amount < 1 ){amount = 1}
 
     let resul = Math.trunc((Math.random())*max)+min
     for(let a=0;a<amount;a++){
@@ -46,7 +50,7 @@ export function roll_vantage(amount=1, biggest_face=20, smaller_face=1){
 }
 
 // roll any dice in disadvantage one or more times.
-export function roll_disvantage(amount=1, biggest_face=20, smaller_face=1){
+export function roll_disvantage(biggest_face=20, smaller_face=1, amount=1){
 
     let max = 0
     let min = 0
@@ -59,6 +63,8 @@ export function roll_disvantage(amount=1, biggest_face=20, smaller_face=1){
         max = (smaller_face - biggest_face)+1
         min = biggest_face
     }
+
+    if(amount < 1 ){amount = 1}
 
     let resul = Math.trunc((Math.random())*max)+min
     for(let a=0;a<amount;a++){
@@ -127,9 +133,9 @@ export function roll(...dices){
     for(let a=0;a<dices.length;a++){
 
         // converts the user's command into its respective function
-        results[a] = dices[a].replace(Regex_dis, "roll_disvantage($1,$2,$4)")
-        results[a] = results[a].replace(Regex_van, "roll_vantage($1,$2,$4)")
-        results[a] = results[a].replace(Regex_roll, "roll_dice($1,$2,$4)")
+        results[a] = dices[a].replace(Regex_dis, "roll_disvantage($2,$4,$1)")
+        results[a] = results[a].replace(Regex_van, "roll_vantage($2,$4,$1)")
+        results[a] = results[a].replace(Regex_roll, "roll_dice($2,$4,$1)")
 
         // execute the functions and replaces them with the results
         results[a] = exec_func_string(results[a])
