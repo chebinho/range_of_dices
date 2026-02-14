@@ -43,25 +43,34 @@ roll_vantage(-30,10,4)  // sorteia 5 dado que as faces vão do 10 ao -30, e reto
 #### roll_disvantage( biggest_face, smaller_face, amount )
 Faz o mesmo que a função anterior, mas ao invés de retornar o maior valor ele retorna o menor valor.
 
+#### roll_exec( any_text, any_text, any_text, ... )
+Essa função busca por simplificações das jogadas de qualquer dado e substituí-las pelas funções correspondentes.
+Após isso essas funções são substituídas pelos seus respectivos resultados.
+
+```
+roll_exec("1d20")           // sorteia 1 dado que as faces vão do 1 ao 20
+roll_exec("van 1d20")       // sorteia 2 dado que as faces vão do 1 ao 20, e retorna o MAIOR valor
+roll_exec("dis 1d20")       // sorteia 2 dado que as faces vão do 1 ao 20, e retorna o MENOR valor
+
+roll_exec("1d20+5")         // sorteia 1 dado que as faces vão do 1 ao 20, e acresenta "+5"
+roll_exec("1d20+1d6")       // sorteia 1 dado de 20 lados e soma o resultado com um dado de 6 lados
+
+```
+
+Caso mais de uma string seja fornecida a função retorna um array com os resultados ordenados
+
+```
+roll_exec("1d20", "van 1d20", "dis 1d20", "1d20+5", "1d20+1d6") 
+// exemplo de resultado: ["9", "13", "4", "10+5", "14+2"]
+
+```
+
+Essa função pode não parecer segura por executar outras funções em uma string, mas regra só se aplica às funções: roll_dice, roll_vantage e roll_disvantage.
+Outras funções fora dessa lista são ignoradas
+
+#### safe_math_eval( any_text )
+
 #### roll( any_text, any_text, any_text, ... )
-Essa função permite fazer o sorteio de múltiplos dados e combinar os resultados seguindo o padrão de uma operação matemática.
-
-```
-roll("1d20")         // sorteia 1 dado que as faces vão do 1 ao 20
-roll("roll_dice(20)")// sorteia 1 dado que as faces vão do 1 ao 20
-
-roll("1d20 + 5")     // sorteia 1 dado que as faces vão do 1 ao 20, e soma 5 ao resultado
-roll("van 1d20 + 5") // sorteia 2 dado que as faces vão do 1 ao 20 e retorna o maior valor, apos isso 5 ao resultado
-
-roll("1d20 + 10 - 1d6") --> 15 + 10 - 3 = 22
-```
-
-Um detalhe importande é que essa função converte as simplificações para as devidas funções e apos isso as funções são rastreadas e executadas.
-além disso essa função executa a função safe_math_eval para fazer o calculo do resultado
-
-#### safe_math_eval()
-
-#### exec_lib_string()
 
 
 ## funções do arquivo range_of_dices.js
@@ -111,7 +120,7 @@ além disso essa função executa a função safe_math_eval para fazer o calculo
 #### find_parentheses()
 
 
-## funções do arquivo validations.js
+## funções do arquivo other_functions.js
 
 #### isNumber()
 

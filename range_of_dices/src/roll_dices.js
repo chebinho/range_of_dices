@@ -1,4 +1,4 @@
-import {isNumber} from './validations.js'
+import {isNumber, exec_string_fun} from './other_functions.js'
 
 // roll any dice one or more times.
 export function roll_dice(biggest_face=20, smaller_face=1, amount=1){
@@ -82,8 +82,12 @@ export function roll_disvantage(biggest_face=20, smaller_face=1, amount=1){
 // after that, the functions are executed and the results are replaced by the respective functions
 export function roll_exec(...strings){
 
-    for(let a=0;a<strings.length;a++){
-        if (typeof strings[a] !== 'string') return strings
+    if(Array.isArray(strings)){
+        for(let a=0;a<strings.length;a++){
+            if (typeof strings[a] !== 'string') return strings
+        }
+    }else if(typeof strings !== 'string'){
+        return strings
     }
 
     const allowedFunctions = [
@@ -91,39 +95,6 @@ export function roll_exec(...strings){
         roll_vantage,
         roll_disvantage,
     ];
-
-    function exec_func_string(str){
-        // Find any function in a string
-        const Regex = /([a-zA-Z]\w*)\(([^()]*)\)/g;
-
-        return str.replace(Regex, (match, fname, args) => {
-
-            // Checks if the function exists in the list of allowed functions
-            let find = false
-            for(let a=0;a<allowedFunctions.length;a++){
-                if(allowedFunctions[a].name === fname){
-                    find = a
-                }
-            }
-            if(find === false){
-                return match;
-            }
-
-            // Converts arguments separated by commas
-            let argArray = args.split(",").map(a => a.trim());
-
-            // Replace empty elements with 1
-            for(let a=0;a<argArray.length;a++){
-                if(argArray[a] == ""){
-                    argArray[a] = 1
-                }
-                argArray[a] = Number(argArray[a])
-            }
-
-            // Execute the actual function
-            return allowedFunctions[find](...argArray)
-        });
-    }
 
     // Captures commands beginning with “dis” (disvantage), extracting the numbers involved.
     // Ex: dis 1d20 | dis 3d10_1 
@@ -144,7 +115,7 @@ export function roll_exec(...strings){
         resul[a] = resul[a].replace(Regex_roll, "roll_dice($2,$4,$1)")
 
         // execute the functions and replaces them with the resul
-        resul[a] = exec_func_string(resul[a])
+        resul[a] = exec_string_fun(resul[a], allowedFunctions, 1)
     }
 
     if(strings.length > 1){
@@ -180,7 +151,7 @@ export function safe_math_eval(text = ""){
 
     // Find mathematical expressions in parentheses, such as “(10 + 2 * 3)”. 
     const Regex_1 = /\(( *-?\d+(\.\d+)?(e[\+\-]?\d+)? *( *(\*\*|[\+\-\*\/\%]) *-?\d+(\.\d+)?(e[\+\-]?\d+)?)* *)\)/g
-    // Find mathematical expressions outside parentheses, such as “13 + 5 * 2.”
+    // Find mathematical expressions outside parentheses, such as “13 + 5 * 2".
     const Regex_2 = /(-?\d+(\.\d+)?(e[\+\-]?\d+)?( *(\*\*|[\+\-\*\/\%]) *-?\d+(\.\d+)?)+(e[\+\-]?\d+)?)/g
 
     let last_resul = ""
@@ -202,99 +173,4 @@ export function safe_math_eval(text = ""){
     });
 
     return resul
-}
-
-// executes the functions of a string that are part of this library
-export function exec_lib_string(text = ""){
-
-    text = String(text)
-
-    const allowedFunctions = [
-        roll_dice,
-        roll_vantage,
-        roll_disvantage,
-        roll,
-        safe_math_eval
-    ]
-
-    // Find any function in a string
-    const Regex = /([a-zA-Z]\w*)\(([^()]*)\)/g
-
-    // repeat the code until there are no changes in the result
-    let last_resul = ""
-    let limit = 1000
-    while((last_resul != text) && limit--){
-        last_resul = text
-
-        text = text.replace(Regex, (match, fname, args) => {
-
-            // Checks if the function exists in the list of allowed functions
-            let find = -1
-            for(let a=0;a<allowedFunctions.length;a++){
-                if(allowedFunctions[a].name === fname){
-                    find = a
-                }
-            }
-            if(find === -1){
-                return match;
-            }
-
-            // Converts arguments separated by commas
-            args = args.split(",").map(a => a.trim());
-
-            // Execute the actual function
-            return allowedFunctions[find](...args)
-        });
-    }
-    
-    return text
-}
-
-export function exec_string_fun(string = "", allowedFunctions = [roll]){
-
-    if (typeof string !== 'string') return string
-
-    // Find any function in a string
-    const Regex = /([a-zA-Z]\w*)\(([^()]*)\)/g
-
-    // repeat the code until there are no changes in the result
-    let last_resul = ""
-    let limit = 1000
-    while((last_resul != string) && limit--){
-        last_resul = string
-
-        string = string.replace(Regex, (match, fname, args) => {
-
-            // Checks if the function exists in the list of allowed functions
-            let find = -1
-            for(let a=0;a<allowedFunctions.length;a++){
-                if(allowedFunctions[a].name === fname){
-                    find = a
-                }
-            }
-            if(find === -1){
-                return match;
-            }
-
-            // Converts arguments separated by commas
-            args = args.split(",").map(a => a.trim())
-            for(let a=0;a<args.length;a++){
-                if(args[a] == ""){
-                    args.splice(a,1)
-                    a-=1
-                }
-                if(isNumber(args[a])) {args[a] == Number(args[a])}
-            }
-
-            // Execute the actual function
-            return allowedFunctions[find](...args)
-        });
-    }
-    
-    return string
-}
-
-function split_top_level(string) {
-    if (typeof string !== "string") return string
-
 }
