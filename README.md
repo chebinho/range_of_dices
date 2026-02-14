@@ -11,7 +11,7 @@ Para a lib fazer isso é preciso definir um padrão para facilitar a leitura dos
 
 ## detalhes importantes sobre essa lib 
 
-### Essa lib e dividida em dois arquivos: 
+### Essa lib e dividida em três arquivos: 
 
 O primeiro arquivo chamado de "roll_dices.js" contém funções para executar jogadas de dados independentemente da quantidade de faces ou dos valores contidos nas faces.
 
@@ -82,6 +82,7 @@ além disso essa função executa a função safe_math_eval para fazer o calculo
 
 #### range()
 
+
 ### edit the ranges
 
 #### join_ranges()
@@ -93,6 +94,7 @@ além disso essa função executa a função safe_math_eval para fazer o calculo
 #### merge_ranges()
 
 #### merge_range_and_number()
+
 
 ### convert the ranges
 
@@ -107,6 +109,9 @@ além disso essa função executa a função safe_math_eval para fazer o calculo
 ### other usefull functions
 
 #### find_parentheses()
+
+
+## funções do arquivo validations.js
 
 #### isNumber()
 

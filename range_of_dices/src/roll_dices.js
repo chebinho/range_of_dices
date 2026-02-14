@@ -1,3 +1,5 @@
+import {isNumber} from './validations.js'
+
 // roll any dice one or more times.
 export function roll_dice(biggest_face=20, smaller_face=1, amount=1){
 
@@ -76,9 +78,13 @@ export function roll_disvantage(biggest_face=20, smaller_face=1, amount=1){
     return resul
 }
 
-// solve any equation with a data rollover together.
-// Ex: roll("1d20 + 10 - 1d6") --> 15 + 10 - 3 = 22
-export function roll(...dices){
+// finds simplifications of the dices and converts them into the respective functions
+// after that, the functions are executed and the results are replaced by the respective functions
+export function roll_exec(...strings){
+
+    for(let a=0;a<strings.length;a++){
+        if (typeof strings[a] !== 'string') return strings
+    }
 
     const allowedFunctions = [
         roll_dice,
@@ -129,25 +135,43 @@ export function roll(...dices){
     // Ex: 1d20 | 3d10_1 | 2d-20_-1
     const Regex_roll = /(\d+)d(-?\d+)(_(-?\d+))?/g
 
-    let results = []
-    for(let a=0;a<dices.length;a++){
+    let resul = []
+    for(let a=0;a<strings.length;a++){
 
         // converts the user's command into its respective function
-        results[a] = dices[a].replace(Regex_dis, "roll_disvantage($2,$4,$1)")
-        results[a] = results[a].replace(Regex_van, "roll_vantage($2,$4,$1)")
-        results[a] = results[a].replace(Regex_roll, "roll_dice($2,$4,$1)")
+        resul[a] = strings[a].replace(Regex_dis, "roll_disvantage($2,$4,$1)")
+        resul[a] = resul[a].replace(Regex_van, "roll_vantage($2,$4,$1)")
+        resul[a] = resul[a].replace(Regex_roll, "roll_dice($2,$4,$1)")
 
-        // execute the functions and replaces them with the results
-        results[a] = exec_func_string(results[a])
-        if(isNaN(results[a])){
-            results[a] = results[a] + " = " + safe_math_eval(results[a])
+        // execute the functions and replaces them with the resul
+        resul[a] = exec_func_string(resul[a])
+    }
+
+    if(strings.length > 1){
+        return resul
+    }else{
+        return resul[0]
+    }
+
+}
+
+// solve any equation with a data rollover together.
+// Ex: roll("1d20 + 10 - 1d6") --> 15 + 10 - 3 = 22
+export function roll(...strings){
+
+    let resul = []
+    for(let a=0;a<strings.length;a++){
+
+        resul[a] = roll_exec(strings[a])
+        if(!isNumber(resul[a])){
+            resul[a] = resul[a] + " = " + safe_math_eval(resul[a])
         }
     }
 
-    if(dices.length > 1){
-        return results
+    if(strings.length > 1){
+        return resul
     }else{
-        return results[0]
+        return resul[0]
     }
 }
 
@@ -224,4 +248,53 @@ export function exec_lib_string(text = ""){
     }
     
     return text
+}
+
+export function exec_string_fun(string = "", allowedFunctions = [roll]){
+
+    if (typeof string !== 'string') return string
+
+    // Find any function in a string
+    const Regex = /([a-zA-Z]\w*)\(([^()]*)\)/g
+
+    // repeat the code until there are no changes in the result
+    let last_resul = ""
+    let limit = 1000
+    while((last_resul != string) && limit--){
+        last_resul = string
+
+        string = string.replace(Regex, (match, fname, args) => {
+
+            // Checks if the function exists in the list of allowed functions
+            let find = -1
+            for(let a=0;a<allowedFunctions.length;a++){
+                if(allowedFunctions[a].name === fname){
+                    find = a
+                }
+            }
+            if(find === -1){
+                return match;
+            }
+
+            // Converts arguments separated by commas
+            args = args.split(",").map(a => a.trim())
+            for(let a=0;a<args.length;a++){
+                if(args[a] == ""){
+                    args.splice(a,1)
+                    a-=1
+                }
+                if(isNumber(args[a])) {args[a] == Number(args[a])}
+            }
+
+            // Execute the actual function
+            return allowedFunctions[find](...args)
+        });
+    }
+    
+    return string
+}
+
+function split_top_level(string) {
+    if (typeof string !== "string") return string
+
 }
