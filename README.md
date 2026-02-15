@@ -88,7 +88,7 @@ A função busca os valores válidos e retorna o resultado da equação.
 ```
 exec_math("20 + 4 - 3")    // ex: 21
 exec_math("(20 - 4) * 3")  // ex: 48
-exec_math("1+++1 +----+ 1")  // ex: 3
+exec_math("1+++1 +---- 1")  // ex: 3
 
 ```
 

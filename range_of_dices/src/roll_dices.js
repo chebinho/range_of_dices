@@ -148,8 +148,6 @@ export function roll(...strings){
     }
 }
 
-console.log(roll("1 - 1"))
-
 // solves a string equation into a result when possible.
 export function exec_math(text = ""){
 
@@ -196,10 +194,17 @@ export function exec_math(text = ""){
                 }
 
             }else{
-                let test = false
-                
+                let test = false         
+
                 if(priority[array[a]] !== undefined){
                     test = true
+                }else if(isNumber(array[a])){
+                    if(array[a] < 0){
+                        array[a] = Number(array[a])
+                        array.splice(a,1,-array[a])
+                        array.splice(a,0,"-")
+                        test = true
+                    }
                 }
 
                 if(test === true){
@@ -231,7 +236,7 @@ export function exec_math(text = ""){
         return array[0]
     }
 
-    const Regex = /((- *)?\d+(\.\d+)?(\e\d+)?)|(\*\*|[\+\-\*\/\%])|(\(|\))/g
+    const Regex = /(-?\d+(\.\d+)?(\e\d+)?)|(\*\*|[\+\-\*\/\%])|(\(|\))/g
     let resul = text.match(Regex)
     
     let no_parent = true
