@@ -337,7 +337,7 @@ export function range(text){
         return array[0]
     }
 
-    const Regex = /((van *|dis *)?(\d+)d(-?\d+)(_(-?\d+))?)|(\+\+|\*\*|m?[\+\-\*\/\%])|(\()|(\))|(\d+(\.\d+)?(\e\d+)?)/g
+    const Regex = /((van *|dis *)?(\d+)d(-?\d+)(_(-?\d+))?)|(\*\*|m?[\+\-\*\/\%])|(\()|(\))|(\d+(\.\d+)?(\e\d+)?)/g
     let resul = text.match(Regex)
 
     let no_parent = true

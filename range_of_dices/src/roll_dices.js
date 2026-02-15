@@ -1,4 +1,4 @@
-import {isNumber, exec_string_fun} from './other_functions.js'
+import {isNumber, exec_string_fun, find_parentheses} from './other_functions.js'
 
 // roll any dice one or more times.
 export function roll_dice(biggest_face=20, smaller_face=1, amount=1){
@@ -135,7 +135,9 @@ export function roll(...strings){
 
         resul[a] = roll_exec(strings[a])
         if(!isNumber(resul[a])){
-            resul[a] = resul[a] + " = " + safe_math_eval(resul[a])
+            resul[a] = resul[a] + " = " + exec_math(resul[a])
+        }else{
+            resul[a] = Number(resul[a])
         }
     }
 
@@ -146,31 +148,117 @@ export function roll(...strings){
     }
 }
 
+console.log(roll("1 - 1"))
+
 // solves a string equation into a result when possible.
-export function safe_math_eval(text = ""){
+export function exec_math(text = ""){
 
-    // Find mathematical expressions in parentheses, such as “(10 + 2 * 3)”. 
-    const Regex_1 = /\(( *-?\d+(\.\d+)?(e[\+\-]?\d+)? *( *(\*\*|[\+\-\*\/\%]) *-?\d+(\.\d+)?(e[\+\-]?\d+)?)* *)\)/g
-    // Find mathematical expressions outside parentheses, such as “13 + 5 * 2".
-    const Regex_2 = /(-?\d+(\.\d+)?(e[\+\-]?\d+)?( *(\*\*|[\+\-\*\/\%]) *-?\d+(\.\d+)?)+(e[\+\-]?\d+)?)/g
+    function solve_range_equation(array){
+        if(!Array.isArray(array)) return null
 
-    let last_resul = ""
-    let resul = text
+        // creates the op function to perform the calculation when necessary
+        const op = {
+            "+": (a,b) => a + b,
+            "-": (a,b) => a - b,
+            "*": (a,b) => a * b,
+            "**": (a,b) => a ** b,
+            "/": (a,b) => a / b,
+            "%": (a,b) => a % b
+        }
 
-    // solve all equations in parentheses until there are no more
-    let guard = 0;
-    while ((last_resul !== resul) && (guard++ < 100)) {
-        last_resul = resul
+        // defines the priority of executions
+        const priority = {
+            "+": 0,
+            "-": 0,
+            "*": 1,
+            "**": 2,
+            "/": 1,
+            "%": 1
+        }
 
-        resul = resul.replace(Regex_1, (match) => {
-            return eval(match)
-        });
+        // validates whether the received array follows the correct pattern; if not, corrects it in the best possible way
+        let alternate_rule = 1
+        for(let a=0;a<array.length;a++){
+
+            if(alternate_rule === 1){
+                let test = false
+
+                if(isNumber(array[a])){
+                    array[a] = Number(array[a])
+                    test = true
+                }
+
+                if(test === true){
+                    alternate_rule = 2
+                }else{
+                    array.splice(a,1)
+                    a-=1
+                }
+
+            }else{
+                let test = false
+                
+                if(priority[array[a]] !== undefined){
+                    test = true
+                }
+
+                if(test === true){
+                    alternate_rule = 1
+                }else{
+                    array.splice(a,1)
+                    a-=1
+                }
+
+            }
+        }
+        if(alternate_rule === 1){
+            array.pop()
+        }
+
+        if(array.length == 1){
+            return array[0]
+        }
+        
+        for(let b=2;b>=0;b--){ // repete uma vez para cada prioridade
+            for(let a=1;a<array.length;a+=2){ // verifica quando é possivel fazer o calculo
+                if(priority[array[a]] === b){
+                    array.splice(a-1, 3, op[array[a]](array[a-1], array[a+1]))
+                    a -= 2
+                }
+            }
+        }
+
+        return array[0]
     }
 
-    // take care of the rest
-    resul = resul.replace(Regex_2, (match) => {
-        return eval(match)
-    });
+    const Regex = /((- *)?\d+(\.\d+)?(\e\d+)?)|(\*\*|[\+\-\*\/\%])|(\(|\))/g
+    let resul = text.match(Regex)
+    
+    let no_parent = true
+    let par = find_parentheses(resul)
+    if(par.start == null) {
+        no_parent = false
+    }
+    if(par.end == null) {
+        no_parent = false
+    }
 
-    return resul
+    let guard = 0;
+    while ((no_parent) && (guard++ < 100)) {
+
+        let temp_resul = solve_range_equation( resul.slice(par.start+1,par.end) )
+        resul.splice(par.start,par.end+1, temp_resul)
+        
+        par = find_parentheses(resul)
+        if(par.start == null) {
+            no_parent = false
+            par.start = 0
+        }
+        if(par.end == null) {
+            no_parent = false
+            par.end = resul.length
+        }
+    }
+
+    return solve_range_equation(resul)
 }
