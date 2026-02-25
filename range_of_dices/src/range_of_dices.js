@@ -15,7 +15,13 @@ export function range_simple(biggest_val=20, smaller_val=1, gap=1, possibility=1
     if (!isNumber(biggest_val)) return null
     if (!isNumber(smaller_val)) return null
     if (!isNumber(gap)) return null
-    if (!isNumber(possibility)) return null
+
+    let possi_num = true
+
+    if (!isNumber(possibility)){
+        if(!Array.isArray(possibility)) return false
+        possi_num = false
+    }
 
     // and ensures that biggest_val and smaller_val are correct
     if(biggest_val < smaller_val){
@@ -33,11 +39,27 @@ export function range_simple(biggest_val=20, smaller_val=1, gap=1, possibility=1
 
     // creates the range
     let resul = []
-    let b = 0
-    for(let a=smaller_val;a<=biggest_val;a+=gap){
-        resul[b] = [a,possibility]
-        b+=1
+
+    if(possi_num){
+
+        let b = 0
+        for(let a=smaller_val;a<=biggest_val;a+=gap){
+            resul[b] = [a,possibility]
+            b+=1
+        }
+    }else{
+
+        let b = 0
+        let c = 0
+        for(let a=smaller_val;a<=biggest_val;a+=gap){
+            if(possibility[c] === undefined){ c=0 }
+
+            resul[b] = [a,possibility[c]]
+            c+=1
+            b+=1
+        }
     }
+    
 
     return resul
 }
