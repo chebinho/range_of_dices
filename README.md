@@ -28,7 +28,6 @@ Sorteia um ou mais dados de forma aleatória, se mais de um dado for sorteado os
 roll_dice(20)       // sorteia 1 dado que as faces vão do 1 ao 20
 roll_dice(30,1,2)   // sorteia 2 dado que as faces vão do 1 ao 30
 roll_dice(-30,10,5) // sorteia 5 dado que as faces vão do 10 ao -30
-
 ```
 
 ### **roll_vantage** ( biggest_face, smaller_face, amount ) <hr>
@@ -38,7 +37,6 @@ Sorteia dois ou mais dados e compara os valores retornando o maior valor sortead
 roll_vantage(20)        // sorteia 2 dado que as faces vão do 1 ao 20, e retorna o maior valor
 roll_vantage(20,1,1)    // sorteia 2 dado que as faces vão do 1 ao 20, e retorna o maior valor
 roll_vantage(-30,10,4)  // sorteia 5 dado que as faces vão do 10 ao -30, e retorna o maior valor
-
 ```
 
 ### **roll_disvantage** ( biggest_face, smaller_face, amount ) <hr>
@@ -55,7 +53,6 @@ roll_exec("dis 1d20")       // sorteia 2 dado que as faces vão do 1 ao 20, e re
 
 roll_exec("1d20+5")         // sorteia 1 dado que as faces vão do 1 ao 20, e acresenta "+5"
 roll_exec("1d20+1d6")       // sorteia 1 dado de 20 lados e soma o resultado com um dado de 6 lados
-
 ```
 
 Caso mais de uma string seja fornecida a função retorna um array com os resultados ordenados.
@@ -63,7 +60,6 @@ Caso mais de uma string seja fornecida a função retorna um array com os result
 ```
 roll_exec("1d20", "van 1d20", "dis 1d20", "1d20+5", "1d20+1d6") 
 // exemplo de resultado: ["9", "13", "4", "10+5", "14+2"]
-
 ```
 
 Essa função pode não parecer segura por executar outras funções em uma string, mas regra só se aplica às funções: roll_dice, roll_vantage e roll_disvantage.
@@ -77,10 +73,9 @@ roll("1d100_50")            // ex: 65
 roll("1d20 + 5")            // ex: "6 + 5 = 11"
 roll("(1d20 * 2) + 5")      // ex: "(11 * 2) + 5 = 27"
 roll("van 1d20 * 2 + X")    // ex: "11 * 2 + X = 22"
-
 ```
 
-Para fazer esse caculo do resultado a função ["exec_math"] é utilizada
+Para fazer esse caculo do resultado a função "exec_math" é utilizada
 
 ### **exec_math** ( any_text ) <hr>
 Faz o cálculo de uma equação matemática presente em uma string, independente de como a string esteja construída.
@@ -90,7 +85,6 @@ A função busca os valores válidos e retorna o resultado da equação.
 exec_math("20 + 4 - 3")     // ex: 21
 exec_math("(20 - 4) * 3")   // ex: 48
 exec_math("1+++1 +---- 1")  // ex: 3
-
 ```
 
 ## 3.3. Funções do arquivo range_of_dices.js
@@ -99,22 +93,54 @@ exec_math("1+++1 +---- 1")  // ex: 3
 
 ### **range_simple** (biggest_val, smaller_val, gap, possibility) <hr>
 
-O proposito dessa função é de facilitar a criação de qualquer range.
+O propósito dessa função é de facilitar a criação de qualquer range.
+
+ - biggest_val: valor do maior do range,    placeholder = 20
+ - smaller_val: menor valor do range,       placeholder = 1 
+ - gap: espaço entre os valores,            placeholder = 1
+ - possibility: número de possibilidades,   placeholder = 1
 
 ```
-
-range_simple(5) // [ [1, 1],[2, 1],[3, 1],[4, 1],[5, 1] ]
-
-
+range_simple(5)                 // [ [1, 1],[2, 1],[3, 1],[4, 1],[5, 1] ]
+range_simple(5,2)               // [ [2, 1],[3, 1],[4, 1],[5, 1] ]
+range_simple(5,1,2)             // [ [1, 1],[3, 1],[5, 1] ]
+range_simple(5,1,1,9)           // [ [1, 9],[2, 9],[3, 9],[4, 9],[5, 9] ]
+range_simple(5,1,1,[1,9])       // [ [1, 1],[2, 9],[3, 1],[4, 9],[5, 1] ]
 ```
 
-### **range_combinations** () <hr>
+caso qualquer valor seja invalido a função retorna null.
+se o "biggest_val" for menor que o "smaller_val" esses valores são trocados.
+se "gap" for um valor negativo ele se torna positivo, se for 0 retorna Infinity.
+se a "possibility" for um array os valores seguiram a sequencia de valores do array.
 
-### **range_van_or_dis** () <hr>
+### **range_combinations** (amount, biggest_val, smaller_val, gap) <hr>
+
+Faz a combinação de multiplos ranges iguais da maneira mais eficiente dessa lib.
+
+ - amount: número de vezes que o range se repete,   placeholder = 1
+ - biggest_val: valor do maior do range,            placeholder = 20
+ - smaller_val: menor valor do range,               placeholder = 1 
+ - gap: espaço entre os valores,                    placeholder = 1
+
+```
+range_combinations(1,5)     // [ [1, 1],[2, 1],[3, 1],[4, 1],[5, 1] ]
+range_combinations(2,5)     // [ [2, 1],[3, 2],[4, 3],[5, 4],[6, 5],[7, 4],[8, 3],[9, 2],[10, 1] ]
+range_combinations(2,5,2)   // [ [4, 1],[5, 2],[6, 3],[7, 4],[8, 3],[9, 2],[10, 1] ]
+range_combinations(2,5,1,2) // [ [2, 1],[4, 2],[6, 3],[8, 2],[10, 1] ]
+```
+
+caso qualquer valor seja invalido a função retorna null.
+se "amount" for um valor negativo ele se torna positivo.
+se o "biggest_val" for menor que o "smaller_val" esses valores são trocados.
+se "gap" for um valor negativo ele se torna positivo, se for 0 retorna Infinity.
+
+### **range_van_or_dis** (amount, biggest_val, smaller_val, gap, disadvantage) <hr>
+
+
 
 ### **range_vantage** () <hr>
 
-### **range_desvantage** () <hr>
+### **range_disvantage** () <hr>
 
 ### **string_to_range** () <hr>
 

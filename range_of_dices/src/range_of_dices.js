@@ -10,7 +10,6 @@ export function range_simple(biggest_val=20, smaller_val=1, gap=1, possibility=1
     biggest_val = Number(biggest_val)
     smaller_val = Number(smaller_val)
     gap = Number(gap)
-    possibility = Number(possibility)
 
     if (!isNumber(biggest_val)) return null
     if (!isNumber(smaller_val)) return null
@@ -19,7 +18,7 @@ export function range_simple(biggest_val=20, smaller_val=1, gap=1, possibility=1
     let possi_num = true
 
     if (!isNumber(possibility)){
-        if(!Array.isArray(possibility)) return false
+        if(!Array.isArray(possibility)) return null
         possi_num = false
     }
 
@@ -78,6 +77,10 @@ export function range_combinations(amount=1,biggest_val, smaller_val=1, gap=1){
     if (!isNumber(smaller_val)) return null
     if (!isNumber(gap)) return null
     if (!isNumber(amount)) return null
+
+    if(amount<0){
+        amount = 0 - amount
+    }
 
     // This function is used to search for the sequence of ranges that, when added together, will return a sum of specific ranges
     // ex: smallest_sequence(1000) -> [4, 6, 7, 8, 9, 10]
@@ -145,7 +148,7 @@ export function range_combinations(amount=1,biggest_val, smaller_val=1, gap=1){
 // creates a simple range with the number of possibilities for an “advantage or disadvantage roll”
 // basically calculates the number of possibilities for a person to roll one or more dice and
 // take the highest value of the dice in the case of advantage or the lowest value in the case of disadvantage
-export function range_van_or_dis(amount=1,biggest_val=20, smaller_val=1, gap=1, desvantage=false){
+export function range_van_or_dis(amount=1,biggest_val=20, smaller_val=1, gap=1, disadvantage=false){
 
     // ensures that all values are numbers
     // if not, returns null 
@@ -180,7 +183,7 @@ export function range_van_or_dis(amount=1,biggest_val=20, smaller_val=1, gap=1, 
     }
 
     // converts the advantage into a disadvantage if necessary 
-    if(desvantage === true){
+    if(disadvantage === true){
         values.reverse()
     }
     
@@ -198,7 +201,7 @@ export function range_van_or_dis(amount=1,biggest_val=20, smaller_val=1, gap=1, 
 export function range_vantage(amount=1,biggest_val=20, smaller_val=1, gap=1){
     return range_van_or_dis(amount,biggest_val, smaller_val, gap, false)
 }
-export function range_desvantage(amount=1,biggest_val=20, smaller_val=1, gap=1){
+export function range_disvantage(amount=1,biggest_val=20, smaller_val=1, gap=1){
     return range_van_or_dis(amount,biggest_val, smaller_val, gap, true)
 }
 
@@ -234,7 +237,7 @@ export function string_to_range(string = ""){
 
     resul_regex = string.match(Regex_dis)
     if(resul_regex !== null){
-        resul = range_desvantage(
+        resul = range_disadvantage(
             resul_regex[1],
             resul_regex[2],
             resul_regex[4],
@@ -258,8 +261,10 @@ export function string_to_range(string = ""){
     return resul
 }
 
-export function range(text){
+// basically performs all calculations present in a string, including range simplificationss
+export function range(...text){
 
+    // solves equations containing simplified ranges or array ranges, but ignores parentheses
     function solve_range_equation(array){
         if(!Array.isArray(array)) return null
 
@@ -272,12 +277,12 @@ export function range(text){
             "/": (a, b) => join_ranges_all(a, b, "/"),
             "%": (a, b) => join_ranges_all(a, b, "%"),
 
-            "m+": (a, b) => merge_ranges(a, b, "+"),
-            "m-": (a, b) => merge_ranges(a, b, "-"),
-            "m*": (a, b) => merge_ranges(a, b, "*"),
-            "m**": (a, b) => merge_ranges(a, b, "**"),
-            "m/": (a, b) => merge_ranges(a, b, "/"),
-            "m%": (a, b) => merge_ranges(a, b, "%")
+            "M+": (a, b) => merge_ranges(a, b, "+"),
+            "M-": (a, b) => merge_ranges(a, b, "-"),
+            "M*": (a, b) => merge_ranges(a, b, "*"),
+            "M**": (a, b) => merge_ranges(a, b, "**"),
+            "M/": (a, b) => merge_ranges(a, b, "/"),
+            "M%": (a, b) => merge_ranges(a, b, "%")
         }
 
         // defines the priority of executions
@@ -289,12 +294,12 @@ export function range(text){
             "/": 1,
             "%": 1,
             
-            "m+": 0,
-            "m-": 0,
-            "m*": 1,
-            "m**": 2,
-            "m/": 1,
-            "m%": 1
+            "M+": 0,
+            "M-": 0,
+            "M*": 1,
+            "M**": 2,
+            "M/": 1,
+            "M%": 1
         }
 
         // validates whether the received array follows the correct pattern; if not, corrects it in the best possible way
@@ -347,8 +352,8 @@ export function range(text){
             }
         }
         
-        for(let b=2;b>=0;b--){ // repete uma vez para cada prioridade
-            for(let a=1;a<array.length;a+=2){ // verifica quando é possivel fazer o calculo
+        for(let b=2;b>=0;b--){ // repeat once for each priority
+            for(let a=1;a<array.length;a+=2){ // checks when the calculation can be done
                 if(priority[array[a]] === b){
                     array.splice(a-1, 3, op[array[a]](array[a-1], array[a+1]))
                     a -= 2
@@ -359,9 +364,20 @@ export function range(text){
         return array[0]
     }
 
-    const Regex = /((van *|dis *)?(\d+)d(-?\d+)(_(-?\d+))?)|(\*\*|m?[\+\-\*\/\%])|(\()|(\))|(\d+(\.\d+)?(\e\d+)?)/g
-    let resul = text.match(Regex)
+    // searches for valid values and places each value in an array
+    const Regex = /((van *|dis *)?(\d+)d(-?\d+)(_(-?\d+))?)|(\*\*|M?[\+\-\*\/\%])|(\()|(\))|(\d+(\.\d+)?(\e\d+)?)/g
+    let resul = []
 
+    for(let a=0;a<text.length;a++){
+        if(typeof text[a] === 'string'){
+            resul = resul.concat(text[a].match(Regex))
+
+        }else if(isArrayRange(text[a])){
+            resul = resul.concat([text[a]])
+        }
+    }
+
+    // search for values between pairs of parentheses, after which the values are executed by the “solve_range_equation” function
     let no_parent = true
     let par = find_parentheses(resul)
     if(par.start == null) {
@@ -372,7 +388,7 @@ export function range(text){
     }
 
     let guard = 0;
-    while ((no_parent) && (guard++ < 100)) {
+    while ((no_parent) && (guard++ < 1000)) {
 
         let temp_resul = solve_range_equation( resul.slice(par.start+1,par.end) )
         resul.splice(par.start,par.end+1, temp_resul)
