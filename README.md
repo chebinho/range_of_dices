@@ -1,3 +1,26 @@
+# Sumário
+- [O que a Lib faz](#1-o-que-a-lib-faz)
+- [Como Instalar](#2-como-instalar)
+- [Exemplos de uso](#3-exemplos-de-uso)
+    - [Detalhes Importantes](#31-detalhes-importantes-sobre-essa-lib)
+    - [Funções do Arquivo roll_dices.js](#32-funções-do-arquivo-roll_dicesjs)
+        - [roll_dice](#roll_dice--biggest_face-smaller_face-amount-)
+        - [roll_vantage](#roll_vantage--biggest_face-smaller_face-amount-)
+        - [roll_disvantage](#roll_disvantage--biggest_face-smaller_face-amount-)
+        - [roll_exec](#roll_exec--any_text-any_text-any_text--)
+        - [roll](#roll--any_text-any_text-any_text--)
+        - [exec_math](#exec_math--any_text-)
+    - [Funções do arquivo range_of_dices.js](#33-funções-do-arquivo-range_of_dicesjs)
+        - [Create the ranges](#331-create-the-ranges)
+            - [range_simple](#range_simple-biggest_val-smaller_val-gap-possibility)
+            - [range_combinations](#range_combinations-amount-biggest_val-smaller_val-gap)
+            - [range_van_or_dis](#range_van_or_dis-amount-biggest_val-smaller_val-gap-disadvantage)
+            - [string_to_range](#string_to_range--string-)
+            - [range](#range--text-)
+        - [Edit the ranges](#332-edit-the-ranges)
+        - [convert the ranges](#333-convert-the-ranges)
+
+
 # 1. O que a Lib faz:
 
 essa lib foi feita para facilitar o calculo de possibilidades para cada jogada de dados
@@ -55,15 +78,17 @@ roll_exec("1d20+5")         // sorteia 1 dado que as faces vão do 1 ao 20, e ac
 roll_exec("1d20+1d6")       // sorteia 1 dado de 20 lados e soma o resultado com um dado de 6 lados
 ```
 
-Caso mais de uma string seja fornecida a função retorna um array com os resultados ordenados.
+<details>
+Caso mais de uma string seja fornecida a função retorna um array com os resultados ordenados.</br>
 
 ```
 roll_exec("1d20", "van 1d20", "dis 1d20", "1d20+5", "1d20+1d6") 
 // exemplo de resultado: ["9", "13", "4", "10+5", "14+2"]
 ```
 
-Essa função pode não parecer segura por executar outras funções em uma string, mas regra só se aplica às funções: roll_dice, roll_vantage e roll_disvantage.
-Outras funções fora dessa lista são ignoradas.
+Essa função pode não parecer segura por executar outras funções em uma string, mas regra só se aplica às funções: roll_dice, roll_vantage e roll_disvantage.</br>
+Outras funções fora dessa lista são ignoradas.</br>
+</details>
 
 ### **roll** ( any_text, any_text, any_text, ... ) <hr>
 Basicamente faz o mesmo que a função anterior, porém adiciona o resultado da equação ao final da string.
@@ -95,10 +120,36 @@ exec_math("1+++1 +---- 1")  // ex: 3
 
 O propósito dessa função é de facilitar a criação de qualquer range.
 
- - biggest_val: valor do maior do range,    placeholder = 20
- - smaller_val: menor valor do range,       placeholder = 1 
- - gap: espaço entre os valores,            placeholder = 1
- - possibility: número de possibilidades,   placeholder = 1
+<details>
+    <summary>Saiba mais sobre os Argumentos</summary>
+    <table>
+        <tr>
+            <td>Argumentos</td>
+            <td>Resumo Simples</td>
+            <td>Default</td>
+        <tr>
+        <tr>
+            <td>biggest_val:</td>
+            <td>valor do maior do range</td>
+            <td>20</td>
+        <tr>
+        <tr>
+            <td>smaller_val:</td>
+            <td>menor valor do range</td>
+            <td>1</td>
+        <tr>
+        <tr>
+            <td>gap:</td>
+            <td>espaço entre os valores</td>
+            <td>1</td>
+        <tr>
+        <tr>
+            <td>possibility:</td>
+            <td>número de possibilidades</td>
+            <td>1</td>
+        <tr>
+    </table>
+</details></br>
 
 ```
 range_simple(5)                 // [ [1, 1],[2, 1],[3, 1],[4, 1],[5, 1] ]
@@ -108,19 +159,48 @@ range_simple(5,1,1,9)           // [ [1, 9],[2, 9],[3, 9],[4, 9],[5, 9] ]
 range_simple(5,1,1,[1,9])       // [ [1, 1],[2, 9],[3, 1],[4, 9],[5, 1] ]
 ```
 
-caso qualquer valor seja invalido a função retorna null.
-se o "biggest_val" for menor que o "smaller_val" esses valores são trocados.
-se "gap" for um valor negativo ele se torna positivo, se for 0 retorna Infinity.
-se a "possibility" for um array os valores seguiram a sequencia de valores do array.
+<details>
+<summary>Saiba mais Detalhes</summary>
+Caso qualquer valor seja invalido a função retorna null.</br>
+Se o "biggest_val" for menor que o "smaller_val" esses valores são trocados.</br>
+Se "gap" for um valor negativo ele se torna positivo, se for 0 retorna Infinity.</br>
+Se a "possibility" for um array os valores seguiram a sequencia de valores do array.</br>
+</details>
 
 ### **range_combinations** (amount, biggest_val, smaller_val, gap) <hr>
 
 Faz a combinação de multiplos ranges iguais da maneira mais eficiente dessa lib.
 
- - amount: número de vezes que o range se repete,   placeholder = 1
- - biggest_val: valor do maior do range,            placeholder = 20
- - smaller_val: menor valor do range,               placeholder = 1 
- - gap: espaço entre os valores,                    placeholder = 1
+<details>
+    <summary>Saiba mais sobre os Argumentos</summary>
+    <table>
+        <tr>
+            <td>Argumentos</td>
+            <td>Resumo Simples</td>
+            <td>Default</td>
+        <tr>
+        <tr>
+            <td>amount:</td>
+            <td>número de vezes que o range se repete</td>
+            <td>1</td>
+        <tr>
+        <tr>
+            <td>biggest_val:</td>
+            <td>valor do maior do range</td>
+            <td>20</td>
+        <tr>
+        <tr>
+            <td>smaller_val:</td>
+            <td>menor valor do range</td>
+            <td>1</td>
+        <tr>
+        <tr>
+            <td>gap:</td>
+            <td>espaço entre os valores</td>
+            <td>1</td>
+        <tr>
+    </table>
+</details></br>
 
 ```
 range_combinations(1,5)     // [ [1, 1],[2, 1],[3, 1],[4, 1],[5, 1] ]
@@ -129,23 +209,164 @@ range_combinations(2,5,2)   // [ [4, 1],[5, 2],[6, 3],[7, 4],[8, 3],[9, 2],[10, 
 range_combinations(2,5,1,2) // [ [2, 1],[4, 2],[6, 3],[8, 2],[10, 1] ]
 ```
 
-caso qualquer valor seja invalido a função retorna null.
-se "amount" for um valor negativo ele se torna positivo.
-se o "biggest_val" for menor que o "smaller_val" esses valores são trocados.
-se "gap" for um valor negativo ele se torna positivo, se for 0 retorna Infinity.
+<details>
+<summary>Saiba mais Detalhes</summary>
+Caso qualquer valor seja invalido a função retorna null.</br>
+Se "amount" for um valor negativo ele se torna positivo.</br>
+Se o "biggest_val" for menor que o "smaller_val" esses valores são trocados.</br>
+Se "gap" for um valor negativo ele se torna positivo, se for 0 retorna Infinity.</br>
+Se o "amount" for igual a 1 a função <a href="#range_simple-biggest_val-smaller_val-gap-possibility">range_simple</a> e executada no lugar.</br>
+</br>
+Essa solução é um pouco mais rápida que a categoria O(n²). Mas tecnicamente não sai dessa categoria.</br>
+</details>
 
 ### **range_van_or_dis** (amount, biggest_val, smaller_val, gap, disadvantage) <hr>
 
+Cria um range que contabiliza as possibilidades de um ou mais dados de faces variados serem sorteados e o maior valor ser escolhido.</br>
+</br>
+Basicamente faz um range da funções: [roll_vantage](#roll_vantage--biggest_face-smaller_face-amount-) ou [roll_disvantage](#roll_disvantage--biggest_face-smaller_face-amount-).
 
+<details>
+    <summary>Saiba mais sobre os Argumentos</summary>
+    <table>
+        <tr>
+            <td>Argumentos</td>
+            <td>Resumo Simples</td>
+            <td>Default</td>
+        <tr>
+        <tr>
+            <td>amount</td>
+            <td>número de vezes que o range se repete</td>
+            <td>1</td>
+        <tr>
+        <tr>
+            <td>biggest_val</td>
+            <td>valor do maior do range</td>
+            <td>20</td>
+        <tr>
+        <tr>
+            <td>smaller_val</td>
+            <td>menor valor do range</td>
+            <td>1</td>
+        <tr>
+        <tr>
+            <td>gap</td>
+            <td>espaço entre os valores</td>
+            <td>1</td>
+        <tr>
+        <tr>
+            <td>disadvantage</td>
+            <td>boolean para fazer a troca</td>
+            <td>false</td>
+        <tr>
+    </table>
+</details></br>
 
-### **range_vantage** () <hr>
+```
+range_van_or_dis(1,6)           // [ [1, 1],[2, 3],[3, 5],[4, 7],[5, 9],[6, 11] ]
+range_van_or_dis(2,6,1)         // [ [1, 1],[2, 7],[3, 19],[4, 37],[5, 61],[6, 91] ]
+range_van_or_dis(3,6,2)         // [ [2, 1],[3, 15],[4, 65],[5, 175],[6, 369] ]
+range_van_or_dis(4,6,1,2)       // [ [1, 1],[3, 31],[5, 211] ]
 
-### **range_disvantage** () <hr>
+range_van_or_dis(1,6,1,1,false) // [ [1, 1],[2, 3],[3, 5],[4, 7],[5, 9],[6, 11] ]
+range_van_or_dis(1,6,1,1,true)  // [ [1, 11],[2, 9],[3, 7],[4, 5],[5, 3],[6, 1] ]
+```
 
-### **string_to_range** () <hr>
+<details>
+<summary>Saiba mais Detalhes</summary>
+Caso qualquer valor seja invalido a função retorna null.</br>
+Se "amount" for um valor negativo ele se torna positivo.</br>
+Se o "biggest_val" for menor que o "smaller_val" esses valores são trocados.</br>
+Se "gap" for um valor negativo ele se torna positivo, se for 0 retorna Infinity.</br>
+</br>
+A solução usada por essa função pode ser considerada O(n) pois executa um calculo para cada elemento do range.
+</details>
 
-### **range** () <hr>
+<details>
+<summary>Abreviações</summary>
+<h3><b>range_vantage</b> (amount, biggest_val, smaller_val, gap)</h3><hr>
 
+Essa função é apenas uma abreviação da função [range_van_or_dis](#range_van_or_dis-amount-biggest_val-smaller_val-gap-disadvantage), basicamente só vai fazer isso:
+
+```
+range_van_or_dis(amount,biggest_val, smaller_val, gap, false)
+```
+<h3><b>range_disvantage</b> (amount, biggest_val, smaller_val, gap)</h3><hr>
+
+Essa outra função também é uma abreviação da função [range_van_or_dis](#range_van_or_dis-amount-biggest_val-smaller_val-gap-disadvantage), 
+basicamente só vai fazer isso:
+
+```
+return range_van_or_dis(amount,biggest_val, smaller_val, gap, true)
+```
+</details>
+
+### **string_to_range** ( string ) <hr>
+
+Busca por uma simplificação de um dado, após isso o range da simplificação e criado usando a função correta.
+
+<details>
+    <summary>Saiba mais sobre os Argumentos</summary>
+    <table>
+        <tr>
+            <td>Argumentos</td>
+            <td>Resumo Simples</td>
+            <td>Default</td>
+        <tr>
+        <tr>
+            <td>string</td>
+            <td>qualquer string que contenha um dado simplificado</td>
+            <td>""</td>
+        </tr>
+    </table>
+</details></br>
+
+```
+string_to_range("1d20")         // range_combinations(1,20)
+string_to_range("van 1d20")     // range_vantage(1,20)
+string_to_range("dis 1d20")     // range_disvantage(1,20)
+
+string_to_range("2d20_5")       // range_combinations(2,20,5)
+string_to_range("3d100_5_2")    // range_combinations(3,100,5,2)
+```
+
+<details>
+<summary>Saiba mais Detalhes</summary>
+Caso qualquer valor seja invalido a função retorna null.
+</details>
+
+### **range** ( text ) <hr>
+
+Resumidamente essa função pode executar qualquer expressão matemática com a presença de ranges simplificados ou não.
+
+<details>
+    <summary>Saiba mais sobre os Argumentos</summary>
+    <table>
+        <tr>
+            <td>Argumentos</td>
+            <td>Resumo Simples</td>
+            <td>Default</td>
+        <tr>
+        <tr>
+            <td>text</td>
+            <td>uma ou mais strigs ou ranges</td>
+            <td>""</td>
+        </tr>
+    </table>
+</details></br>
+
+```
+range("1d6")                    // [ [1, 1],[2, 1],[3, 1],[4, 1],[5, 1],[6, 1] ]
+range("2d6")                    // [ [2, 1],[3, 2],[4, 3],[5, 4],[6, 5],[7, 6],[8, 5],[9, 4],[10, 3],[11, 2],[12, 1] ]
+range("1d6 + 1d6")              // [ [2, 1],[3, 2],[4, 3],[5, 4],[6, 5],[7, 6],[8, 5],[9, 4],[10, 3],[11, 2],[12, 1] ]
+range("1d6+",range_simple(6))   // [ [2, 1],[3, 2],[4, 3],[5, 4],[6, 5],[7, 6],[8, 5],[9, 4],[10, 3],[11, 2],[12, 1] ]
+range("1d6-1d6")                // [ [-5, 1],[-4, 2],[-3, 3],[-2, 4],[-1, 5],[0, 6],[1, 5],[2, 4],[3, 3],[4, 2],[5, 1] ]
+```
+
+<details>
+<summary>Saiba mais Detalhes</summary>
+Caso qualquer valor seja invalido a função retorna null ou é ignorado.
+</details>
 
 ### 3.3.2. Edit the ranges <hr>
 
@@ -169,6 +390,3 @@ se "gap" for um valor negativo ele se torna positivo, se for 0 retorna Infinity.
 ### **count_type_values** () <hr>
 
 ### **negative_range** () <hr>
-
-
-# API/Documentação

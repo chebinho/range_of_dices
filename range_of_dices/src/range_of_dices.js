@@ -169,7 +169,16 @@ export function range_van_or_dis(amount=1,biggest_val=20, smaller_val=1, gap=1, 
         smaller_val = temp
     }
 
-    if(amount<0) return null
+    if(amount<0){
+        amount = 0 - amount
+    }
+
+    // prevents the gap between values from being negative or 0
+    if(gap==0){
+        return Infinity
+    }else if(gap<0){
+        gap = 0 - gap
+    }
 
     // performs the calculation that results in the possibilities of the advantage
     let num_values = biggest_val - smaller_val +1
@@ -237,7 +246,7 @@ export function string_to_range(string = ""){
 
     resul_regex = string.match(Regex_dis)
     if(resul_regex !== null){
-        resul = range_disadvantage(
+        resul = range_disvantage(
             resul_regex[1],
             resul_regex[2],
             resul_regex[4],
@@ -406,6 +415,8 @@ export function range(...text){
 
     return solve_range_equation(resul)
 }
+
+console.log(range("1d6-1d6"))
 
 // edit ranges =======================================================================================
 
