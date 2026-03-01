@@ -19,7 +19,7 @@
             - [range](#range--text-)
         - [Edit the ranges](#332-edit-the-ranges)
         - [convert the ranges](#333-convert-the-ranges)
-
+- [Outras Informações](#outras-informações)
 
 # 1. O que a Lib faz:
 
@@ -339,6 +339,8 @@ Caso qualquer valor seja invalido a função retorna null.
 
 Resumidamente essa função pode executar qualquer expressão matemática com a presença de ranges simplificados ou não.
 
+Um detalhe é que essa função pode ser utilizada para substituir quase todas as outras funções, mas como essa função precisa fazer varias validações para garantir que o resultado está correto ela se torna mais lenta que as funções mais especializadas dessa lib.
+
 <details>
     <summary>Saiba mais sobre os Argumentos</summary>
     <table>
@@ -361,24 +363,105 @@ range("2d6")                    // [ [2, 1],[3, 2],[4, 3],[5, 4],[6, 5],[7, 6],[
 range("1d6 + 1d6")              // [ [2, 1],[3, 2],[4, 3],[5, 4],[6, 5],[7, 6],[8, 5],[9, 4],[10, 3],[11, 2],[12, 1] ]
 range("1d6+",range_simple(6))   // [ [2, 1],[3, 2],[4, 3],[5, 4],[6, 5],[7, 6],[8, 5],[9, 4],[10, 3],[11, 2],[12, 1] ]
 range("1d6-1d6")                // [ [-5, 1],[-4, 2],[-3, 3],[-2, 4],[-1, 5],[0, 6],[1, 5],[2, 4],[3, 3],[4, 2],[5, 1] ]
+range("1d6_3 + 1d10_4_2")       // [ [7, 1],[8, 1],[9, 2],[10, 2],[11, 2],[12, 2],[13, 2],[14, 2],[15, 1],[16, 1] ]
+
+range("van 2d6")                // [ [1, 1],[2, 7],[3, 19],[4, 37],[5, 61],[6, 91] ]
+range("dis 2d6")                // [ [1, 91],[2, 61],[3, 37],[4, 19],[5, 7],[6, 1] ]
+range("van 2d6 + 1d6")          // [ [2, 1],[3, 8],[4, 27],[5, 64],[6, 125],[7, 216],[8, 215],[9, 208],[10, 189],[11, 152],[12, 91] ]
+```
+
+Nos exemplos demonstrados anteriormente apenas os operadores "+" e "-" foram utilizados por uma questão de espaço mas é importante ressaltar que existe uma lista de operadores válidos e cada um deles tem uma função associada.
+
+<details>
+    <summary>Saiba mais sobre os operadores validos</summary>
+    <table>
+        <tr>
+            <td>Operador</td>
+            <td>Função Associada</td>
+        <tr>
+        <tr>
+            <td> + </td>
+            <td><a href="#join_ranges--range_1-range_2-">join_ranges</a></td>
+        </tr>
+        <tr>
+            <td> - </td>
+            <td><a href="#join_ranges--range_1-range_2-">join_ranges</a></td>
+        </tr>
+        <tr>
+            <td> * </td>
+            <td><a href="#join_ranges_all--range_1-range_2-operator-">join_ranges_all</a></td>
+        </tr>
+        <tr>
+            <td> ** </td>
+            <td><a href="#join_ranges_all--range_1-range_2-operator-">join_ranges_all</a></td>
+        </tr>
+        <tr>
+            <td> / </td>
+            <td><a href="#join_ranges_all--range_1-range_2-operator-">join_ranges_all</a></td>
+        </tr>
+        <tr>
+            <td> % </td>
+            <td><a href="#join_ranges_all--range_1-range_2-operator-">join_ranges_all</a></td>
+        </tr>
+        <tr>
+            <td> +! </td>
+            <td><a href="#merge_ranges--range_1-range_2-operator-">merge_ranges</a></td>
+        </tr>
+        <tr>
+            <td> -! </td>
+            <td><a href="#merge_ranges--range_1-range_2-operator-">merge_ranges</a></td>
+        </tr>
+        <tr>
+            <td> *! </td>
+            <td><a href="#merge_ranges--range_1-range_2-operator-">merge_ranges</a></td>
+        </tr>
+        <tr>
+            <td> **! </td>
+            <td><a href="#merge_ranges--range_1-range_2-operator-">merge_ranges</a></td>
+        </tr>
+        <tr>
+            <td> /! </td>
+            <td><a href="#merge_ranges--range_1-range_2-operator-">merge_ranges</a></td>
+        </tr>
+        <tr>
+            <td> %! </td>
+            <td><a href="#merge_ranges--range_1-range_2-operator-">merge_ranges</a></td>
+        </tr>
+    </table>
+</details></br>
+
+É importante ressaltar que existe alguns casos em que só é necessario unir os valores de dois ranges, para isso basta usar um operador e uma "!".
+
+```
+range("1d6 +! 1d6")         // [ [1, 2],[2, 2],[3, 2],[4, 2],[5, 2],[6, 2] ]
+range("1d6 +! 1d6_1_2")     // [ [1, 2],[2, 1],[3, 2],[4, 1],[5, 2],[6, 1] ]
 ```
 
 <details>
-<summary>Saiba mais Detalhes</summary>
-Caso qualquer valor seja invalido a função retorna null ou é ignorado.
+    <summary>Saiba mais Detalhes</summary>
+    Caso qualquer valor seja invalido a função retorna null ou é ignorado.</br>
+    Caso a expressão esteja incorreta ou incompleta a função tentara retornar um resulto com a parte valida.</br>
+    Essa função também faz dodas as operações matemáticas seguindo a sequencia correta</br>
+    Essa função não acerita a simplificação "5 (1+1)", necesse caso o correto é "5*(1+1)" ou "5*!(1+1)"</br>
+    </br>
+    Como essa função utiliza outras funções para funcionar é difícil determinar em qual categoria de complexidade essa função se enquadra.</br>
 </details>
 
 ### 3.3.2. Edit the ranges <hr>
 
-### **join_ranges** () <hr>
+### **join_ranges** ( range_1, range_2 ) <hr>
 
-### **join_ranges_all** () <hr>
+### **join_ranges_all** ( range_1, range_2, operator ) <hr>
 
-### **join_ranges_fast** () <hr>
+### **join_ranges_fast** ( range_1, range_2, gap ) <hr>
 
-### **merge_ranges** () <hr>
+### **merge_ranges** ( range_1, range_2, operator ) <hr>
 
-### **merge_range_and_number** () <hr>
+O(n+m)
+
+### **merge_range_and_number** ( range_1, number, operator ) <hr>
+
+O(n)
 
 
 ### 3.3.3. convert the ranges <hr>
@@ -390,3 +473,5 @@ Caso qualquer valor seja invalido a função retorna null ou é ignorado.
 ### **count_type_values** () <hr>
 
 ### **negative_range** () <hr>
+
+# Outras Informações

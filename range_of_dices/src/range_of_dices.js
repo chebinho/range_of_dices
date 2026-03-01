@@ -286,12 +286,12 @@ export function range(...text){
             "/": (a, b) => join_ranges_all(a, b, "/"),
             "%": (a, b) => join_ranges_all(a, b, "%"),
 
-            "M+": (a, b) => merge_ranges(a, b, "+"),
-            "M-": (a, b) => merge_ranges(a, b, "-"),
-            "M*": (a, b) => merge_ranges(a, b, "*"),
-            "M**": (a, b) => merge_ranges(a, b, "**"),
-            "M/": (a, b) => merge_ranges(a, b, "/"),
-            "M%": (a, b) => merge_ranges(a, b, "%")
+            "+!": (a, b) => merge_ranges(a, b, "+"),
+            "-!": (a, b) => merge_ranges(a, b, "-"),
+            "*!": (a, b) => merge_ranges(a, b, "*"),
+            "**!": (a, b) => merge_ranges(a, b, "**"),
+            "/!": (a, b) => merge_ranges(a, b, "/"),
+            "%!": (a, b) => merge_ranges(a, b, "%")
         }
 
         // defines the priority of executions
@@ -303,12 +303,12 @@ export function range(...text){
             "/": 1,
             "%": 1,
             
-            "M+": 0,
-            "M-": 0,
-            "M*": 1,
-            "M**": 2,
-            "M/": 1,
-            "M%": 1
+            "+!": 0,
+            "-!": 0,
+            "*!": 1,
+            "**!": 2,
+            "/!": 1,
+            "%!": 1
         }
 
         // validates whether the received array follows the correct pattern; if not, corrects it in the best possible way
@@ -374,7 +374,7 @@ export function range(...text){
     }
 
     // searches for valid values and places each value in an array
-    const Regex = /((van *|dis *)?(\d+)d(-?\d+)(_(-?\d+))?)|(\*\*|M?[\+\-\*\/\%])|(\()|(\))|(\d+(\.\d+)?(\e\d+)?)/g
+    const Regex = /((van *|dis *)?(\d+)d(-?\d+)(_(-?\d+))?(_(-?\d+))?)|(\*\*|[\+\-\*\/\%]\!?)|(\()|(\))|(\d+(\.\d+)?(\e\d+)?)/g
     let resul = []
 
     for(let a=0;a<text.length;a++){
@@ -415,8 +415,6 @@ export function range(...text){
 
     return solve_range_equation(resul)
 }
-
-console.log(range("1d6-1d6"))
 
 // edit ranges =======================================================================================
 
