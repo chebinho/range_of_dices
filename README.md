@@ -16,13 +16,13 @@
             - [range_combine](#range_combine-amount-biggest_val-smaller_val-gap)
             - [range_van_or_dis](#range_van_or_dis-amount-biggest_val-smaller_val-gap-disadvantage)
             - [string_to_range](#string_to_range--string-)
-            - [merge_range_and_number](#merge_range_and_number--range_1-number-operator-)
+            - [range](#range--text-)
         - [Edita os ranges](#332-edita-os-ranges)
             - [join_ranges](#join_ranges--range_1-range_2-)
             - [join_ranges_all](#join_ranges_all--range_1-range_2-operator-)
             - [join_ranges_fast](#join_ranges_fast--range_1-range_2-gap-)
             - [merge_ranges](#merge_ranges--range_1-range_2-operator-)
-            - [range](#range--text-)
+            - [merge_range_and_number](#merge_range_and_number--range-number-operator-)
         - [converte os ranges](#333-converte-os-ranges)
 - [Outras Informações](#outras-informações)
 
@@ -486,7 +486,7 @@ Essa validação se baseia em descobrir se ambos os ranges possuem uma sequênci
     <summary>Saiba mais Detalhes</summary>
     Se os dois argumentos forem inválidos a função retorna null.</br>
     Se apenas uma dos argumentos for válidos a função retorna o argumento válido.</br>
-    Se um dos argumentos for um numero e o outro um range a função <a href="#merge_range_and_number--range_1-number-operator-">merge_range_and_number</a> é executada no lugar.</br>
+    Se um dos argumentos for um numero e o outro um range a função <a href="#merge_range_and_number--range-number-operator-">merge_range_and_number</a> é executada no lugar.</br>
     Se os dois argumentos forem numeros a função retorna a soma dos numeros</br>
 </details>
 
@@ -574,12 +574,93 @@ O problema é que para essa otimização funcionar é necessário que a diferen�
 
 ### **merge_ranges** ( range_1, range_2, operator ) <hr>
 
-O(n+m)
+Faz a combinação de dois ranges, e se houver algum valor igual entre eles uma operação matemática ocorre entre as possibilidades desses valores.
 
-### **merge_range_and_number** ( range_1, number, operator ) <hr>
+<details>
+    <summary>Saiba mais sobre os Argumentos</summary>
+    <table>
+        <tr>
+            <td>Argumentos</td>
+            <td>Resumo Simples</td>
+            <td>Default</td>
+        <tr>
+        <tr>
+            <td>range_1</td>
+            <td>range em um array ou simplificado</td>
+            <td>[[]]</td>
+        <tr>
+        <tr>
+            <td>range_2</td>
+            <td>range em um array ou simplificado</td>
+            <td>[[]]</td>
+        <tr>
+        <tr>
+            <td>operator</td>
+            <td>qualquer operador em uma string</td>
+            <td>"+"</td>
+        <tr>
+    </table>
+</details></br>
 
-O(n)
+```
+merge_ranges("1d6","1d6")           // [ [1, 2],[2, 2],[3, 2],[4, 2],[5, 2],[6, 2] ]
+merge_ranges("1d6","1d6", "-")      // [ [1, 0],[2, 0],[3, 0],[4, 0],[5, 0],[6, 0] ]
+merge_ranges("1d6_1","1d8_4")       // [ [1, 1],[2, 1],[3, 1],[4, 2],[5, 2],[6, 2],[7, 1],[8, 1] ]
+```
 
+<details>
+    <summary>Saiba mais Detalhes</summary>
+    Caso qualquer argumento seja invalido a função retorna null.</br>
+    Caso um dos argumentos seja uma string de um range simplificado o range e convertido para um array.</br>
+    Se um dos argumentos for um número e o outro um range a função <a href="#merge_range_and_number--range-number-operator-">merge_range_and_number</a> é executada no lugar.</br>
+    </br>
+    Essa função entra na categoria O(n+m) pois nessa função é feita uma simples comparação entre os termos dos ranges.
+</details>
+
+### **merge_range_and_number** ( range, number, operator ) <hr>
+
+Faz uma operação matemática em todos os valores de um range.
+
+<details>
+    <summary>Saiba mais sobre os Argumentos</summary>
+    <table>
+        <tr>
+            <td>Argumentos</td>
+            <td>Resumo Simples</td>
+            <td>Default</td>
+        <tr>
+        <tr>
+            <td>range</td>
+            <td>range em um array ou simplificado</td>
+            <td>[[]]</td>
+        <tr>
+        <tr>
+            <td>number</td>
+            <td>qualquer numero valido</td>
+            <td>1</td>
+        <tr>
+        <tr>
+            <td>operator</td>
+            <td>qualquer operador em uma string</td>
+            <td>"+"</td>
+        <tr>
+    </table>
+</details></br>
+
+```
+merge_range_and_number("1d6")           // [ [2, 1],[3, 1],[4, 1],[5, 1],[6, 1],[7, 1] ]
+merge_range_and_number("1d6",1,"+")     // [ [2, 1],[3, 1],[4, 1],[5, 1],[6, 1],[7, 1] ]
+merge_range_and_number("1d6",100,"+")   // [ [101, 1],[102, 1],[103, 1],[104, 1],[105, 1],[106, 1] ]
+merge_range_and_number("1d6",100,"-")   // [ [-99, 1],[-98, 1],[-97, 1],[-96, 1],[-95, 1],[-94, 1] ]
+```
+
+<details>
+    <summary>Saiba mais Detalhes</summary>
+    Caso qualquer argumento seja invalido a função retorna null.</br>
+    Caso um o argumento "range" seja uma string de um range simplificado o range e convertido para um array.</br>
+    </br>
+    Essa função entra na categoria O(n) pois faz uma operação para casa valor do range.
+</details>
 
 ### 3.3.3. converte os ranges <hr>
 

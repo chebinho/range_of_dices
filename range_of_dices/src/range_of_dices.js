@@ -493,7 +493,7 @@ export function join_ranges_all(range_1 = [[]], range_2 = [[]], operator = "+"){
         "%": (a,b) => a % b,
         "/": (a,b) => a / b
     }[operator];
-    if (!op) throw new Error("Operador inválido");
+    if (!op) throw new Error("Invalid operator");
 
     // sempre itera no menor range
     if (range_1.length > range_2.length) {
@@ -586,7 +586,7 @@ export function merge_ranges(range_1 = [[]], range_2 = [[]], operator="+"){
         "%": (a,b) => a % b,
         "/": (a,b) => a / b
     }[operator];
-    if (!op) throw new Error("Operador inválido");
+    if (!op) throw new Error("Invalid operator");
 
     // checks if both ranges are indeed ranges
     let test = false
@@ -648,6 +648,15 @@ export function merge_ranges(range_1 = [[]], range_2 = [[]], operator="+"){
 // function that performs an operation on all values
 export function merge_range_and_number(range = [[]], number = 1, operator="+"){
 
+    if(isTextRange(range)) {range = string_to_range(range)}
+    if(!isArrayRange(range)) {return null}
+
+    if(isNumber(number)) {
+        number = Number(number)
+    }else{
+        return range
+    }
+
     // creates the op function to perform the calculation when necessary
     const op = {
         "+": (a,b) => a + b,
@@ -659,7 +668,7 @@ export function merge_range_and_number(range = [[]], number = 1, operator="+"){
         "%": (a,b) => a % b,
         "/": (a,b) => a / b
     }[operator];
-    if (!op) throw new Error("Operador inválido");
+    if (!op) throw new Error("Invalid operator");
 
     let resul = []
     for(let a=0;a<range.length;a++){

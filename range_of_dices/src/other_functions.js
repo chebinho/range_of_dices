@@ -105,8 +105,3 @@ export function exec_string_fun(string = "", allowedFunctions = [Function], plac
     
     return string
 }
-
-function split_top_level(string) {
-    if (typeof string !== "string") return string
-
-}
