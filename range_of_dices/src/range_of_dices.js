@@ -64,7 +64,7 @@ export function range_simple(biggest_val=20, smaller_val=1, gap=1, possibility=1
 }
 
 // fastest way for this library to make all combinations of several equal ranges
-export function range_combinations(amount=1,biggest_val, smaller_val=1, gap=1){
+export function range_combine(amount=1,biggest_val, smaller_val=1, gap=1){
 
     // ensures that all values are numbers
     // if not, returns null 
@@ -258,7 +258,7 @@ export function string_to_range(string = ""){
     if(not_van_or_dis){
         resul_regex = string.match(Regex_combi)
         if(resul_regex !== null){
-            resul = range_combinations(
+            resul = range_combine(
                 resul_regex[1],
                 resul_regex[2],
                 resul_regex[4],
@@ -443,7 +443,7 @@ export function join_ranges(range_1 = [[]], range_2 = [[]]){
             if(value_check){
                 return range_1 + range_2
             }else{
-                return merge_ranges(range_1,range_2)
+                return merge_range_and_number(range_1,range_2)
             }
         }else{
             return range_1
@@ -451,7 +451,7 @@ export function join_ranges(range_1 = [[]], range_2 = [[]]){
 
     }
     if(value_check){
-        return merge_ranges(range_2,range_1)
+        return merge_range_and_number(range_2,range_1)
     }
 
     // checks if all values in a range have the same gap
@@ -526,6 +526,16 @@ export function join_ranges_all(range_1 = [[]], range_2 = [[]], operator = "+"){
     return resul
 }
 export function join_ranges_fast(range_1 = [[]], range_2 = [[]], gap = 1){
+
+    if(isTextRange(range_1)) {range_1 = string_to_range(range_1)}
+    if(isTextRange(range_2)) {range_2 = string_to_range(range_2)}
+
+    // prevents the gap between values from being negative or 0
+    if(gap==0){
+        return Infinity
+    }else if(gap<0){
+        gap = 0 - gap
+    }
 
     let r1_length = range_1.length
     let r2_length = range_2.length

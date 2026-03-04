@@ -11,14 +11,19 @@
         - [roll](#roll--any_text-any_text-any_text--)
         - [exec_math](#exec_math--any_text-)
     - [Funções do arquivo range_of_dices.js](#33-funções-do-arquivo-range_of_dicesjs)
-        - [Create the ranges](#331-create-the-ranges)
+        - [cria os ranges](#331-cria-os-ranges)
             - [range_simple](#range_simple-biggest_val-smaller_val-gap-possibility)
-            - [range_combinations](#range_combinations-amount-biggest_val-smaller_val-gap)
+            - [range_combine](#range_combine-amount-biggest_val-smaller_val-gap)
             - [range_van_or_dis](#range_van_or_dis-amount-biggest_val-smaller_val-gap-disadvantage)
             - [string_to_range](#string_to_range--string-)
+            - [merge_range_and_number](#merge_range_and_number--range_1-number-operator-)
+        - [Edita os ranges](#332-edita-os-ranges)
+            - [join_ranges](#join_ranges--range_1-range_2-)
+            - [join_ranges_all](#join_ranges_all--range_1-range_2-operator-)
+            - [join_ranges_fast](#join_ranges_fast--range_1-range_2-gap-)
+            - [merge_ranges](#merge_ranges--range_1-range_2-operator-)
             - [range](#range--text-)
-        - [Edit the ranges](#332-edit-the-ranges)
-        - [convert the ranges](#333-convert-the-ranges)
+        - [converte os ranges](#333-converte-os-ranges)
 - [Outras Informações](#outras-informações)
 
 # 1. O que a Lib faz:
@@ -114,7 +119,7 @@ exec_math("1+++1 +---- 1")  // ex: 3
 
 ## 3.3. Funções do arquivo range_of_dices.js
 
-### 3.3.1. Create the ranges <hr>
+### 3.3.1. cria os ranges <hr>
 
 ### **range_simple** (biggest_val, smaller_val, gap, possibility) <hr>
 
@@ -167,7 +172,7 @@ Se "gap" for um valor negativo ele se torna positivo, se for 0 retorna Infinity.
 Se a "possibility" for um array os valores seguiram a sequencia de valores do array.</br>
 </details>
 
-### **range_combinations** (amount, biggest_val, smaller_val, gap) <hr>
+### **range_combine** (amount, biggest_val, smaller_val, gap) <hr>
 
 Faz a combinação de multiplos ranges iguais da maneira mais eficiente dessa lib.
 
@@ -203,10 +208,10 @@ Faz a combinação de multiplos ranges iguais da maneira mais eficiente dessa li
 </details></br>
 
 ```
-range_combinations(1,5)     // [ [1, 1],[2, 1],[3, 1],[4, 1],[5, 1] ]
-range_combinations(2,5)     // [ [2, 1],[3, 2],[4, 3],[5, 4],[6, 5],[7, 4],[8, 3],[9, 2],[10, 1] ]
-range_combinations(2,5,2)   // [ [4, 1],[5, 2],[6, 3],[7, 4],[8, 3],[9, 2],[10, 1] ]
-range_combinations(2,5,1,2) // [ [2, 1],[4, 2],[6, 3],[8, 2],[10, 1] ]
+range_combine(1,5)     // [ [1, 1],[2, 1],[3, 1],[4, 1],[5, 1] ]
+range_combine(2,5)     // [ [2, 1],[3, 2],[4, 3],[5, 4],[6, 5],[7, 4],[8, 3],[9, 2],[10, 1] ]
+range_combine(2,5,2)   // [ [4, 1],[5, 2],[6, 3],[7, 4],[8, 3],[9, 2],[10, 1] ]
+range_combine(2,5,1,2) // [ [2, 1],[4, 2],[6, 3],[8, 2],[10, 1] ]
 ```
 
 <details>
@@ -222,7 +227,7 @@ Essa solução é um pouco mais rápida que a categoria O(n²). Mas tecnicamente
 
 ### **range_van_or_dis** (amount, biggest_val, smaller_val, gap, disadvantage) <hr>
 
-Cria um range que contabiliza as possibilidades de um ou mais dados de faces variados serem sorteados e o maior valor ser escolhido.</br>
+Cria um range que contabiliza as possibilidades de um ou mais dados de faces variadas serem sorteados e o maior valor ser escolhido.</br>
 </br>
 Basicamente faz um range da funções: [roll_vantage](#roll_vantage--biggest_face-smaller_face-amount-) ou [roll_disvantage](#roll_disvantage--biggest_face-smaller_face-amount-).
 
@@ -274,7 +279,7 @@ range_van_or_dis(1,6,1,1,true)  // [ [1, 11],[2, 9],[3, 7],[4, 5],[5, 3],[6, 1] 
 
 <details>
 <summary>Saiba mais Detalhes</summary>
-Caso qualquer valor seja invalido a função retorna null.</br>
+Caso qualquer argumento seja invalido a função retorna null.</br>
 Se "amount" for um valor negativo ele se torna positivo.</br>
 Se o "biggest_val" for menor que o "smaller_val" esses valores são trocados.</br>
 Se "gap" for um valor negativo ele se torna positivo, se for 0 retorna Infinity.</br>
@@ -303,7 +308,7 @@ return range_van_or_dis(amount,biggest_val, smaller_val, gap, true)
 
 ### **string_to_range** ( string ) <hr>
 
-Busca por uma simplificação de um dado, após isso o range da simplificação e criado usando a função correta.
+Busca por uma simplificação de um dado, após isso o range do dado e criado usando a função correta.
 
 <details>
     <summary>Saiba mais sobre os Argumentos</summary>
@@ -322,24 +327,24 @@ Busca por uma simplificação de um dado, após isso o range da simplificação 
 </details></br>
 
 ```
-string_to_range("1d20")         // range_combinations(1,20)
+string_to_range("1d20")         // range_combine(1,20)
 string_to_range("van 1d20")     // range_vantage(1,20)
 string_to_range("dis 1d20")     // range_disvantage(1,20)
 
-string_to_range("2d20_5")       // range_combinations(2,20,5)
-string_to_range("3d100_5_2")    // range_combinations(3,100,5,2)
+string_to_range("2d20_5")       // range_combine(2,20,5)
+string_to_range("3d100_5_2")    // range_combine(3,100,5,2)
 ```
 
 <details>
 <summary>Saiba mais Detalhes</summary>
-Caso qualquer valor seja invalido a função retorna null.
+Caso qualquer argumento seja invalido a função retorna null.
 </details>
 
 ### **range** ( text ) <hr>
 
 Resumidamente essa função pode executar qualquer expressão matemática com a presença de ranges simplificados ou não.
 
-Um detalhe é que essa função pode ser utilizada para substituir quase todas as outras funções, mas como essa função precisa fazer varias validações para garantir que o resultado está correto ela se torna mais lenta que as funções mais especializadas dessa lib.
+Um detalhe é que essa função pode ser utilizada para substituir quase todas as outras funções, mas como essa função precisa fazer várias validações para garantir que o resultado está correto ela se torna mais lenta que as funções mais especializadas dessa lib.
 
 <details>
     <summary>Saiba mais sobre os Argumentos</summary>
@@ -430,30 +435,142 @@ Nos exemplos demonstrados anteriormente apenas os operadores "+" e "-" foram uti
     </table>
 </details></br>
 
-É importante ressaltar que existe alguns casos em que só é necessario unir os valores de dois ranges, para isso basta usar um operador e uma "!".
+É importante ressaltar que existem alguns casos em que só é necessário unir os valores de dois ranges, para isso basta usar um operador e uma "!".
 
 ```
 range("1d6 +! 1d6")         // [ [1, 2],[2, 2],[3, 2],[4, 2],[5, 2],[6, 2] ]
 range("1d6 +! 1d6_1_2")     // [ [1, 2],[2, 1],[3, 2],[4, 1],[5, 2],[6, 1] ]
+range("1d6 -! 1d6_1_2")     // [ [1, 0],[2, 1],[3, 0],[4, 1],[5, 0],[6, 1] ]
 ```
 
 <details>
     <summary>Saiba mais Detalhes</summary>
-    Caso qualquer valor seja invalido a função retorna null ou é ignorado.</br>
-    Caso a expressão esteja incorreta ou incompleta a função tentara retornar um resulto com a parte valida.</br>
+    Caso qualquer argumento seja invalido a função retorna null ou é ignorado.</br>
+    Caso a expressão do argumento esteja incorreta ou incompleta a função tentara retornar um resulto com a parte valida.</br>
     Essa função também faz dodas as operações matemáticas seguindo a sequencia correta</br>
-    Essa função não acerita a simplificação "5 (1+1)", necesse caso o correto é "5*(1+1)" ou "5*!(1+1)"</br>
+    Essa função não acerita a simplificação "5(1+1)", necesse caso o correto é "5*(1+1)" ou "5*!(1+1)"</br>
     </br>
     Como essa função utiliza outras funções para funcionar é difícil determinar em qual categoria de complexidade essa função se enquadra.</br>
 </details>
 
-### 3.3.2. Edit the ranges <hr>
+### 3.3.2. Edita os ranges <hr>
 
 ### **join_ranges** ( range_1, range_2 ) <hr>
 
+Basicamente essa função faz uma validação com os dois ranges fornecidos para descobrir qual o melhor método para fazer a união dos valores dos ranges.
+
+Essa validação se baseia em descobrir se ambos os ranges possuem uma sequência linear em seus valores, assim a função [join_ranges_fast](#join_ranges_fast--range_1-range_2-gap-) poderá ser utilizada para acelerar o processo. Mas caso não seja possível usar essa função a [join_ranges_all](#join_ranges_all--range_1-range_2-operator-) e executada no lugar pois ela não tem nenhuma restrição.
+
+<details>
+    <summary>Saiba mais sobre os Argumentos</summary>
+    <table>
+        <tr>
+            <td>Argumentos</td>
+            <td>Resumo Simples</td>
+            <td>Default</td>
+        <tr>
+        <tr>
+            <td>range_1</td>
+            <td>range em um array ou simplificado</td>
+            <td>[[]]</td>
+        <tr>
+        <tr>
+            <td>range_2</td>
+            <td>range em um array ou simplificado</td>
+            <td>[[]]</td>
+        <tr>
+    </table>
+</details></br>
+
+<details>
+    <summary>Saiba mais Detalhes</summary>
+    Se os dois argumentos forem inválidos a função retorna null.</br>
+    Se apenas uma dos argumentos for válidos a função retorna o argumento válido.</br>
+    Se um dos argumentos for um numero e o outro um range a função <a href="#merge_range_and_number--range_1-number-operator-">merge_range_and_number</a> é executada no lugar.</br>
+    Se os dois argumentos forem numeros a função retorna a soma dos numeros</br>
+</details>
+
 ### **join_ranges_all** ( range_1, range_2, operator ) <hr>
 
+Faz uma operação matemática entre cada combinação possível entre os ranges fornecidos. O problema é que esse processo pode se tornar lento pois o número de operações que a função precisa fazer é igual a multiplicação do tamanho dos dois ranges.
+
+<details>
+    <summary>Saiba mais sobre os Argumentos</summary>
+    <table>
+        <tr>
+            <td>Argumentos</td>
+            <td>Resumo Simples</td>
+            <td>Default</td>
+        <tr>
+        <tr>
+            <td>range_1</td>
+            <td>range em um array ou simplificado</td>
+            <td>[[]]</td>
+        <tr>
+        <tr>
+            <td>range_2</td>
+            <td>range em um array ou simplificado</td>
+            <td>[[]]</td>
+        <tr>
+        <tr>
+            <td>operator</td>
+            <td>qualquer operador em uma string</td>
+            <td>"+"</td>
+        <tr>
+    </table>
+</details></br>
+
+```
+join_ranges_all("1d6",range_simple(6))  // [ [2, 1],[3, 2],[4, 3],[5, 4],[6, 5],[7, 6],[8, 5],[9, 4],[10, 3],[11, 2],[12, 1] ]
+join_ranges_all(range_simple(6),"1d6")  // [ [2, 1],[3, 2],[4, 3],[5, 4],[6, 5],[7, 6],[8, 5],[9, 4],[10, 3],[11, 2],[12, 1] ]
+
+join_ranges_all("1d6","1d6")            // [ [2, 1],[3, 2],[4, 3],[5, 4],[6, 5],[7, 6],[8, 5],[9, 4],[10, 3],[11, 2],[12, 1] ]
+join_ranges_all("1d6","1d6","+")        // [ [2, 1],[3, 2],[4, 3],[5, 4],[6, 5],[7, 6],[8, 5],[9, 4],[10, 3],[11, 2],[12, 1] ]
+join_ranges_all("1d6","1d6","-")        // [ [-5, 1],[-4, 2],[-3, 3],[-2, 4],[-1, 5],[0, 6],[1, 5],[2, 4],[3, 3],[4, 2],[5, 1] ]
+```
+
+<details>
+    <summary>Saiba mais Detalhes</summary>
+    Caso um dos argumentos seja uma string de um range simplificado o range e convertido para um array.</br>
+</details>
+
 ### **join_ranges_fast** ( range_1, range_2, gap ) <hr>
+
+Essa função faz o mesmo que a função [join_ranges_all](#join_ranges_all--range_1-range_2-operator-), porem essa tem uma otimisação na forma com que os valores do range são registrados, dessa forma os dados são registrados mais rapidamente em comparação com a função [join_ranges_all](#join_ranges_all--range_1-range_2-operator-).
+
+O problema é que para essa otimização funcionar é necessário que a diferença entre os valores do range formem uma sequência linear, senão o resultado estará errado.
+
+<details>
+    <summary>Saiba mais sobre os Argumentos</summary>
+    <table>
+        <tr>
+            <td>Argumentos</td>
+            <td>Resumo Simples</td>
+            <td>Default</td>
+        <tr>
+        <tr>
+            <td>range_1</td>
+            <td>range em um array ou simplificado</td>
+            <td>[[]]</td>
+        <tr>
+        <tr>
+            <td>range_2</td>
+            <td>range em um array ou simplificado</td>
+            <td>[[]]</td>
+        <tr>
+        <tr>
+            <td>gap</td>
+            <td>espaço entre os valores</td>
+            <td>1</td>
+        <tr>
+    </table>
+</details></br>
+
+<details>
+    <summary>Saiba mais Detalhes</summary>
+    Caso um dos argumentos seja uma string de um range simplificado o range e convertido para um array.</br>
+    Se "gap" for um valor negativo ele se torna positivo, se for 0 retorna Infinity.</br>
+</details>
 
 ### **merge_ranges** ( range_1, range_2, operator ) <hr>
 
@@ -464,7 +581,7 @@ O(n+m)
 O(n)
 
 
-### 3.3.3. convert the ranges <hr>
+### 3.3.3. converte os ranges <hr>
 
 ### **range_to_convolution** () <hr>
 
