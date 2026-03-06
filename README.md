@@ -23,7 +23,10 @@
             - [join_ranges_fast](#join_ranges_fast--range_1-range_2-gap-)
             - [merge_ranges](#merge_ranges--range_1-range_2-operator-)
             - [merge_range_and_number](#merge_range_and_number--range-number-operator-)
+            - [flip_range](#flip_range--range-)
         - [converte os ranges](#333-converte-os-ranges)
+            - [range_to_percentage](#range_to_percentage--range-)
+            - [count_type_values](#count_type_values--range-)
 - [Outras Informações](#outras-informações)
 
 # 1. O que a Lib faz:
@@ -659,17 +662,115 @@ merge_range_and_number("1d6",100,"-")   // [ [-99, 1],[-98, 1],[-97, 1],[-96, 1]
     Caso qualquer argumento seja invalido a função retorna null.</br>
     Caso um o argumento "range" seja uma string de um range simplificado o range e convertido para um array.</br>
     </br>
-    Essa função entra na categoria O(n) pois faz uma operação para casa valor do range.
+    Essa função entra na categoria O(n) pois faz uma operação para cada valor do range.
+</details>
+
+### **flip_range** ( range ) <hr>
+
+Simplismente inverte os valores de um range fazendo com que os valores positivos virarem negativos e os negativos virem positivos.
+
+<details>
+    <summary>Saiba mais sobre os Argumentos</summary>
+    <table>
+        <tr>
+            <td>Argumentos</td>
+            <td>Resumo Simples</td>
+            <td>Default</td>
+        <tr>
+        <tr>
+            <td>range</td>
+            <td>range em um array ou simplificado</td>
+            <td>[[]]</td>
+        <tr>
+    </table>
+</details></br>
+
+```
+flip_range("1d6")       // [ [-6, 1],[-5, 1],[-4, 1],[-3, 1],[-2, 1],[-1, 1] ]
+flip_range("1d2_-3")    // [ [-2, 1],[-1, 1],[-0, 1],[1, 1],[2, 1],[3, 1] ]
+```
+
+<details>
+    <summary>Saiba mais Detalhes</summary>
+    Caso qualquer argumento seja invalido a função retorna null.</br>
+    Caso um o argumento "range" seja uma string de um range simplificado o range e convertido para um array.</br>
+    </br>
+    Essa função entra na categoria O(n) pois faz uma operação para cada valor do range.
 </details>
 
 ### 3.3.3. converte os ranges <hr>
 
-### **range_to_convolution** () <hr>
+### **range_to_percentage** ( range ) <hr>
 
-### **range_to_percentage** () <hr>
+Converte a contagem de possibilidades de cada valor pela sua porcentagem.
 
-### **count_type_values** () <hr>
+A função faz a soma de todas as possibilidades presentes em um range e depois faz uma divisão de cada possibilidade pelo total, assim obtendo a porcentagem de cada valor.
 
-### **negative_range** () <hr>
+<details>
+    <summary>Saiba mais sobre os Argumentos</summary>
+    <table>
+        <tr>
+            <td>Argumentos</td>
+            <td>Resumo Simples</td>
+            <td>Default</td>
+        <tr>
+        <tr>
+            <td>range</td>
+            <td>range em um array ou simplificado</td>
+            <td>[[]]</td>
+        <tr>
+    </table>
+</details></br>
+
+```
+range_to_percentage("1d5")      // [ [1, 0.2],[2, 0.2],[3, 0.2],[4, 0.2],[5, 0.2] ]
+range_to_percentage("2d5")      // [ [2, 0.04],[3, 0.08],[4, 0.12],[5, 0.16],[6, 0.2],[7, 0.16],[8, 0.12],[9, 0.08],[10, 0.04] ]
+range_to_percentage("van 1d5")  // [ [1, 0.04],[2, 0.12],[3, 0.2],[4, 0.28],[5, 0.36] ]
+range_to_percentage("dis 3d5")  // [ [1, 0.5904],[2, 0.28],[3, 0.104],[4, 0.024],[5, 0.0016] ]
+```
+
+<details>
+    <summary>Saiba mais Detalhes</summary>
+    Caso qualquer argumento seja invalido a função retorna null.</br>
+    Caso um o argumento "range" seja uma string de um range simplificado o range e convertido para um array.</br>
+    É importante resaltar que após o uso dessa função o range gerado pode não funcionar com as outras funções.</br>
+    </br>
+    Essa função entra na categoria O(2n) pois faz duas operação para cada valor do range.
+</details>
+
+### **count_type_values** ( range ) <hr>
+
+faz uma contagen das possibilidades dos valores positivos, zero e negativos.
+
+<details>
+    <summary>Saiba mais sobre os Argumentos</summary>
+    <table>
+        <tr>
+            <td>Argumentos</td>
+            <td>Resumo Simples</td>
+            <td>Default</td>
+        <tr>
+        <tr>
+            <td>range</td>
+            <td>range em um array ou simplificado</td>
+            <td>[[]]</td>
+        <tr>
+    </table>
+</details></br>
+
+```
+count_type_values("1d20")           // {negatives: 0, positives: 20, zeros: 0, total: 20}
+count_type_values("1d20_-20")       // {negatives: 20, positives: 20, zeros: 1, total: 41}
+count_type_values("2d20_-20")       // {negatives: 820, positives: 820, zeros: 41, total: 1681}
+count_type_values("van 2d20_-20")   // {negatives: 8000, positives: 59660, zeros: 1261, total: 68921}
+```
+
+<details>
+    <summary>Saiba mais Detalhes</summary>
+    Caso qualquer argumento seja invalido a função retorna null.</br>
+    Caso um o argumento "range" seja uma string de um range simplificado o range e convertido para um array.</br>
+    </br>
+    Essa função entra na categoria O(n).
+</details></br>
 
 # Outras Informações

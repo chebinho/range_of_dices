@@ -677,20 +677,23 @@ export function merge_range_and_number(range = [[]], number = 1, operator="+"){
     return resul
 }
 
-// convert data =======================================================================================
+// flips the values in a range
+export function flip_range(range = [[]]){
 
-//converts a range to a convolution
-export function range_to_convolution(Range = [[]]){
-    if(isTextRange(Range)) {Range = string_to_range(Range)}
+    if(isTextRange(range)) {range = string_to_range(range)}
+    if(!isArrayRange(range)) {return range}
 
-    let resul = []
+    range.reverse()
 
-    for(let a=0; a<Range.length; a++){
-        resul[a] = Range[a][0]*Range[a][1]
+    for(let a=0;a<range.length;a++){
+        range[a] = [ - range[a][0],range[a][1]]
     }
 
-    return resul
+    return range
+
 }
+
+// convert data =======================================================================================
 
 // Converts the values ​​in a range to percentages
 export function range_to_percentage(Range = [[]]){
@@ -706,7 +709,7 @@ export function range_to_percentage(Range = [[]]){
 
     // creates the response and converts it to a percentage
     for(let a=0; a<Range.length; a++){
-        resul[a] = [Range[a][0], (Range[a][1]/total_possib)*100]
+        resul[a] = [Range[a][0], (Range[a][1]/total_possib)]
     }
 
     return resul
@@ -740,20 +743,4 @@ export function count_type_values(range = [[]]){
     resul.total = resul.negatives + resul.zeros + resul.positives
 
     return resul
-}
-
-// flips the values in a range
-export function flip_range(range = [[]]){
-
-    if(isTextRange(range)) {range = string_to_range(range)}
-    if(!isArrayRange(range)) {return range}
-
-    range.reverse()
-
-    for(let a=0;a<range.length;a++){
-        range[a] = [ - range[a][0],range[a][1]]
-    }
-
-    return range
-
 }
