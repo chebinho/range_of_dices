@@ -31,7 +31,7 @@
 
 # 1. O que a Lib faz:
 
-essa lib foi feita para facilitar o calculo de possibilidades para cada jogada de dados
+Essa lib foi feita para facilitar o calculo de probabilidades, e para fazer isso essa lib é dividida em 3 arquivos
 
 Para a lib fazer isso é preciso definir um padrão para facilitar a leitura dos dados
 
@@ -50,10 +50,36 @@ Essa lib e dividida em três arquivos:
 - E o terceiro arquivo contém algumas funções utilizadas internamente para algumas validações de dados.
 
 ## 3.2. Funções do Arquivo roll_dices.js
-Um detalhe importante sobre essas funções é que todas têm uma validação dos dados recebidos, e se necessário eles são corrigidos.
+Um detalhe importante é que todas as funções dessa lib tem algum tipo de validação para os valores recebidos pelos argumentos, e caso algum valor esteja errado a função tentara corrigir esse valor afim de chegar em um resultado valido, mas caso não seja possivel fazer a correção o valor retornado é null ou um erro.
 
 ### **roll_dice** ( biggest_face, smaller_face, amount ) <hr>
 Sorteia um ou mais dados de forma aleatória, se mais de um dado for sorteado os resultados seram somados.
+
+<details>
+    <summary>Saiba mais sobre os Argumentos</summary>
+    <table>
+        <tr>
+            <td>Argumentos</td>
+            <td>Resumo Simples</td>
+            <td>Default</td>
+        <tr>
+        <tr>
+            <td>biggest_face</td>
+            <td>maior face do dado</td>
+            <td>20</td>
+        <tr>
+        <tr>
+            <td>smaller_face</td>
+            <td>menor face do dado</td>
+            <td>1</td>
+        <tr>
+        <tr>
+            <td>amount</td>
+            <td>numero dados que seram sorteados</td>
+            <td>1</td>
+        <tr>
+    </table>
+</details></br>
 
 ```
 roll_dice(20)       // sorteia 1 dado que as faces vão do 1 ao 20
@@ -64,6 +90,32 @@ roll_dice(-30,10,5) // sorteia 5 dado que as faces vão do 10 ao -30
 ### **roll_vantage** ( biggest_face, smaller_face, amount ) <hr>
 Sorteia dois ou mais dados e compara os valores retornando o maior valor sorteado.
 
+<details>
+    <summary>Saiba mais sobre os Argumentos</summary>
+    <table>
+        <tr>
+            <td>Argumentos</td>
+            <td>Resumo Simples</td>
+            <td>Default</td>
+        <tr>
+        <tr>
+            <td>biggest_face</td>
+            <td>maior face do dado</td>
+            <td>20</td>
+        <tr>
+        <tr>
+            <td>smaller_face</td>
+            <td>menor face do dado</td>
+            <td>1</td>
+        <tr>
+        <tr>
+            <td>amount</td>
+            <td>numero dados que seram sorteados</td>
+            <td>1</td>
+        <tr>
+    </table>
+</details></br>
+
 ```
 roll_vantage(20)        // sorteia 2 dado que as faces vão do 1 ao 20, e retorna o maior valor
 roll_vantage(20,1,1)    // sorteia 2 dado que as faces vão do 1 ao 20, e retorna o maior valor
@@ -73,9 +125,52 @@ roll_vantage(-30,10,4)  // sorteia 5 dado que as faces vão do 10 ao -30, e reto
 ### **roll_disvantage** ( biggest_face, smaller_face, amount ) <hr>
 Faz o mesmo que a função anterior, mas ao invés de retornar o maior valor ele retorna o menor valor.
 
+<details>
+    <summary>Saiba mais sobre os Argumentos</summary>
+    <table>
+        <tr>
+            <td>Argumentos</td>
+            <td>Resumo Simples</td>
+            <td>Default</td>
+        <tr>
+        <tr>
+            <td>biggest_face</td>
+            <td>maior face do dado</td>
+            <td>20</td>
+        <tr>
+        <tr>
+            <td>smaller_face</td>
+            <td>menor face do dado</td>
+            <td>1</td>
+        <tr>
+        <tr>
+            <td>amount</td>
+            <td>numero dados que seram sorteados</td>
+            <td>1</td>
+        <tr>
+    </table>
+</details></br>
+
 ### **roll_exec** ( any_text, any_text, any_text, ... ) <hr>
 Essa função busca por simplificações das jogadas de qualquer dado e substituí-las pelas funções correspondentes.
 Após isso essas funções são substituídas pelos seus respectivos resultados.
+
+<details>
+    <summary>Saiba mais sobre os Argumentos</summary>
+    <table>
+        <tr>
+            <td>Argumentos</td>
+            <td>Resumo Simples</td>
+            <td>Default</td>
+        <tr>
+        <tr>
+            <td>any_text</td>
+            <td>qualquer string que contenha uma ou mais simplificações de dados</td>
+            <td>""</td>
+        <tr>
+        <tr>
+    </table>
+</details></br>
 
 ```
 roll_exec("1d20")           // sorteia 1 dado que as faces vão do 1 ao 20
@@ -101,6 +196,23 @@ Outras funções fora dessa lista são ignoradas.</br>
 ### **roll** ( any_text, any_text, any_text, ... ) <hr>
 Basicamente faz o mesmo que a função anterior, porém adiciona o resultado da equação ao final da string.
 
+<details>
+    <summary>Saiba mais sobre os Argumentos</summary>
+    <table>
+        <tr>
+            <td>Argumentos</td>
+            <td>Resumo Simples</td>
+            <td>Default</td>
+        <tr>
+        <tr>
+            <td>any_text</td>
+            <td>qualquer string que contenha uma ou mais simplificações de dados</td>
+            <td>""</td>
+        <tr>
+        <tr>
+    </table>
+</details></br>
+
 ```
 roll("1d100_50")            // ex: 65
 roll("1d20 + 5")            // ex: "6 + 5 = 11"
@@ -113,6 +225,23 @@ Para fazer esse caculo do resultado a função "exec_math" é utilizada
 ### **exec_math** ( any_text ) <hr>
 Faz o cálculo de uma equação matemática presente em uma string, independente de como a string esteja construída.
 A função busca os valores válidos e retorna o resultado da equação.
+
+<details>
+    <summary>Saiba mais sobre os Argumentos</summary>
+    <table>
+        <tr>
+            <td>Argumentos</td>
+            <td>Resumo Simples</td>
+            <td>Default</td>
+        <tr>
+        <tr>
+            <td>any_text</td>
+            <td>qualquer string que contenha uma ou mais simplificações de dados</td>
+            <td>""</td>
+        <tr>
+        <tr>
+    </table>
+</details></br>
 
 ```
 exec_math("20 + 4 - 3")     // ex: 21
