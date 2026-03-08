@@ -30,12 +30,13 @@
 - [Outras Informações](#outras-informações)
 
 # 1. O que a Lib faz:
-
-Essa lib foi feita para facilitar o calculo de probabilidades, e para fazer isso essa lib é dividida em 3 arquivos
-
-Para a lib fazer isso é preciso definir um padrão para facilitar a leitura dos dados
+Essa lib tem o objetivo de fornecer um conjunto de funções para facilitar o calculo de possibilidades usando como referencia a comtabilisação de todas as possibilidades do sorteio de dados de tamanhos variados.
 
 # 2. Como Instalar:
+
+
+
+Um detalhe importante é que essa lib não tem outras dependências além do próprio JavaScript, por causa disso só é necessário instalar a propria lib.
 
 # 3. Exemplos de uso:
 
@@ -903,3 +904,7 @@ count_type_values("van 2d20_-20")   // {negatives: 8000, positives: 59660, zeros
 </details></br>
 
 # Outras Informações
+
+Acho importante mencionar que essa é a primeira lib que eu estou publicando e que provavelmente ela deve ter varias falhas ou deve estar faltando algumas informações, caso algum problema seja encontrado por favor entre em contato pelo proprio github ou [mail](mailto:carloseduardoglin@gmail.com).
+
+Além disso, eu pretendo adicionar uma nova função como a range_van_or_dis, mas com a opção para utilizar dados de tamanhos diferentes.
