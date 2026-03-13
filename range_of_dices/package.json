@@ -1,25 +1,41 @@
 {
-  "name": "range_of_dices",
+  "name": "range-of-dices",
   "version": "1.0.0",
-  "description": "test",
-  "main": "./src/index.js",
+  "description": "facilitar o cálculo de possibilidades através da contabilização das possibilidades de dados de faces variadas.",
+  "type": "module",
+  "author": "Carlos Eduardo Glinski de Souza",
+  "license": "ISC",
+
+  "main": "./dist/index.js",
+  "exports": {
+    ".": "./dist/index.js"
+  },
+
   "repository": {
     "type": "git",
     "url": "git+https://github.com/chebinho/range_of_dices.git"
   },
+
   "keywords": [
-    "range_of_dices",
+    "range-of-dices",
     "range",
     "ranges",
     "dice",
+    "dice-software",
+    "dice-roller",
     "dices",
     "probability",
-    "Convolution"
+    "probability-distribution",
+    "dice-probability"
   ],
-  "author": "Carlos Eduardo Glinski de Souza",
-  "license": "ISC",
+
   "bugs": {
     "url": "https://github.com/chebinho/range_of_dices/issues"
   },
-  "homepage": "https://github.com/chebinho/range_of_dices#readme"
+
+  "homepage": "https://github.com/chebinho/range_of_dices#readme",
+
+  "files": [
+    "dist"
+  ]
 }

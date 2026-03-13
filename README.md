@@ -30,11 +30,74 @@
 - [Outras Informações](#outras-informações)
 
 # 1. O que a Lib faz:
-Essa lib tem o objetivo de fornecer um conjunto de funções para facilitar o calculo de possibilidades usando como referencia a comtabilisação de todas as possibilidades do sorteio de dados de tamanhos variados.
+Essa lib tem o objetivo de fornecer um conjunto de funções para facilitar o cálculo de possibilidades usando como referencia a comtabilisação de todas as possibilidades do sorteio de dados de tamanhos variados.
+
+Essa biblioteca utiliza alguns termos próprios para facilitar a leitura e compreensão de como o código funciona, segue abaixo os termos.
+<ul>
+    <li>
+        <details><summary>Range:</summary>
+            <p>Um range é um array 2d com duas colunas que armazenam os valores e as possibilidades de um ou mais dados.</p>
+            <p>Por padrão, a primeira coluna do range é ocupada pelos valores possíveis de se obter, enquanto a segunda coluna armazena o número de possibilidades em que o determinado valor pode aparecer. Além disso, o range sempre é organizado de forma crescente em relação aos valores e só pode ser composto por numeros validos.</p>
+            <p>Para criar um range pode-se usar as funções <a href="#range_simple-biggest_val-smaller_val-gap-possibility">range_simple</a>, <a href="#range_combine-amount-biggest_val-smaller_val-gap">range_combine</a> e <a href="#range--text-">range</a>.</p>
+            <p>Mas caso seja necessário criar um range sem usar uma das funções acima saiba que o padrão do range ainda precisa ser seguido para as funções funcionarem corretamente.</p>
+            <p>Exemplo de um range de um dado de 6 lados:</p>
+            <table style="text-align: center">
+                <tr>
+                    <td>Valores</td>
+                    <td>possibilidades</td>
+                <tr>
+                <tr>
+                    <td>1</td>
+                    <td>1</td>
+                <tr>
+                <tr>
+                    <td>2</td>
+                    <td>1</td>
+                <tr>
+                <tr>
+                    <td>3</td>
+                    <td>1</td>
+                <tr>
+                <tr>
+                    <td>4</td>
+                    <td>1</td>
+                <tr>
+                <tr>
+                    <td>5</td>
+                    <td>1</td>
+                <tr>
+                <tr>
+                    <td>6</td>
+                    <td>1</td>
+                <tr>
+            </table>
+        </details>
+    </li>
+    <li>
+        <details><summary>Dados Simplificados:</summary>
+        <p>É uma forma mais resumida e simples de se representar um ou mais dados, e isso pode ser usado como uma variavel dentro de algumas funções. (comfira o "Saiba mais Detalhes" ou "Saiba mais sobre os Argumentos" para saber se a função aceita a simplificação de dados)</p>
+        <p>Alguns exemplos são:</p>
+        <ul>
+            <li>1d6: representa um dado de 6 lados que começa em 1.</li>
+            <li>2d6: dois dados iguais de 6 lados que começa em 1.</li>
+            <li>2d6_1: dois dados iguais de 6 lados que começa em 1.</li>
+            <li>3d12_7: três dados iguais de 6 lados que começa em 7 e termina em 12.</li>
+            <li>1d20_1_2: representa um dado de 10 lados que começa em 1, termina em 20 ou menor e o espaço entre os valores é igual a 2.</li>
+            <li>1d6_1_1: representa um dado de 6 lados que começa em 1, termina em 6 ou menor e o espaço entre os valores é igual a 1.</li>
+        </ul>
+        <p>Por padrão dentro dessa lib: quando uma função recebe uma simplificação com mais de um dado é feito todas as somas entre dois valores de todos os valores de cada dado. (dentro do código essas operações são feitas de uma maneira mais eficiente do foi dito na explicação)</p>
+        <p>E uma curiosidade é que normalmente esse simplificação é comumente utilizada em RPG de mesa.</p>
+        </details>
+    </li>
+</ul>
 
 # 2. Como Instalar:
 
+basta usar o comando:
 
+```
+npm install range_of_dices
+```
 
 Um detalhe importante é que essa lib não tem outras dependências além do próprio JavaScript, por causa disso só é necessário instalar a propria lib.
 
@@ -50,7 +113,7 @@ Essa lib e dividida em três arquivos:
 
 - E o terceiro arquivo contém algumas funções utilizadas internamente para algumas validações de dados.
 
-## 3.2. Funções do Arquivo roll_dices.js
+## 3.2. Funções do Arquivo [roll_dices.js](range_of_dices/src/roll_dices.js)
 Um detalhe importante é que todas as funções dessa lib tem algum tipo de validação para os valores recebidos pelos argumentos, e caso algum valor esteja errado a função tentara corrigir esse valor afim de chegar em um resultado valido, mas caso não seja possivel fazer a correção o valor retornado é null ou um erro.
 
 ### **roll_dice** ( biggest_face, smaller_face, amount ) <hr>
@@ -250,7 +313,7 @@ exec_math("(20 - 4) * 3")   // ex: 48
 exec_math("1+++1 +---- 1")  // ex: 3
 ```
 
-## 3.3. Funções do arquivo range_of_dices.js
+## 3.3. Funções do arquivo [range_of_dices.js](range_of_dices/src/range_of_dices.js)
 
 ### 3.3.1. cria os ranges <hr>
 
@@ -417,8 +480,8 @@ Se "amount" for um valor negativo ele se torna positivo.</br>
 Se o "biggest_val" for menor que o "smaller_val" esses valores são trocados.</br>
 Se "gap" for um valor negativo ele se torna positivo, se for 0 retorna Infinity.</br>
 </br>
-A solução usada por essa função pode ser considerada O(n) pois executa um calculo para cada elemento do range.
-</details>
+A solução usada por essa função pode ser considerada O(n) pois executa um cálculo para cada elemento do range.
+</details></br>
 
 <details>
 <summary>Abreviações</summary>
@@ -905,6 +968,6 @@ count_type_values("van 2d20_-20")   // {negatives: 8000, positives: 59660, zeros
 
 # Outras Informações
 
-Acho importante mencionar que essa é a primeira lib que eu estou publicando e que provavelmente ela deve ter varias falhas ou deve estar faltando algumas informações, caso algum problema seja encontrado por favor entre em contato pelo proprio github ou [mail](mailto:carloseduardoglin@gmail.com).
+Acho importante mencionar que essa é a primeira lib que eu estou publicando e que provavelmente ela deve ter varias falhas ou deve estar faltando algumas informações, caso algum problema seja encontrado por favor entre em contato pelo proprio github ou pelo mail "carloseduardoglin@gmail.com".
 
 Além disso, eu pretendo adicionar uma nova função como a range_van_or_dis, mas com a opção para utilizar dados de tamanhos diferentes.
