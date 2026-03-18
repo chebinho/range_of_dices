@@ -105,9 +105,9 @@ Resumidamente o objetivo é de fornecer um conjunto de funções para facilitar 
 
 # 3. Como Instalar e Utilizar:
 
-Para instalas a lib use o comando:
+Instalar com npm:
 
-```md
+```
 npm install range_of_dices
 ```
 
