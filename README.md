@@ -978,6 +978,8 @@ count_type_values("van 2d20_-20")   // {negatives: 8000, positives: 59660, zeros
 
 # 5. Outras Informações
 
-Acho importante mencionar que essa é a primeira lib que eu estou publicando e que provavelmente ela deve ter varias falhas ou deve estar faltando algumas informações, caso algum problema seja encontrado por favor entre em contato pelo proprio github ou pelo mail "carloseduardoglin@gmail.com".
+Acho importante mencionar que essa é a primeira lib que eu estou publicando e por causa disso é provável que a lib tenha erros ou falta de informações, caso algum problema seja encontrado por favor entre em contato pelo próprio github ou pelo email "carloseduardoglin@gmail.com".
 
-Além disso, eu pretendo adicionar uma nova função como a range_van_or_dis, mas com a opção para utilizar dados de tamanhos diferentes.
+Além disso, eu não acho que essa lib esteja completa pois faltam algumas funcionalidades como a possibilidade de obter o maior valor entre múltiplos dados de tamanhos variados. 
+
+Também pretendo reduzir a complexidade de algumas funções que são O(n²).
