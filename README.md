@@ -71,7 +71,7 @@ Além disso, essa biblioteca utiliza alguns termos próprios para facilitar a le
     </li>
 </ul>
 
-Resumidamente o objetivo é de fornecer um conjunto de funções para facilitar o cálculo de possibilidades usando como referencia a comtabilisação de todas as possibilidades do sorteio de dados de tamanhos variados.
+Resumidamente o objetivo é de fornecer um conjunto de funções para facilitar o cálculo de possibilidades usando como referencia a comtabilização de todas as possibilidades do sorteio de dados de tamanhos variados.
 
 # 2. Sumário
 - [O que a Lib faz](#1-o-que-a-lib-faz)
@@ -111,19 +111,31 @@ Instalar com npm:
 npm install range_of_dices
 ```
 
-Após isso, utilize o comando "import" para chamar as funções nos arquivos necessarios.
+Após isso, utilize o comando "import" para chamar as funções.
 
 ```javascript
-import { roll } from "range-of-dices";
+import {roll, range} from "./node_modules/range-of-dices/dist/index.js" // esse caminho pode mudar.
 
-roll("2d6 + 3");
+console.log(roll("2d6 + 3"))
+console.log(range("2d6 + 3"))
+```
+
+O arquivo [index.js](./dist/index.js) vai chamar todas as funções da biblioteca, enquanto os arquivos [roll_dices.js](./dist/roll_dices.js) e [range_of_dices.js](./dist/range_of_dices.js) iriam chamar seus respectivos conjuntos de funções.
+
+Outra opção é de usar "range-of-dices" que basicamente irá chamar o [index.js](./dist/index.js).
+
+```javascript
+import {roll, range} from "range-of-dices"
+
+console.log(roll("2d6 + 3"))
+console.log(range("2d6 + 3"))
 ```
 
 Um detalhe importante é que essa lib não tem outras dependências além do próprio JavaScript, por causa disso só é necessário instalar a propria lib.
 
 # 4. Exemplos de uso:
 
-## 4.1. Funções do Arquivo [roll_dices.js](range_of_dices/src/roll_dices.js)
+## 4.1. Funções do Arquivo [roll_dices.js](./dist/roll_dices.js)
 Um detalhe importante é que todas as funções dessa lib tem algum tipo de validação para os valores recebidos pelos argumentos, e caso algum valor esteja errado a função tentara corrigir esse valor afim de chegar em um resultado valido, mas caso não seja possivel fazer a correção o valor retornado é null ou um erro.
 
 ### **roll_dice** ( biggest_face, smaller_face, amount ) <hr>
@@ -323,7 +335,7 @@ exec_math("(20 - 4) * 3")   // ex: 48
 exec_math("1+++1 +---- 1")  // ex: 3
 ```
 
-## 4.2. Funções do arquivo [range_of_dices.js](range_of_dices/src/range_of_dices.js)
+## 4.2. Funções do arquivo [range_of_dices.js](./dist/range_of_dices.js)
 
 ### 4.2.1. cria os ranges <hr>
 
@@ -654,7 +666,7 @@ range("1d6 -! 1d6_1_2")     // [ [1, 0],[2, 1],[3, 0],[4, 1],[5, 0],[6, 1] ]
     Caso qualquer argumento seja invalido a função retorna null ou é ignorado.</br>
     Caso a expressão do argumento esteja incorreta ou incompleta a função tentara retornar um resulto com a parte valida.</br>
     Essa função também faz dodas as operações matemáticas seguindo a sequencia correta</br>
-    Essa função não acerita a simplificação "5(1+1)", necesse caso o correto é "5*(1+1)" ou "5*!(1+1)"</br>
+    Essa função não acerita a simplificação "5(1+1)", nesse caso o correto é "5*(1+1)" ou "5*!(1+1)"</br>
     </br>
     Como essa função utiliza outras funções para funcionar é difícil determinar em qual categoria de complexidade essa função se enquadra.</br>
 </details>
