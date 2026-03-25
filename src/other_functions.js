@@ -29,7 +29,7 @@ export function isTextRange(string){
 
     if (typeof string !== 'string') return false
 
-    const Regex = /(van *|des *)?(\d+)d(-?\d+)(_(-?\d+))?/
+    const Regex = /(van\s*|des\s*)?(\d+)d(-?\d+)(_(-?\d+))?/
 
     if(string.match(Regex) !== null){
         return true

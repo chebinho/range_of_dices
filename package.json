@@ -10,7 +10,9 @@
     ".": {
       "import": "./dist/index.js",
       "types": "./index.d.ts"
-    }
+    },
+    "./roll": "./dist/roll_dices.js",
+    "./range": "./dist/range_of_dices.js"
   },
   "files": [
     "dist",

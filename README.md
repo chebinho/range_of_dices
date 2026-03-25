@@ -1,3 +1,6 @@
+[![npm](https://img.shields.io/npm/v/range-of-dices.svg)](https://www.npmjs.com/package/range-of-dices)
+[![GitHub](https://img.shields.io/badge/github-repo-blue?logo=github)](https://github.com/chebinho/range_of_dices)
+
 # 1. O que a Lib faz:
 A proposta dessa biblioteca é de fornecer um conjunto de funções para sortear ou calcular a probabilidade de um ou mais dados de tamanhos variados. 
 
@@ -126,6 +129,15 @@ Outra opção é de usar "range-of-dices" que basicamente irá chamar o [index.j
 
 ```javascript
 import {roll, range} from "range-of-dices"
+
+console.log(roll("2d6 + 3"))
+console.log(range("2d6 + 3"))
+```
+
+Uma última forma de chamar essa lib é através do CDN, dessa maneira não é necessário instalar a lib e ela será automaticamente atualizada para a última versão disponível.
+
+```javascript
+import {roll, range} from "https://cdn.jsdelivr.net/npm/range-of-dices/+esm"
 
 console.log(roll("2d6 + 3"))
 console.log(range("2d6 + 3"))
