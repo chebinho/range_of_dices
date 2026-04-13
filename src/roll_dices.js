@@ -19,7 +19,7 @@ export function roll_dice(biggest_face=20, smaller_face=1, amount=1){
 
     let resul = 0
     for(let a=0;a<amount;a++){
-        resul = resul + Math.trunc((Math.random())*max)+min
+        resul = resul + Math.trunc((Math.random())*(max-min+1))+min
     }
     return resul 
 }
@@ -41,9 +41,9 @@ export function roll_vantage(biggest_face=20, smaller_face=1, amount=1){
 
     if(amount < 1 ){amount = 1}
 
-    let resul = Math.trunc((Math.random())*max)+min
+    let resul = Math.trunc((Math.random())*(max-min+1))+min
     for(let a=0;a<amount;a++){
-        let new_roll = Math.trunc((Math.random())*max)+min
+        let new_roll = Math.trunc((Math.random())*(max-min+1))+min
         if(resul < new_roll){
             resul = new_roll
         }
@@ -68,9 +68,9 @@ export function roll_disvantage(biggest_face=20, smaller_face=1, amount=1){
 
     if(amount < 1 ){amount = 1}
 
-    let resul = Math.trunc((Math.random())*max)+min
+    let resul = Math.trunc((Math.random())*(max-min+1))+min
     for(let a=0;a<amount;a++){
-        let new_roll = Math.trunc((Math.random())*max)+min
+        let new_roll = Math.trunc((Math.random())*(max-min+1))+min
         if(resul > new_roll){
             resul = new_roll
         }
@@ -266,4 +266,58 @@ export function exec_math(text = ""){
     }
 
     return solve_range_equation(resul)
+}
+
+export function string_to_range(string = ""){
+    if (typeof string !== 'string') return string
+
+    // Captures commands beginning with “dis” (disvantage), extracting the numbers involved.
+    // Ex: dis 1d20 | dis 3d10_1 
+    const Regex_dis = /dis\s*(\d+)d(-?\d+)(_(-?\d+))?(_(-?\d+))?/
+    // Capture commands beginning with “van” (vantage), extracting the numbers.
+    // Ex: van 1d20 | van 3d10_1 
+    const Regex_van = /van\s*(\d+)d(-?\d+)(_(-?\d+))?(_(-?\d+))?/
+    // Captures the same numeric pattern, but without “van” or “dis” at the beginning.
+    // Ex: 1d20 | 3d10_1 | 2d-20_-1
+    const Regex_roll = /(\d+)d(-?\d+)(_(-?\d+))?(_(-?\d+))?/
+
+    let resul
+    let resul_regex
+    let not_van_or_dis = true
+
+    resul_regex = string.match(Regex_van)
+    if(resul_regex !== null){
+        resul = roll_vantage(
+            resul_regex[2],
+            resul_regex[4],
+            resul_regex[1],
+            resul_regex[6]
+        )
+        not_van_or_dis = false
+    }
+
+    resul_regex = string.match(Regex_dis)
+    if(resul_regex !== null){
+        resul = roll_disvantage(
+            resul_regex[2],
+            resul_regex[4],
+            resul_regex[1],
+            resul_regex[6]
+        )
+        not_van_or_dis = false
+    }
+
+    if(not_van_or_dis){
+        resul_regex = string.match(Regex_roll)
+        if(resul_regex !== null){
+            resul = roll_dice(
+                resul_regex[2],
+                resul_regex[4],
+                resul_regex[1],
+                resul_regex[6]
+            )
+        }
+    }
+
+    return resul
 }
