@@ -1,6 +1,6 @@
 {
   "name": "range-of-dices",
-  "version": "1.0.7",
+  "version": "1.1.0",
   "description": "facilitar o cálculo de possibilidades através da contabilização das possibilidades de dados de faces variadas.",
   "author": "Carlos Eduardo Glinski de Souza",
   "license": "ISC",

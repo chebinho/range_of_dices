@@ -137,7 +137,7 @@ console.log(range("2d6 + 3"))
 Uma última forma de chamar essa lib é através do CDN, dessa maneira não é necessário instalar a lib e ela será automaticamente atualizada para a última versão disponível.
 
 ```javascript
-import {roll, range} from "https://cdn.jsdelivr.net/npm/range-of-dices/+esm"  // preciso fazer mais testes necesse metodo
+import {roll, range} from "https://cdn.jsdelivr.net/npm/range-of-dices/+esm"
 
 console.log(roll("2d6 + 3"))
 console.log(range("2d6 + 3"))
