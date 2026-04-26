@@ -1,7 +1,16 @@
-import {isNumber, exec_string_fun, find_parentheses} from './other_functions.js'
+import {isNumber, find_parentheses} from './other_functions.js'
 
 // roll any dice one or more times.
 export function roll_dice(biggest_face=20, smaller_face=1, amount=1){
+
+    // ensures that all values are numbers
+    // if not, returns null 
+    biggest_face = Number(biggest_face)
+    smaller_face = Number(smaller_face)
+    amount = Number(amount)
+    if (!isNumber(biggest_face)) return null
+    if (!isNumber(smaller_face)) return null
+    if (!isNumber(amount)) return null
 
     let max = 0
     let min = 0
@@ -19,13 +28,22 @@ export function roll_dice(biggest_face=20, smaller_face=1, amount=1){
 
     let resul = 0
     for(let a=0;a<amount;a++){
-        resul = resul + Math.trunc((Math.random())*(max-min+1))+min
+        resul = resul + Math.trunc(Math.random()*max)+min
     }
     return resul 
 }
 
 // roll any dice in advantage one or more times.
 export function roll_vantage(biggest_face=20, smaller_face=1, amount=1){
+
+    // ensures that all values are numbers
+    // if not, returns null 
+    biggest_face = Number(biggest_face)
+    smaller_face = Number(smaller_face)
+    amount = Number(amount)
+    if (!isNumber(biggest_face)) return null
+    if (!isNumber(smaller_face)) return null
+    if (!isNumber(amount)) return null
 
     let max = 0
     let min = 0
@@ -41,9 +59,9 @@ export function roll_vantage(biggest_face=20, smaller_face=1, amount=1){
 
     if(amount < 1 ){amount = 1}
 
-    let resul = Math.trunc((Math.random())*(max-min+1))+min
+    let resul = Math.trunc(Math.random()*max)+min
     for(let a=0;a<amount;a++){
-        let new_roll = Math.trunc((Math.random())*(max-min+1))+min
+        let new_roll = Math.trunc(Math.random()*max)+min
         if(resul < new_roll){
             resul = new_roll
         }
@@ -54,6 +72,15 @@ export function roll_vantage(biggest_face=20, smaller_face=1, amount=1){
 // roll any dice in disadvantage one or more times.
 export function roll_disvantage(biggest_face=20, smaller_face=1, amount=1){
 
+    // ensures that all values are numbers
+    // if not, returns null 
+    biggest_face = Number(biggest_face)
+    smaller_face = Number(smaller_face)
+    amount = Number(amount)
+    if (!isNumber(biggest_face)) return null
+    if (!isNumber(smaller_face)) return null
+    if (!isNumber(amount)) return null
+
     let max = 0
     let min = 0
 
@@ -68,9 +95,9 @@ export function roll_disvantage(biggest_face=20, smaller_face=1, amount=1){
 
     if(amount < 1 ){amount = 1}
 
-    let resul = Math.trunc((Math.random())*(max-min+1))+min
+    let resul = Math.trunc(Math.random()*max)+min
     for(let a=0;a<amount;a++){
-        let new_roll = Math.trunc((Math.random())*(max-min+1))+min
+        let new_roll = Math.trunc(Math.random()*max)+min
         if(resul > new_roll){
             resul = new_roll
         }
@@ -82,40 +109,13 @@ export function roll_disvantage(biggest_face=20, smaller_face=1, amount=1){
 // after that, the functions are executed and the results are replaced by the respective functions
 export function roll_exec(...strings){
 
-    if(Array.isArray(strings)){
-        for(let a=0;a<strings.length;a++){
-            if (typeof strings[a] !== 'string') return strings
-        }
-    }else if(typeof strings !== 'string'){
-        return strings
-    }
-
-    const allowedFunctions = [
-        roll_dice,
-        roll_vantage,
-        roll_disvantage,
-    ];
-
-    // Captures commands beginning with “dis” (disvantage), extracting the numbers involved.
-    // Ex: dis 1d20 | dis 3d10_1 
-    const Regex_dis = /dis\s*(\d+)d(-?\d+)(_(-?\d+))?/g
-    // Capture commands beginning with “van” (vantage), extracting the numbers.
-    // Ex: van 1d20 | van 3d10_1 
-    const Regex_van = /van\s*(\d+)d(-?\d+)(_(-?\d+))?/g
-    // Captures the same numeric pattern, but without “van” or “dis” at the beginning.
-    // Ex: 1d20 | 3d10_1 | 2d-20_-1
-    const Regex_roll = /(\d+)d(-?\d+)(_(-?\d+))?/g
+    const Regex = /(van\s*|dis\s*)?\d+d-?\d+(_-?\d+)?(_-?\d+)?/g
 
     let resul = []
     for(let a=0;a<strings.length;a++){
-
-        // converts the user's command into its respective function
-        resul[a] = strings[a].replace(Regex_dis, "roll_disvantage($2,$4,$1)")
-        resul[a] = resul[a].replace(Regex_van, "roll_vantage($2,$4,$1)")
-        resul[a] = resul[a].replace(Regex_roll, "roll_dice($2,$4,$1)")
-
-        // execute the functions and replaces them with the resul
-        resul[a] = exec_string_fun(resul[a], allowedFunctions, 1)
+        resul[a] = strings[a].replace(Regex, (match) => {
+            return string_to_roll(match)
+        })
     }
 
     if(strings.length > 1){
@@ -123,7 +123,6 @@ export function roll_exec(...strings){
     }else{
         return resul[0]
     }
-
 }
 
 // solve any equation with a data rollover together.
@@ -268,18 +267,18 @@ export function exec_math(text = ""){
     return solve_range_equation(resul)
 }
 
-export function string_to_range(string = ""){
+export function string_to_roll(string = ""){
     if (typeof string !== 'string') return string
 
     // Captures commands beginning with “dis” (disvantage), extracting the numbers involved.
     // Ex: dis 1d20 | dis 3d10_1 
-    const Regex_dis = /dis\s*(\d+)d(-?\d+)(_(-?\d+))?(_(-?\d+))?/
+    const Regex_dis = /dis\s*(\d+)d(-?\d+)(_(-?\d+))?/
     // Capture commands beginning with “van” (vantage), extracting the numbers.
     // Ex: van 1d20 | van 3d10_1 
-    const Regex_van = /van\s*(\d+)d(-?\d+)(_(-?\d+))?(_(-?\d+))?/
+    const Regex_van = /van\s*(\d+)d(-?\d+)(_(-?\d+))?/
     // Captures the same numeric pattern, but without “van” or “dis” at the beginning.
     // Ex: 1d20 | 3d10_1 | 2d-20_-1
-    const Regex_roll = /(\d+)d(-?\d+)(_(-?\d+))?(_(-?\d+))?/
+    const Regex_roll = /(\d+)d(-?\d+)(_(-?\d+))?/
 
     let resul
     let resul_regex
@@ -290,8 +289,7 @@ export function string_to_range(string = ""){
         resul = roll_vantage(
             resul_regex[2],
             resul_regex[4],
-            resul_regex[1],
-            resul_regex[6]
+            resul_regex[1]
         )
         not_van_or_dis = false
     }
@@ -301,8 +299,7 @@ export function string_to_range(string = ""){
         resul = roll_disvantage(
             resul_regex[2],
             resul_regex[4],
-            resul_regex[1],
-            resul_regex[6]
+            resul_regex[1]
         )
         not_van_or_dis = false
     }
@@ -313,8 +310,7 @@ export function string_to_range(string = ""){
             resul = roll_dice(
                 resul_regex[2],
                 resul_regex[4],
-                resul_regex[1],
-                resul_regex[6]
+                resul_regex[1]
             )
         }
     }
