@@ -221,10 +221,10 @@ export function string_to_range(string = ""){
 
     // Captures commands beginning with “dis” (disvantage), extracting the numbers involved.
     // Ex: dis 1d20 | dis 3d10_1 
-    const Regex_dis = /dis *(\d+)d(-?\d+)(_(-?\d+))?(_(-?\d+))?/
+    const Regex_dis = /dis\s*(\d+)d(-?\d+)(_(-?\d+))?(_(-?\d+))?/
     // Capture commands beginning with “van” (vantage), extracting the numbers.
     // Ex: van 1d20 | van 3d10_1 
-    const Regex_van = /van *(\d+)d(-?\d+)(_(-?\d+))?(_(-?\d+))?/
+    const Regex_van = /van\s*(\d+)d(-?\d+)(_(-?\d+))?(_(-?\d+))?/
     // Captures the same numeric pattern, but without “van” or “dis” at the beginning.
     // Ex: 1d20 | 3d10_1 | 2d-20_-1
     const Regex_combi = /(\d+)d(-?\d+)(_(-?\d+))?(_(-?\d+))?/
@@ -374,7 +374,7 @@ export function range(...text){
     }
 
     // searches for valid values and places each value in an array
-    const Regex = /((van *|dis *)?(\d+)d(-?\d+)(_(-?\d+))?(_(-?\d+))?)|(\*\*|[\+\-\*\/\%]\!?)|(\()|(\))|(\d+(\.\d+)?(\e\d+)?)/g
+    const Regex = /((van\s*|dis\s*)?(\d+)d(-?\d+)(_(-?\d+))?(_(-?\d+))?)|(\*\*|[\+\-\*\/\%]\!?)|(\()|(\))|(\d+(\.\d+)?(\e\d+)?)/g
     let resul = []
 
     for(let a=0;a<text.length;a++){
