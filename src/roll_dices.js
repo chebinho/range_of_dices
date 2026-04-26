@@ -108,6 +108,14 @@ export function roll_disvantage(biggest_face=20, smaller_face=1, amount=1){
 // finds simplifications of the dices and converts them into the respective functions
 // after that, the functions are executed and the results are replaced by the respective functions
 export function roll_exec(...strings){
+    
+    if(Array.isArray(strings)){
+        for(let a=0;a<strings.length;a++){
+            if (typeof strings[a] !== 'string') return strings
+        }
+    }else if(typeof strings !== 'string'){
+        return strings
+    }
 
     const Regex = /(van\s*|dis\s*)?\d+d-?\d+(_-?\d+)?(_-?\d+)?/g
 
