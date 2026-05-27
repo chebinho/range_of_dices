@@ -1,5 +1,12 @@
 
 # CHANGELOGs
+
+## 1.1.
+<details>
+    <summary>resumo</summary>
+    <p>apenas algumas correções de código e melhorando a segurança removendo uma função problemática chamada exec_string_fun.</p>
+</details></br>
+
 ## 1.0.
 <details>
     <summary>1.0.6 entre 1.0.0</summary>
