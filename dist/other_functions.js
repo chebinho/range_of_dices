@@ -29,7 +29,7 @@ export function isTextRange(string){
 
     if (typeof string !== 'string') return false
 
-    const Regex = /(van\s*|dis\s*)?\d+d-?\d+(_-?\d+)?(_-?\d+)?/
+    const Regex = /(van\s*|des\s*)?(\d+)d(-?\d+)(_(-?\d+))?/
 
     if(string.match(Regex) !== null){
         return true
@@ -49,59 +49,4 @@ export function isArrayRange(range){
         if(!isNumber(range[a][1])) return false
     }
     return true
-}
-
-// execute the functions present within a string and replace the function with the result
-export function exec_string_fun(string = "", allowedFunctions = [Function], placeholder = ""){
-
-    if (typeof string !== 'string') return string
-
-    // Find any function in a string
-    const Regex = /([a-zA-Z]\w*)\(([^()]*)\)/g
-
-    // repeat the code until there are no changes in the result
-    let last_resul = ""
-    let limit = 1000
-    while((last_resul != string) && limit--){
-        last_resul = string
-
-        string = string.replace(Regex, (match, fname, args) => {
-
-            // Checks if the function exists in the list of allowed functions
-            let find = -1
-            for(let a=0;a<allowedFunctions.length;a++){
-                if(allowedFunctions[a].name === fname){
-                    find = a
-                }
-            }
-            if(find === -1){
-                return match;
-            }
-
-            // Converts arguments separated by commas
-            args = args.split(",").map(a => a.trim())
-            if(placeholder === ""){
-                for(let a=0;a<args.length;a++){
-                    if(args[a] == ""){
-                        args.splice(a,1)
-                        a-=1
-                    }
-                }
-            }else{
-                for(let a=0;a<args.length;a++){
-                    if(args[a] == ""){
-                        args[a] = placeholder
-                    }
-                }
-            }
-            for(let a=0;a<args.length;a++){
-                if(isNumber(args[a])) {args[a] = Number(args[a])}
-            }
-
-            // Execute the actual function
-            return allowedFunctions[find](...args)
-        });
-    }
-    
-    return string
 }
