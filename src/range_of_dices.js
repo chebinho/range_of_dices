@@ -387,30 +387,33 @@ export function range(...text){
     }
 
     // search for values between pairs of parentheses, after which the values are executed by the “solve_range_equation” function
-    let no_parent = true
+    let has_parenth = true
     let par = find_parentheses(resul)
+
     if(par.start == null) {
-        no_parent = false
+        has_parenth = false
     }
     if(par.end == null) {
-        no_parent = false
+        has_parenth = false
     }
 
     let guard = 0;
-    while ((no_parent) && (guard++ < 1000)) {
+    while ((has_parenth) && (guard++ < 1000)) {
 
         let temp_resul = solve_range_equation( resul.slice(par.start+1,par.end) )
-        resul.splice(par.start,par.end+1, temp_resul)
+        resul.splice(par.start, par.end-par.start+1, temp_resul)
         
         par = find_parentheses(resul)
+
         if(par.start == null) {
-            no_parent = false
+            has_parenth = false
             par.start = 0
         }
         if(par.end == null) {
-            no_parent = false
+            has_parenth = false
             par.end = resul.length
         }
+
     }
 
     return solve_range_equation(resul)
