@@ -374,7 +374,7 @@ export function range(...text){
     }
 
     // searches for valid values and places each value in an array
-    const Regex = /((van\s*|dis\s*)?(\d+)d(-?\d+)(_(-?\d+))?(_(-?\d+))?)|(\*\*|[\+\-\*\/\%]\!?)|(\()|(\))|(\d+(\.\d+)?(\e\d+)?)/g
+    const Regex = /((van\s*|dis\s*)?(\d+)d(-?\d+)(_(-?\d+))?(_(-?\d+))?)|(\*\*\!?|[\+\-\*\/\%]\!?)|(\()|(\))|(\d+(\.\d+)?([eE][+-]?\d+)?)/g
     let resul = []
 
     for(let a=0;a<text.length;a++){
@@ -441,7 +441,7 @@ export function join_ranges(range_1 = [[]], range_2 = [[]]){
     if(!isArrayRange(range_2)){
         if(isNumber(range_2)){
             if(value_check){
-                return range_1 + range_2
+                return Number(range_1) + Number(range_2)
             }else{
                 return merge_range_and_number(range_1,range_2)
             }
@@ -483,6 +483,10 @@ export function join_ranges_all(range_1 = [[]], range_2 = [[]], operator = "+"){
 
     if(isTextRange(range_1)) {range_1 = string_to_range(range_1)}
     if(isTextRange(range_2)) {range_2 = string_to_range(range_2)}
+
+    if((isNumber(range_1)) || (isNumber(range_2))){
+        return merge_ranges(range_1, range_2, operator)
+    }
 
     // creates the op function to perform the calculation when necessary
     const op = {
@@ -681,7 +685,7 @@ export function merge_range_and_number(range = [[]], number = 1, operator="+"){
 export function flip_range(range = [[]]){
 
     if(isTextRange(range)) {range = string_to_range(range)}
-    if(!isArrayRange(range)) {return range}
+    if(!isArrayRange(range)) {return -range}
 
     range.reverse()
 
