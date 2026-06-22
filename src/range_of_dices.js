@@ -273,6 +273,11 @@ export function string_to_range(string = ""){
 // basically performs all calculations present in a string, including range simplificationss
 export function range(...text){
 
+    const negative_problem = /^-|(\()-/gm
+    for(let a=0;a<text.length;a++){
+        text[a] = text[a].replace(negative_problem, `$10-`)
+    }
+
     // solves equations containing simplified ranges or array ranges, but ignores parentheses
     function solve_range_equation(array){
         if(!Array.isArray(array)) return null
