@@ -5,6 +5,8 @@
 <details>
     <summary>resumo</summary>
     <p>apenas algumas correções de código e melhorando a segurança removendo uma função problemática chamada exec_string_fun.</p>
+    <p>percebi que tinha deixado um bug na execução do cálculo, esse bug fazia com que os valores entre "()" não resultassem em um valor correto.</p>
+    <p>outro bug resolvido era um que fazia o primeiro valor de uma operação matemática sempre ser positivo, pois a função ignorava o “-” no começo da equação.</p>
 </details></br>
 
 ## 1.0.
